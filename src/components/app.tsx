@@ -13,8 +13,12 @@ function App() {
   }
 
   return (
-    <main className="container">
-      <h1 className="font-medium">Welcome to Tauri + React</h1>
+    <main className="w-full select-none">
+      <div data-tauri-drag-region className="w-full h-8 bg-slate-100">
+        <div className="h-full flex items-center pl-20 text-sm font-medium pointer-events-none">
+          Welcome to Tauri + React
+        </div>
+      </div>
 
       <div className="py-4">
         <Button

@@ -12,7 +12,8 @@
   "app": {
     "windows": [
       {
-        "title": "sketchnote",
+        "titleBarStyle": "Overlay",
+        "title": "",
         "width": 800,
         "height": 600
       }
