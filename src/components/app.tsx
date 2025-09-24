@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Button } from "@/components/ui/button";
+import { platform } from "@tauri-apps/plugin-os";
+
 import "../global.css";
 
 function App() {
@@ -13,9 +15,9 @@ function App() {
   }
 
   return (
-    <main className="w-full h-full select-none bg-yellow-200 overflow-clip rounded-xl">
+    <main className="w-full h-full select-none bg-yellow-200 overflow-clip">
       <div data-tauri-drag-region className="w-full h-8 bg-slate-300">
-        <div className="h-full flex items-center pl-20 text-sm font-medium pointer-events-none">
+        <div className="h-full flex justify-center items-center text-sm font-medium pointer-events-none">
           Welcome to Tauri + React
         </div>
       </div>
@@ -23,11 +25,12 @@ function App() {
       <div className="py-4">
         <Button
           variant="outline"
-          onClick={() => {
-            alert("Hello from Button component!");
+          onClick={async () => {
+            const currentPlatform = await platform();
+            console.log(currentPlatform);
           }}
         >
-          Button
+          Check Platform (See Console)
         </Button>
       </div>
 
