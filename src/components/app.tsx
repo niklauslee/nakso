@@ -13,8 +13,8 @@ function App() {
   }
 
   return (
-    <main className="w-full select-none">
-      <div data-tauri-drag-region className="w-full h-8 bg-slate-100">
+    <main className="w-full h-full select-none bg-yellow-200 overflow-clip rounded-xl">
+      <div data-tauri-drag-region className="w-full h-8 bg-slate-300">
         <div className="h-full flex items-center pl-20 text-sm font-medium pointer-events-none">
           Welcome to Tauri + React
         </div>

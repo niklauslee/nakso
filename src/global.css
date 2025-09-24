@@ -133,6 +133,15 @@
     margin: 0;
     height: 100%;
     width: 100%;
+    background-color: transparent;
+    overflow: hidden;
     @apply bg-background text-foreground;
+  }
+
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: clip;
+    background-color: transparent;
   }
 }
