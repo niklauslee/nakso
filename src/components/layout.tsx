@@ -38,7 +38,7 @@ export function Layout({
     <main className="fixed inset-0 select-none" {...others}>
       <aside
         className={cn(
-          "z-10 absolute inset-y-0 left-0 w-56 bg-muted/50 border-r transition-transform ease-linear duration-200",
+          "z-10 absolute inset-y-0 left-0 w-56 bg-sidebar border-r transition-transform ease-linear duration-200",
           showSidebar ? "translate-x-0" : "-translate-x-full"
         )}
       >

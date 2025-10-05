@@ -1,9 +1,8 @@
-import { ActionKind, AssignMutation, Editor, Mirror, Shape } from "@dgmjs/core";
+import { Editor, Mirror } from "@dgmjs/core";
 import { CommandManager } from "./engine/command-manager";
 import { KeymapManager } from "./engine/keymap-manager";
 import { Font, insertFontsToDocument, useFontStore } from "./store/font-store";
-// import { registerCommands } from "./commands";
-// import { registerListeners } from "./listeners";
+import { registerCommands } from "./commands";
 // import { MenuItemState, useMenuStore } from "./store/menu-store";
 // import { useDocStore } from "./store/doc-store";
 // import { useSettingStore } from "./store/setting-store";
@@ -47,8 +46,7 @@ export class AppContext {
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
-    // registerCommands();
-    // registerListeners();
+    registerCommands();
   }
 
   wiring() {
@@ -107,30 +105,6 @@ export class AppContext {
     this.editor.transform.onAction.addListener((action) => {
       try {
         // this.autoSaver.tick();
-        // automatic alignment for table columns
-        let cell: Shape | null = null;
-        if (action.name === ActionKind.RESIZE) {
-          action.transactions.forEach((tx) => {
-            tx.mutations.forEach((mx) => {
-              if (
-                mx instanceof AssignMutation &&
-                mx.obj &&
-                mx.obj instanceof Shape &&
-                mx.obj.tags.includes("table-cell") &&
-                mx.field === "width"
-              ) {
-                cell = mx.obj;
-              }
-            });
-          });
-        }
-        if (cell) {
-          setTimeout(() => {
-            this.commands.execute("table:align-particular-column", {
-              cellId: cell?.id,
-            });
-          }, 0);
-        }
       } catch (err) {
         console.error("Failed to handle action:", err);
       }

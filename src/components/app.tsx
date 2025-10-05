@@ -1,13 +1,16 @@
 // import { invoke } from "@tauri-apps/api/core";
 import { Layout } from "./layout";
 import Editor from "./editor";
-import "../global.css";
+import "../globals.css";
 import { AppContext } from "@/app-context";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { PanelLeftIcon, PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useSettingStore } from "@/store/setting-store";
+import { Toolbar } from "./toolbar";
+import { Palette } from "./palette";
+import { useEffect } from "react";
 
 declare global {
   interface Window {
@@ -18,7 +21,13 @@ declare global {
 function App() {
   const setAppReady = useAppStore((state) => state.setAppReady);
   const showSidebar = useSettingStore((state) => state.showSidebar);
-  const setShowSidebar = useSettingStore((state) => state.setShowSidebar);
+  const darkMode = useSettingStore((state) => state.darkMode);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   const handleAppReady = async (editor: EditorType) => {
     try {
@@ -40,12 +49,12 @@ function App() {
   return (
     <Layout
       header={
-        <div className="flex items-center text-sm gap-2 pl-1.5">
+        <div className="flex items-center text-sm font-medium gap-1 pl-1.5">
           <Button
-            className="pointer-events-auto"
+            className="p-0 pointer-events-auto"
             variant="ghost"
             size="icon"
-            onClick={() => setShowSidebar(!showSidebar)}
+            onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
           >
             <PanelLeftIcon size={16} strokeWidth={1.5} />
           </Button>
@@ -58,7 +67,9 @@ function App() {
             className="pointer-events-auto"
             variant="ghost"
             size="icon"
-            onClick={() => setShowSidebar(!showSidebar)}
+            onClick={() => {
+              console.log("add page");
+            }}
           >
             <PlusIcon size={16} strokeWidth={1.5} />
           </Button>
@@ -71,6 +82,8 @@ function App() {
       }}
     >
       <Editor onMount={handleAppReady} />
+      <Toolbar />
+      <Palette />
     </Layout>
   );
 }

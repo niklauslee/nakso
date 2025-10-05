@@ -61,11 +61,6 @@
   "mod-down": "view:scroll-down",
   "mod-left": "view:scroll-left",
   "mod-right": "view:scroll-right",
-  "mod-1": "view:show-shapes",
-  "mod-2": "view:show-pages",
-  "mod-3": "view:show-icons",
-  "mod-4": "view:show-layers",
-  "mod-5": "view:show-agent",
   "mod-shift-d": "view:dark-mode",
 
   "shift-/": "help:keyboard-shortcuts"
