@@ -1,0 +1,494 @@
+{
+  "main": [
+    {
+      "label": "File",
+      "id": "file",
+      "submenu": [
+        {
+          "label": "New",
+          "id": "file.new",
+          "command": "file:new"
+        },
+        {
+          "label": "Open...",
+          "id": "file.open",
+          "command": "file:open"
+        },
+        {
+          "label": "Open recent",
+          "id": "file.open-recent",
+          "submenu": []
+        },
+        {
+          "label": "Save",
+          "id": "file.save",
+          "command": "file:save"
+        },
+        {
+          "label": "Save as...",
+          "id": "file.save-as",
+          "command": "file:save-as"
+        },
+        { "type": "separator" },
+        {
+          "label": "Export image...",
+          "id": "file.export-image",
+          "command": "view:show-export-image-dialog"
+        },
+        {
+          "label": "Export to PDF...",
+          "id": "file.export-to-pdf",
+          "command": "view:show-export-to-pdf-dialog"
+        },
+        {
+          "label": "Export to HTML...",
+          "id": "file.export-to-html",
+          "command": "view:show-export-to-html-dialog"
+        }
+      ]
+    },
+    {
+      "label": "Edit",
+      "id": "edit",
+      "submenu": [
+        {
+          "label": "Undo",
+          "id": "edit.undo",
+          "command": "edit:undo",
+          "inset": true
+        },
+        {
+          "label": "Redo",
+          "id": "edit.redo",
+          "command": "edit:redo",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Copy",
+          "id": "edit.copy",
+          "command": "edit:copy",
+          "inset": true
+        },
+        {
+          "label": "Cut",
+          "id": "edit.cut",
+          "command": "edit:cut",
+          "inset": true
+        },
+        {
+          "label": "Paste",
+          "id": "edit.paste",
+          "command": "edit:paste",
+          "inset": true
+        },
+        {
+          "label": "Duplicate",
+          "id": "edit.duplicate",
+          "command": "edit:duplicate",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Delete",
+          "id": "edit.delete",
+          "command": "edit:delete",
+          "inset": true
+        },
+        {
+          "label": "Select all",
+          "id": "edit.select-all",
+          "command": "edit:select-all",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Bring to front",
+          "id": "alignment.bring-to-front",
+          "command": "align:bring-to-front",
+          "inset": true
+        },
+        {
+          "label": "Send to back",
+          "id": "alignment.send-to-back",
+          "command": "align:send-to-back",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Group",
+          "id": "shape.group",
+          "command": "shape:group",
+          "inset": true
+        },
+        {
+          "label": "Ungroup",
+          "id": "shape.ungroup",
+          "command": "shape:ungroup",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Lock",
+          "id": "shape.lock",
+          "type": "checkbox",
+          "command": "shape:toggle-lock"
+        },
+        {
+          "label": "Hide",
+          "id": "shape.hide",
+          "type": "checkbox",
+          "command": "shape:toggle-hide"
+        },
+        {
+          "label": "Container",
+          "id": "shape.container",
+          "type": "checkbox",
+          "command": "shape:toggle-container"
+        }
+      ]
+    },
+    {
+      "label": "View",
+      "id": "view",
+      "submenu": [
+        {
+          "label": "Start presentation",
+          "id": "view.presentation",
+          "command": "view:presentation",
+          "inset": true
+        },
+        {
+          "label": "Templates...",
+          "id": "view.templates",
+          "command": "view:show-template-dialog",
+          "inset": true
+        },
+        {
+          "label": "Insert shapes...",
+          "id": "view.insert-shapes",
+          "command": "view:show-insert-shape-dialog",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Zoom in",
+          "id": "view.zoom-in",
+          "command": "view:zoom-in",
+          "inset": true
+        },
+        {
+          "label": "Zoom out",
+          "id": "view.zoom-out",
+          "command": "view:zoom-out",
+          "inset": true
+        },
+        {
+          "label": "Zoom to 100%",
+          "id": "view.actual-size",
+          "command": "view:actual-size",
+          "inset": true
+        },
+        {
+          "label": "Fit to screen",
+          "id": "view.fit-to-screen",
+          "command": "view:fit-to-screen",
+          "inset": true
+        },
+        { "type": "separator" },
+        {
+          "label": "Show navigator",
+          "id": "view.toggle-navigator",
+          "type": "checkbox",
+          "command": "view:toggle-navigator"
+        },
+        {
+          "label": "Show inspector",
+          "id": "view.toggle-inspector",
+          "type": "checkbox",
+          "command": "view:toggle-inspector"
+        },
+        { "type": "separator" },
+        {
+          "label": "Show links",
+          "id": "view.show-links",
+          "type": "checkbox",
+          "command": "view:show-links"
+        },
+        {
+          "label": "Show grid",
+          "id": "view.show-grid",
+          "type": "checkbox",
+          "command": "view:show-grid"
+        },
+        { "type": "separator" },
+        {
+          "label": "Snap to grid",
+          "id": "view.snap-to-grid",
+          "type": "checkbox",
+          "command": "view:snap-to-grid"
+        },
+        {
+          "label": "Snap to objects",
+          "id": "view.snap-to-objects",
+          "type": "checkbox",
+          "command": "view:snap-to-objects"
+        },
+        { "type": "separator" },
+        {
+          "label": "Dark mode",
+          "id": "view.dark-mode",
+          "type": "checkbox",
+          "command": "view:dark-mode",
+          "inset": true
+        }
+      ]
+    },
+    {
+      "label": "Help",
+      "id": "help",
+      "submenu": [
+        {
+          "label": "About...",
+          "id": "help.about",
+          "command": "help:about"
+        },
+        {
+          "label": "License activation...",
+          "id": "help.license-activation",
+          "command": "help:license-activation"
+        },
+        { "type": "separator" },
+        {
+          "label": "Homepage",
+          "id": "help.homepage",
+          "command": "help:homepage",
+          "external": true
+        },
+        {
+          "label": "Documentation",
+          "id": "help.documentation",
+          "command": "help:documentation",
+          "external": true
+        },
+        {
+          "label": "Keyboard shortcuts",
+          "id": "help.keyboard-shortcuts",
+          "command": "help:keyboard-shortcuts"
+        },
+        { "type": "separator" },
+        {
+          "label": "Toggle developer tools",
+          "id": "view.toggle-dev-tools",
+          "command": "help:toggle-dev-tools"
+        }
+      ]
+    },
+    { "type": "separator" },
+    {
+      "label": "Quit",
+      "id": "file.quit",
+      "command": "file:quit"
+    }
+  ],
+  "page": [
+    {
+      "label": "Add page",
+      "id": "page.add",
+      "command": "page:add"
+    },
+    {
+      "label": "Delete page",
+      "id": "page.delete",
+      "command": "page:delete"
+    },
+    {
+      "label": "Duplicate page",
+      "id": "page.duplicate",
+      "command": "page:duplicate"
+    }
+  ],
+  "zoom": [
+    {
+      "label": "Zoom in",
+      "id": "view.zoom-in",
+      "command": "view:zoom-in"
+    },
+    {
+      "label": "Zoom out",
+      "id": "view.zoom-out",
+      "command": "view:zoom-out"
+    },
+    {
+      "label": "Zoom to 100%",
+      "id": "view.actual-size",
+      "command": "view:actual-size"
+    },
+    {
+      "label": "Fit to screen",
+      "id": "view.fit-to-screen",
+      "command": "view:fit-to-screen"
+    }
+  ],
+  "table": [
+    {
+      "label": "Align columns",
+      "id": "table.align-columns",
+      "command": "table:align-columns"
+    },
+    { "type": "separator" },
+    {
+      "label": "Duplicate column",
+      "id": "table.duplicate-column",
+      "command": "table:duplicate-column"
+    },
+    {
+      "label": "Duplicate row",
+      "id": "table.duplicate-row",
+      "command": "table:duplicate-row"
+    },
+    { "type": "separator" },
+    {
+      "label": "Insert column left",
+      "id": "table.insert-column-left",
+      "command": "table:insert-column-left"
+    },
+    {
+      "label": "Insert column right",
+      "id": "table.insert-column-right",
+      "command": "table:insert-column-right"
+    },
+    {
+      "label": "Insert row above",
+      "id": "table.insert-row-above",
+      "command": "table:insert-row-above"
+    },
+    {
+      "label": "Insert row below",
+      "id": "table.insert-row-below",
+      "command": "table:insert-row-below"
+    },
+    { "type": "separator" },
+    {
+      "label": "Move column left",
+      "id": "table.move-column-left",
+      "command": "table:move-column-left"
+    },
+    {
+      "label": "Move column right",
+      "id": "table.move-column-right",
+      "command": "table:move-column-right"
+    },
+    {
+      "label": "Move row up",
+      "id": "table.move-row-up",
+      "command": "table:move-row-up"
+    },
+    {
+      "label": "Move row down",
+      "id": "table.move-row-down",
+      "command": "table:move-row-down"
+    },
+    { "type": "separator" },
+    {
+      "label": "Select column",
+      "id": "table.select-column",
+      "command": "table:select-column"
+    },
+    {
+      "label": "Select row",
+      "id": "table.select-row",
+      "command": "table:select-row"
+    },
+    { "type": "separator" },
+    {
+      "label": "Delete column",
+      "id": "table.delete-column",
+      "command": "table:delete-column"
+    },
+    {
+      "label": "Delete row",
+      "id": "table.delete-row",
+      "command": "table:delete-row"
+    }
+  ],
+  "context": [
+    {
+      "label": "Copy",
+      "id": "edit.copy",
+      "command": "edit:copy",
+      "inset": true
+    },
+    { "label": "Cut", "id": "edit.cut", "command": "edit:cut", "inset": true },
+    {
+      "label": "Paste",
+      "id": "edit.paste",
+      "command": "edit:paste",
+      "inset": true
+    },
+    {
+      "label": "Duplicate",
+      "id": "edit.duplicate",
+      "command": "edit:duplicate",
+      "inset": true
+    },
+    { "type": "separator" },
+    {
+      "label": "Delete",
+      "id": "edit.delete",
+      "command": "edit:delete",
+      "inset": true
+    },
+    {
+      "label": "Select all",
+      "id": "edit.select-all",
+      "command": "edit:select-all",
+      "inset": true
+    },
+    { "type": "separator" },
+    {
+      "label": "Bring to front",
+      "id": "alignment.bring-to-front",
+      "command": "align:bring-to-front",
+      "inset": true
+    },
+    {
+      "label": "Send to back",
+      "id": "alignment.send-to-back",
+      "command": "align:send-to-back",
+      "inset": true
+    },
+    { "type": "separator" },
+    {
+      "label": "Group",
+      "id": "shape.group",
+      "command": "shape:group",
+      "inset": true
+    },
+    {
+      "label": "Ungroup",
+      "id": "shape.ungroup",
+      "command": "shape:ungroup",
+      "inset": true
+    },
+    { "type": "separator" },
+    {
+      "label": "Lock",
+      "id": "shape.lock",
+      "type": "checkbox",
+      "command": "shape:toggle-lock"
+    },
+    {
+      "label": "Hide",
+      "id": "shape.hide",
+      "type": "checkbox",
+      "command": "shape:toggle-hide"
+    },
+    {
+      "label": "Container",
+      "id": "shape.container",
+      "type": "checkbox",
+      "command": "shape:toggle-container"
+    }
+  ]
+}

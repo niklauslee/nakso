@@ -38,6 +38,14 @@ function findShapeIdArray(shapeIdArray: string[]) {
 export function registerCommands() {
   const app = window.app;
 
+  // file commands -------------------------------------------------------------
+
+  app.commands.register("file:quit", "Quit the application", {}, async () => {
+    setTimeout(() => {
+      window.api.window.quit();
+    }, 300); // delay to complete any pending actions
+  });
+
   // edit commands -------------------------------------------------------------
 
   app.commands.register("edit:undo", "Undo", {}, async () =>
