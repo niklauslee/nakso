@@ -4,7 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  --font-sans: "Inter";
+  --font-mono: "IBM Plex Mono";
+  --font-serif: "Source Serif Pro";
+  --font-hand: "Loranthus";
+
+  font-family: Inter, system-ui, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
@@ -143,5 +148,11 @@
     width: 100%;
     overflow: clip;
     background-color: transparent;
+  }
+}
+
+@layer utilities {
+  .font-hand {
+    font-family: var(--font-hand);
   }
 }

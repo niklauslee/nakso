@@ -1,55 +1,77 @@
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { Button } from "@/components/ui/button";
-import { platform } from "@tauri-apps/plugin-os";
-
+// import { invoke } from "@tauri-apps/api/core";
+import { Layout } from "./layout";
+import Editor from "./editor";
 import "../global.css";
+import { AppContext } from "@/app-context";
+import { useAppStore } from "@/store/app-store";
+import { Editor as EditorType } from "@dgmjs/core";
+import { PanelLeftIcon, PlusIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { useSettingStore } from "@/store/setting-store";
+
+declare global {
+  interface Window {
+    app: AppContext;
+  }
+}
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const setAppReady = useAppStore((state) => state.setAppReady);
+  const showSidebar = useSettingStore((state) => state.showSidebar);
+  const setShowSidebar = useSettingStore((state) => state.setShowSidebar);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const handleAppReady = async (editor: EditorType) => {
+    try {
+      window.app = new AppContext(editor);
+      await window.app.initialize();
+
+      editor.newDoc();
+      editor.fitToScreen();
+      window.addEventListener("resize", () => {
+        editor.fit();
+      });
+
+      setAppReady(true, editor.platform);
+    } catch (error) {
+      console.error("Failed to initialize the app:", error);
+    }
+  };
 
   return (
-    <main className="w-full h-full select-none bg-yellow-200 overflow-clip">
-      <div data-tauri-drag-region className="w-full h-12 bg-slate-300">
-        <div className="h-full flex justify-center items-center text-sm font-medium pointer-events-none">
-          Welcome to Tauri + React
+    <Layout
+      header={
+        <div className="flex items-center text-sm gap-2 pl-1.5">
+          <Button
+            className="pointer-events-auto"
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowSidebar(!showSidebar)}
+          >
+            <PanelLeftIcon size={16} strokeWidth={1.5} />
+          </Button>
+          header
         </div>
-      </div>
-
-      <div className="py-4">
-        <Button
-          variant="outline"
-          onClick={async () => {
-            const currentPlatform = await platform();
-            console.log(currentPlatform);
-          }}
-        >
-          Check Platform (See Console)
-        </Button>
-      </div>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <Button type="submit">Greet</Button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      }
+      sidebarHeader={
+        <div className="w-full flex items-center justify-end pr-1.5">
+          <Button
+            className="pointer-events-auto"
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowSidebar(!showSidebar)}
+          >
+            <PlusIcon size={16} strokeWidth={1.5} />
+          </Button>
+        </div>
+      }
+      sidebar={<div className="w-full h-full px-4">sidebar</div>}
+      showSidebar={showSidebar}
+      onContentResize={() => {
+        setTimeout(() => window.app?.editor.fit());
+      }}
+    >
+      <Editor onMount={handleAppReady} />
+    </Layout>
   );
 }
 

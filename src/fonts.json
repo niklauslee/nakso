@@ -1,0 +1,235 @@
+[
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 100,
+    "src": "./fonts/Inter-Thin.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 100,
+    "src": "./fonts/Inter-ThinItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 200,
+    "src": "./fonts/Inter-ExtraLight.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 200,
+    "src": "./fonts/Inter-ExtraLightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 300,
+    "src": "./fonts/Inter-Light.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 300,
+    "src": "./fonts/Inter-LightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/Inter-Regular.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 400,
+    "src": "./fonts/Inter-Italic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 500,
+    "src": "./fonts/Inter-Medium.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 500,
+    "src": "./fonts/Inter-MediumItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 600,
+    "src": "./fonts/Inter-SemiBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 600,
+    "src": "./fonts/Inter-SemiBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 700,
+    "src": "./fonts/Inter-Bold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 700,
+    "src": "./fonts/Inter-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 800,
+    "src": "./fonts/Inter-ExtraBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 800,
+    "src": "./fonts/Inter-ExtraBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Source Serif Pro",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/SourceSerifPro-Regular.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Source Serif Pro",
+    "style": "italic",
+    "weight": 400,
+    "src": "./fonts/SourceSerifPro-Italic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Source Serif Pro",
+    "style": "normal",
+    "weight": 700,
+    "src": "./fonts/SourceSerifPro-Bold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Source Serif Pro",
+    "style": "italic",
+    "weight": 700,
+    "src": "./fonts/SourceSerifPro-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "IBM Plex Mono",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/IBMPlexMono-Regular.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "IBM Plex Mono",
+    "style": "italic",
+    "weight": 400,
+    "src": "./fonts/IBMPlexMono-Italic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "IBM Plex Mono",
+    "style": "normal",
+    "weight": 700,
+    "src": "./fonts/IBMPlexMono-Bold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "IBM Plex Mono",
+    "style": "italic",
+    "weight": 700,
+    "src": "./fonts/IBMPlexMono-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "hand",
+    "family": "Loranthus",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/Loranthus-Regular.ttf",
+    "builtin": true
+  },
+  {
+    "category": "hand",
+    "family": "Loranthus",
+    "style": "normal",
+    "weight": 700,
+    "src": "./fonts/Loranthus-Bold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "hand",
+    "family": "Loranthus",
+    "style": "italic",
+    "weight": 400,
+    "src": "./fonts/Loranthus-Italic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "hand",
+    "family": "Loranthus",
+    "style": "italic",
+    "weight": 700,
+    "src": "./fonts/Loranthus-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "hand",
+    "family": "Jojoba",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/Jojoba.ttf",
+    "builtin": true,
+    "deprecated": true
+  }
+]

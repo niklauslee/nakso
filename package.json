@@ -1,5 +1,7 @@
 {
   "name": "sketchnote",
+  "productName": "Sketchnote",
+  "productId": "Sketchnote.V1",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,6 +12,8 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@dgmjs/core": "^1.4.0",
+    "@dgmjs/react": "^1.4.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
@@ -17,11 +21,15 @@
     "@tauri-apps/plugin-window-state": "^2.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "keycode": "^2.2.1",
     "lucide-react": "^0.544.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "zod": "^4.1.11",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.13",
