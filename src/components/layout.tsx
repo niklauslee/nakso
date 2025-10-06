@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/app-store";
 import { useEffect, useRef } from "react";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   header?: React.ReactNode;
-  sidebarHeader?: React.ReactNode;
   sidebar?: React.ReactNode;
   showSidebar?: boolean;
   onContentResize?: (width: number, height: number) => void;
@@ -12,7 +12,6 @@ interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Layout({
   header,
-  sidebarHeader,
   sidebar,
   showSidebar = false,
   onContentResize,
@@ -35,45 +34,35 @@ export function Layout({
   }, []);
 
   return (
-    <main className="fixed inset-0 select-none" {...others}>
-      <aside
-        className={cn(
-          "z-10 absolute inset-y-0 left-0 w-56 bg-sidebar border-r transition-transform ease-linear duration-200",
-          showSidebar ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <header className="w-full h-12" data-tauri-drag-region>
-          <div className="w-full h-full flex items-center pointer-events-none">
-            {sidebarHeader}
-          </div>
-        </header>
+    <div className="fixed inset-0 select-none" {...others}>
+      <SidebarProvider open={showSidebar}>
         {sidebar}
-      </aside>
-      <section
-        className={cn(
-          "fixed top-0 bottom-0 right-0",
-          showSidebar ? "left-56" : "left-0"
-        )}
-      >
-        <header data-tauri-drag-region className="w-full h-12 border-b">
-          <div
-            className={cn(
-              "h-full flex items-center pointer-events-none",
-              !showSidebar && platform === "darwin" && "pl-20"
-            )}
-          >
-            {header}
-          </div>
-        </header>
-        <article
-          ref={ref}
+        <main
           className={cn(
-            "absolute top-12 bottom-0 inset-x-0 transition-transform ease-linear duration-200 pointer-events-auto"
+            "fixed top-0 bottom-0 right-0 transition-[left] duration-200 ease-in-out",
+            showSidebar ? "left-64" : "left-0"
           )}
         >
-          {children}
-        </article>
-      </section>
-    </main>
+          <header data-tauri-drag-region className="w-full h-12 px-4">
+            <div
+              className={cn(
+                "h-full flex items-center pointer-events-none",
+                !showSidebar && platform === "darwin" && "pl-18"
+              )}
+            >
+              {header}
+            </div>
+          </header>
+          <article
+            ref={ref}
+            className={cn(
+              "absolute top-12 bottom-0 inset-x-0 pointer-events-auto"
+            )}
+          >
+            {children}
+          </article>
+        </main>
+      </SidebarProvider>
+    </div>
   );
 }

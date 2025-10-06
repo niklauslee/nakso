@@ -216,10 +216,10 @@
           "command": "view:show-links"
         },
         {
-          "label": "Show grid",
-          "id": "view.show-grid",
+          "label": "Toggle grid",
+          "id": "view.toggle-grid",
           "type": "checkbox",
-          "command": "view:show-grid"
+          "command": "view:toggle-grid"
         },
         { "type": "separator" },
         {

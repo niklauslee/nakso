@@ -646,7 +646,7 @@ export function registerCommands() {
     }
   );
 
-  app.commands.register("view:show-grid", "Show grid", {}, async () =>
+  app.commands.register("view:toggle-grid", "Toggle grid", {}, async () =>
     useSettingStore.getState().toggleGrid()
   );
 

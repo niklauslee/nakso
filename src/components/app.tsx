@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { useMenuStore } from "@/store/menu-store";
 import { ApplicationMenu } from "./menu/menu";
+import { AppSidebar } from "./sidebar";
 
 declare global {
   interface Window {
@@ -58,47 +59,33 @@ function App() {
     <Layout
       header={
         <div className="flex items-center justify-between w-full text-sm font-medium">
-          <div className="pl-1.5 flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <Button
-              className="p-0 pointer-events-auto"
+              className="size-7 pointer-events-auto"
               variant="ghost"
               size="icon"
               onClick={() =>
                 window.app?.commands.execute("view:toggle-sidebar")
               }
             >
-              <PanelLeftIcon size={16} strokeWidth={1.5} />
+              <PanelLeftIcon size={16} />
             </Button>
             header
           </div>
-          <div className="pr-1.5">
+          <div className="">
             <ApplicationMenu menu={menuStore.menus.main} className="w-36">
               <Button
-                className="pointer-events-auto"
+                className="size-7 pointer-events-auto"
                 variant="ghost"
                 size="icon"
               >
-                <EllipsisVerticalIcon size={16} strokeWidth={1.5} />
+                <EllipsisVerticalIcon size={16} />
               </Button>
             </ApplicationMenu>
           </div>
         </div>
       }
-      sidebarHeader={
-        <div className="w-full flex items-center justify-end pr-1.5">
-          <Button
-            className="pointer-events-auto"
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              console.log("add page");
-            }}
-          >
-            <PlusIcon size={16} strokeWidth={1.5} />
-          </Button>
-        </div>
-      }
-      sidebar={<div className="w-full h-full px-4">sidebar</div>}
+      sidebar={<AppSidebar />}
       showSidebar={showSidebar}
       onContentResize={() => {
         setTimeout(() => window.app?.editor.fit());

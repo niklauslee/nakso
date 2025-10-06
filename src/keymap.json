@@ -48,10 +48,8 @@
 
   "mod-enter": "view:presentation",
   "mod-i": "view:show-insert-shape-dialog",
-  "mod-.": "view:toggle-navigator",
-  "mod-/": "view:toggle-inspector",
-  "mod-l": "view:show-links",
-  "mod-'": "view:show-grid",
+  "mod-b": "view:toggle-sidebar",
+  "mod-'": "view:toggle-grid",
   "mod-=": "view:zoom-in",
   "mod-plus": "view:zoom-in",
   "mod-minus": "view:zoom-out",
