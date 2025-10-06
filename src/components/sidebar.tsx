@@ -12,17 +12,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/app-store";
 import {
   ClockIcon,
+  FolderCheckIcon,
   FolderIcon,
+  FolderPlusIcon,
   PlusIcon,
-  Search,
   SearchIcon,
   StarIcon,
   Trash2Icon,
 } from "lucide-react";
+import { Button } from "./ui/button";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
@@ -30,7 +31,21 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader data-tauri-drag-region className="h-12"></SidebarHeader>
+      <SidebarHeader data-tauri-drag-region className="w-full h-12">
+        <div className="w-full h-full flex items-center justify-between">
+          <div className="flex items-center"></div>
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7"
+              title="New File"
+            >
+              <PlusIcon size={16} />
+            </Button>
+          </div>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -62,10 +77,20 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">
+                    <FolderCheckIcon size={16} />
+                    <span>Draft</span>
+                  </a>
+                </SidebarMenuButton>
+                <SidebarMenuBadge>39</SidebarMenuBadge>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <a href="#">
                     <StarIcon size={16} />
                     <span>Favorites</span>
                   </a>
                 </SidebarMenuButton>
+                <SidebarMenuBadge>22</SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem onClick={() => setView("editor")}>
                 <SidebarMenuButton asChild>
@@ -74,26 +99,19 @@ export function AppSidebar() {
                     <span>Trash</span>
                   </a>
                 </SidebarMenuButton>
+                <SidebarMenuBadge>0</SidebarMenuBadge>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Folders</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Project">
-            <PlusIcon size={16} /> <span className="sr-only">Add Project</span>
+          <SidebarGroupAction title="Add Folder">
+            <FolderPlusIcon size={16} />{" "}
+            <span className="sr-only">Add Folder</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <FolderIcon size={16} />
-                    <span>Draft</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>24</SidebarMenuBadge>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">

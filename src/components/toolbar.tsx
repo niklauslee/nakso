@@ -60,9 +60,9 @@ function ToolItem({
       >
         {children}
       </Toggle>
-      <div className="hidden w-2 h-3 md:flex items-center justify-center absolute right-[1px] bottom-[1px] text-[8px] opacity-40">
+      {/* <div className="hidden w-2 h-3 md:flex items-center justify-center absolute right-[1px] bottom-[1px] text-[8px] opacity-40">
         {keymap}
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -93,13 +93,9 @@ export function Toolbar({}) {
               title="Lock"
             >
               {activeHandlerLock ? (
-                <LockIcon size={14} strokeWidth={1.5} />
+                <LockIcon size={14} />
               ) : (
-                <UnlockIcon
-                  size={14}
-                  strokeWidth={1.5}
-                  className="opacity-50"
-                />
+                <UnlockIcon size={14} className="opacity-50" />
               )}
             </Button>
           )}
@@ -114,7 +110,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <MousePointer2Icon size={16} strokeWidth={1.5} />
+          <MousePointer2Icon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Hand"
@@ -127,7 +123,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <HandIcon size={16} strokeWidth={1.5} />
+          <HandIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Eraser"
@@ -140,7 +136,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <EraserIcon size={16} strokeWidth={1.5} />
+          <EraserIcon size={16} />
         </ToolItem>
         <Separator orientation="vertical" className="dark:bg-gray-700" />
         <ToolItem
@@ -155,7 +151,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <SquareIcon size={16} strokeWidth={1.5} />
+          <SquareIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Ellipse"
@@ -169,7 +165,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <CircleIcon size={16} strokeWidth={1.5} />
+          <CircleIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Text"
@@ -183,7 +179,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <TypeIcon size={16} strokeWidth={1.5} />
+          <TypeIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Image"
@@ -196,7 +192,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <ImageIcon size={16} strokeWidth={1.5} />
+          <ImageIcon size={16} />
         </ToolItem>
         <Separator orientation="vertical" className="dark:bg-gray-700" />
         <ToolItem
@@ -211,7 +207,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <ConnectorIcon size={16} strokeWidth={1.5} />
+          <ConnectorIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Line"
@@ -225,7 +221,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <LineIcon size={16} strokeWidth={1.5} />
+          <LineIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Freehand"
@@ -238,7 +234,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <PencilIcon size={16} strokeWidth={1.5} />
+          <PencilIcon size={16} />
         </ToolItem>
         <ToolItem
           handlerId="Highlighter"
@@ -251,7 +247,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <HighlighterIcon size={16} strokeWidth={1.5} />
+          <HighlighterIcon size={16} />
         </ToolItem>
         {/* <Separator orientation="vertical" className="dark:bg-gray-700" />
         <ToolItem
@@ -265,7 +261,7 @@ export function Toolbar({}) {
             window.app.editor.focus();
           }}
         >
-          <FrameIcon size={16} strokeWidth={1.5} />
+          <FrameIcon size={16}  />
         </ToolItem> */}
       </div>
     </div>
