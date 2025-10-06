@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Header } from "./header";
+import { Header } from "../header";
 
 interface SearchViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 

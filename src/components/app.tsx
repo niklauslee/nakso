@@ -1,16 +1,16 @@
 // import { invoke } from "@tauri-apps/api/core";
 import "../globals.css";
-import { Layout } from "./layout";
 import { AppContext } from "@/app-context";
 import { apiContext } from "@/api";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
-import { AppSidebar } from "./sidebar";
-import { EditorView } from "./editor-view";
-import { SearchView } from "./search-view";
 import { cn } from "@/lib/utils";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "./sidebar";
+import { EditorView } from "./views/editor-view";
+import { SearchView } from "./views/search-view";
 
 declare global {
   interface Window {
@@ -51,19 +51,18 @@ function App() {
   };
 
   return (
-    <Layout
-      sidebar={<AppSidebar />}
-      showSidebar={showSidebar}
-      onContentResize={() => {
-        setTimeout(() => window.app?.editor.fit());
-      }}
-    >
-      <EditorView
-        onMount={handleAppReady}
-        className={cn(view !== "editor" && "hidden")}
-      />
-      <SearchView className={cn(view !== "search" && "hidden")} />
-    </Layout>
+    <div className="fixed inset-0 select-none">
+      <SidebarProvider open={showSidebar}>
+        <AppSidebar />
+        <SidebarInset>
+          <EditorView
+            onMount={handleAppReady}
+            className={cn(view !== "editor" && "hidden")}
+          />
+          <SearchView className={cn(view !== "search" && "hidden")} />
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
   );
 }
 

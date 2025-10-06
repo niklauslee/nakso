@@ -29,7 +29,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="h-12"></SidebarHeader>
+      <SidebarHeader data-tauri-drag-region className="h-12"></SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
