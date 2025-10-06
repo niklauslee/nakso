@@ -2,9 +2,7 @@ import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/app-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
-import { EllipsisVerticalIcon, PanelLeftIcon } from "lucide-react";
-import { ApplicationMenu } from "./menu/menu";
-import { useMenuStore } from "@/store/menu-store";
+import { PanelLeftIcon } from "lucide-react";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
@@ -13,7 +11,6 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Header({ children, rightArea, ...others }: HeaderProps) {
   const platform = useAppStore((state) => state.platform);
   const showSidebar = useSettingStore((state) => state.showSidebar);
-  const menus = useMenuStore((state) => state.menus);
 
   return (
     <header
