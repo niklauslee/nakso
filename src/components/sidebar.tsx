@@ -12,6 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import { useAppStore } from "@/store/app-store";
 import {
   ClockIcon,
   FolderIcon,
@@ -22,6 +24,9 @@ import {
 } from "lucide-react";
 
 export function AppSidebar() {
+  const view = useAppStore((state) => state.view);
+  const setView = useAppStore((state) => state.setView);
+
   return (
     <Sidebar>
       <SidebarHeader className="h-12"></SidebarHeader>
@@ -30,7 +35,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  className={cn(view === "search" && "bg-sidebar-border")}
+                  asChild
+                  onClick={() => setView("search")}
+                >
                   <a href="#">
                     <SearchIcon size={16} />
                     <span>Search</span>
@@ -38,7 +47,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild onClick={() => setView("search")}>
                   <a href="#">
                     <ClockIcon size={16} />
                     <span>Recents</span>
@@ -53,7 +62,7 @@ export function AppSidebar() {
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
+              <SidebarMenuItem onClick={() => setView("editor")}>
                 <SidebarMenuButton asChild>
                   <a href="#">
                     <Trash2Icon size={16} />
