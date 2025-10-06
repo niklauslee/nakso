@@ -26,14 +26,12 @@ export const useEditingStore = create<EditingState>()(
       activeHandler: null,
       activeHandlerLock: false,
       dragging: false,
-      setScale: (scale) => set((state) => ({ scale })),
-      setOrigin: (origin) => set((state) => ({ origin })),
-      setSelection: (selections) => set((state) => ({ selection: selections })),
-      setActiveHandler: (handlerId) =>
-        set((state) => ({ activeHandler: handlerId })),
-      setActiveHandlerLock: (lock) =>
-        set((state) => ({ activeHandlerLock: lock })),
-      setDragging: (dragging) => set((state) => ({ dragging })),
+      setScale: (scale) => set({ scale }),
+      setOrigin: (origin) => set({ origin }),
+      setSelection: (selections) => set({ selection: selections }),
+      setActiveHandler: (handlerId) => set({ activeHandler: handlerId }),
+      setActiveHandlerLock: (lock) => set({ activeHandlerLock: lock }),
+      setDragging: (dragging) => set({ dragging }),
     }),
     { name: "EditingStore" }
   )

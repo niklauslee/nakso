@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type ViewType = "editor" | "search" | "settings";
+type ViewType = "editor" | "search" | "recents" | "settings";
 
 export interface AppState {
   appReady: boolean;

@@ -9,6 +9,11 @@
     "core:window:default",
     "core:window:allow-start-dragging",
     "os:default",
-    "process:allow-exit"
+    "process:allow-exit",
+    "fs:default",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "**/*" }]
+    }
   ]
 }

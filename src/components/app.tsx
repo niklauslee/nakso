@@ -59,7 +59,7 @@ function App() {
             onMount={handleAppReady}
             className={cn(view !== "editor" && "hidden")}
           />
-          <SearchView className={cn(view !== "search" && "hidden")} />
+          <SearchView className={cn(view !== "recents" && "hidden")} />
         </SidebarInset>
       </SidebarProvider>
     </div>

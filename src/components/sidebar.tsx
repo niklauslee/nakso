@@ -18,6 +18,7 @@ import {
   ClockIcon,
   FolderIcon,
   PlusIcon,
+  Search,
   SearchIcon,
   StarIcon,
   Trash2Icon,
@@ -36,7 +37,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className={cn(view === "search" && "bg-sidebar-border")}
+                  isActive={view === "search"}
                   asChild
                   onClick={() => setView("search")}
                 >
@@ -47,7 +48,11 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild onClick={() => setView("search")}>
+                <SidebarMenuButton
+                  isActive={view === "recents"}
+                  asChild
+                  onClick={() => setView("recents")}
+                >
                   <a href="#">
                     <ClockIcon size={16} />
                     <span>Recents</span>
