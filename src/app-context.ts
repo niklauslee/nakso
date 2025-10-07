@@ -11,6 +11,7 @@ import menuJson from "./menu.json";
 import keymapJson from "./keymap.json";
 import { toast } from "sonner";
 import { MenuItemState, useMenuStore } from "@/store/menu-store";
+import { useWorkspaceStore } from "./store/workspace-store";
 
 export class AppContext {
   productName: string;
@@ -43,6 +44,7 @@ export class AppContext {
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
+    this.loadWorkspace();
     registerCommands();
   }
 
@@ -134,6 +136,14 @@ export class AppContext {
         );
     } catch (err) {
       console.error("Failed to load menus", err);
+    }
+  }
+
+  loadWorkspace() {
+    try {
+      useWorkspaceStore.getState().initialize();
+    } catch (err) {
+      console.error("Failed to load workspace", err);
     }
   }
 

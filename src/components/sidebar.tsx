@@ -24,10 +24,12 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { useWorkspaceStore } from "@/store/workspace-store";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
   const setView = useAppStore((state) => state.setView);
+  const folders = useWorkspaceStore((state) => state.folders);
 
   return (
     <Sidebar>
@@ -77,15 +79,6 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">
-                    <FolderCheckIcon size={16} />
-                    <span>Draft</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>39</SidebarMenuBadge>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
                     <StarIcon size={16} />
                     <span>Favorites</span>
                   </a>
@@ -112,33 +105,21 @@ export function AppSidebar() {
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <FolderIcon size={16} />
-                    <span>Frame0</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>4</SidebarMenuBadge>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <FolderIcon size={16} />
-                    <span>StarUML</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>17</SidebarMenuBadge>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <FolderIcon size={16} />
-                    <span>Social</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>105</SidebarMenuBadge>
-              </SidebarMenuItem>
+              {folders.map((folder) => (
+                <SidebarMenuItem key={folder.name}>
+                  <SidebarMenuButton asChild>
+                    <a href="#">
+                      {folder.name === "Draft" ? (
+                        <FolderCheckIcon size={16} />
+                      ) : (
+                        <FolderIcon size={16} />
+                      )}
+                      <span>{folder.name}</span>
+                    </a>
+                  </SidebarMenuButton>
+                  <SidebarMenuBadge>0</SidebarMenuBadge>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

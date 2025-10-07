@@ -20,7 +20,14 @@ export function SearchView({ ...others }: SearchViewProps) {
         )}
       >
         <div className="flex flex-wrap gap-4 w-fit mx-auto">
-          <Button onClick={update}>Update</Button>
+          <Button
+            onClick={async () => {
+              await window.api.workspace.ensureWorkspace();
+              update();
+            }}
+          >
+            Update
+          </Button>
           <div>
             {folders.map((folder) => (
               <div key={folder.name}>{folder.name}</div>

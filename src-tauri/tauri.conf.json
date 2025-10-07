@@ -20,12 +20,16 @@
         "title": "",
         "width": 800,
         "height": 600,
-        "resizable": true,
-        "transparent": true
+        "resizable": true
       }
     ],
     "security": {
       "csp": null
+    }
+  },
+  "plugins": {
+    "fs": {
+      "requireLiteralLeadingDot": false
     }
   },
   "bundle": {
