@@ -18,13 +18,16 @@ interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function FolderView({ ...others }: FolderViewProps) {
   const currentFolder = useWorkspaceStore((state) => state.currentFolder);
+  const [fetched, setFetched] = useState(false);
   const [files, setFiles] = useState<FileEntry[]>([]);
 
   const fetchFiles = async () => {
     const workspace = window.api.workspace;
     if (currentFolder) {
+      setFetched(false);
       const fetchedFiles = await workspace.getFiles(currentFolder.fullPath);
       setFiles(fetchedFiles);
+      setFetched(true);
     }
   };
 
@@ -42,20 +45,20 @@ export function FolderView({ ...others }: FolderViewProps) {
           "absolute top-12 bottom-0 inset-x-0 pointer-events-auto px-6 py-2"
         )}
       >
-        {files.length > 0 && (
+        {fetched && files.length > 0 && (
           <div className="flex flex-wrap justify-start gap-6 w-full">
             {files.map((file) => (
               <Card key={file.fullPath} file={file} />
             ))}
           </div>
         )}
-        {files.length === 0 && (
+        {fetched && files.length === 0 && (
           <Empty className="w-full h-full">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <FolderIcon />
               </EmptyMedia>
-              <EmptyTitle>No Files Yet</EmptyTitle>
+              <EmptyTitle>Empty Folder</EmptyTitle>
               <EmptyDescription>
                 You haven&apos;t created any files yet. Get started by creating
                 your first file.
