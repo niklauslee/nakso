@@ -4,6 +4,13 @@ import { join, documentDir } from "@tauri-apps/api/path";
 const WORKSPACE_NAME = "Nakso";
 const CONFIG_DIR_NAME = ".nakso";
 const DRAFT_DIR_NAME = "Draft";
+const EXT_NAME = ".nakso";
+
+export type FileEntry = {
+  isDirectory: boolean;
+  fullPath: string;
+  name: string;
+};
 
 /*
 ~/Documents/Nakso
@@ -17,7 +24,7 @@ const DRAFT_DIR_NAME = "Draft";
   /folder2
 */
 
-async function ensureDir(path: string) {
+async function ensureDir(path: string): Promise<string> {
   const existsDir = await exists(path);
   if (!existsDir) {
     await mkdir(path, { recursive: true });
@@ -25,13 +32,13 @@ async function ensureDir(path: string) {
   return path;
 }
 
-async function getWorkspaceDir() {
+async function getWorkspaceDir(): Promise<string> {
   const docDir = await documentDir();
   const dir = await join(docDir, WORKSPACE_NAME);
   return dir;
 }
 
-async function ensureWorkspace() {
+async function ensureWorkspace(): Promise<string> {
   const dir = await getWorkspaceDir();
   await ensureDir(dir);
   const draft = await join(dir, DRAFT_DIR_NAME);
@@ -41,19 +48,28 @@ async function ensureWorkspace() {
   return dir;
 }
 
-async function getFolders() {
+async function getFolders(): Promise<FileEntry[]> {
   const dir = await ensureWorkspace();
   const files = await readDir(dir);
-  const dirs = files.filter(
-    (file) => file.isDirectory && !file.name.startsWith(".")
-  );
-  // sort dirs by name, but put Draft folder first
-  const sorted = dirs.sort((a, b) => a.name.localeCompare(b.name));
+  // map to FileEntry
+  const fileEntries = [];
+  for (const f of files) {
+    if (f.isDirectory && !f.name.startsWith(".")) {
+      fileEntries.push({
+        isDirectory: true,
+        fullPath: await join(dir, f.name),
+        name: f.name,
+      });
+    }
+  }
+  // sort by name, but put Draft folder first
+  const sorted = fileEntries.sort((a, b) => a.name.localeCompare(b.name));
   const draftIndex = sorted.findIndex((d) => d.name === DRAFT_DIR_NAME);
   if (draftIndex > 0) {
     const [draft] = sorted.splice(draftIndex, 1);
     sorted.unshift(draft);
   }
+  console.log("getFolders", sorted);
   return sorted;
 }
 
@@ -65,8 +81,20 @@ function getFavoriteFiles() {
   return [];
 }
 
-function getFiles(path: string) {
-  return [];
+async function getFiles(path: string): Promise<FileEntry[]> {
+  const files = await readDir(path);
+  const fileEntries = [];
+  for (const f of files) {
+    if (!f.isDirectory && f.name.endsWith(EXT_NAME)) {
+      fileEntries.push({
+        isDirectory: f.isDirectory,
+        fullPath: await join(path, f.name),
+        name: f.name,
+      });
+    }
+  }
+  console.log("getFiles", path, fileEntries);
+  return fileEntries;
 }
 
 export const workspace = {

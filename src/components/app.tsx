@@ -5,12 +5,12 @@ import { apiContext } from "@/api";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { EditorView } from "./views/editor-view";
-import { SearchView } from "./views/search-view";
+import { FolderView } from "./views/folder-view";
 
 declare global {
   interface Window {
@@ -59,7 +59,7 @@ function App() {
             onMount={handleAppReady}
             className={cn(view !== "editor" && "hidden")}
           />
-          <SearchView className={cn(view !== "recents" && "hidden")} />
+          <FolderView className={cn(view !== "folder" && "hidden")} />
         </SidebarInset>
       </SidebarProvider>
     </div>

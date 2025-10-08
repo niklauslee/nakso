@@ -30,6 +30,8 @@ export function AppSidebar() {
   const view = useAppStore((state) => state.view);
   const setView = useAppStore((state) => state.setView);
   const folders = useWorkspaceStore((state) => state.folders);
+  const currentFolder = useWorkspaceStore((state) => state.currentFolder);
+  const setCurrentFolder = useWorkspaceStore((state) => state.setCurrentFolder);
 
   return (
     <Sidebar>
@@ -107,7 +109,14 @@ export function AppSidebar() {
             <SidebarMenu>
               {folders.map((folder) => (
                 <SidebarMenuItem key={folder.name}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    isActive={folder.fullPath === currentFolder?.fullPath}
+                    onClick={() => {
+                      setCurrentFolder(folder);
+                      setView("folder");
+                    }}
+                    asChild
+                  >
                     <a href="#">
                       {folder.name === "Draft" ? (
                         <FolderCheckIcon size={16} />

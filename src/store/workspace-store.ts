@@ -1,19 +1,22 @@
+import { FileEntry } from "@/api/workspace";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 export interface WorkspaceState {
   path: string;
-  recents: any[];
-  favorites: any[];
-  folders: any[];
+  currentFolder: FileEntry | null;
+  recents: FileEntry[];
+  favorites: FileEntry[];
+  folders: FileEntry[];
   initialize(): Promise<void>;
-  update(): Promise<void>;
+  setCurrentFolder(folder: FileEntry | null): void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
   devtools(
     (set) => ({
       path: "",
+      currentFolder: null,
       recents: [],
       favorites: [],
       folders: [],
@@ -23,10 +26,8 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         const folders = await workspace.getFolders();
         set({ path, folders });
       },
-      update: async () => {
-        const workspace = window.api.workspace;
-        const folders = await workspace.getFolders();
-        set({ folders });
+      setCurrentFolder: (folder: FileEntry | null) => {
+        set({ currentFolder: folder });
       },
     }),
     { name: "WorkspaceStore" }
