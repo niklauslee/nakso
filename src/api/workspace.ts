@@ -69,7 +69,6 @@ async function getFolders(): Promise<FileEntry[]> {
     const [draft] = sorted.splice(draftIndex, 1);
     sorted.unshift(draft);
   }
-  console.log("getFolders", sorted);
   return sorted;
 }
 
@@ -93,7 +92,6 @@ async function getFiles(path: string): Promise<FileEntry[]> {
       });
     }
   }
-  console.log("getFiles", path, fileEntries);
   return fileEntries;
 }
 

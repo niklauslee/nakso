@@ -1,17 +1,23 @@
 import { useEffect, useRef } from "react";
-import { Editor as EditorType, Shape } from "@dgmjs/core";
+import {
+  Editor as EditorType,
+  FillStyle,
+  Shape,
+  ShapeProps,
+} from "@dgmjs/core";
 import { cn } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
 import { useMenuStore } from "@/store/menu-store";
 import { Header } from "../header";
-import { Toolbar } from "../toolbar";
-import { Palette } from "../palette";
+import { Toolbar } from "./toolbar";
+import { Palette } from "./palette";
 import { ApplicationMenu } from "../menu/menu";
 import { EllipsisVerticalIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditingStore } from "@/store/editing-store";
+import { HelpTool } from "./help-tool";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -22,6 +28,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
   const showGrid = useSettingStore((state) => state.showGrid);
+  const selection = useEditingStore((state) => state.selection);
   const setSelection = useEditingStore((state) => state.setSelection);
   const setActiveHandler = useEditingStore((state) => state.setActiveHandler);
 
@@ -41,6 +48,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     try {
       shape.fontFamily = "Loranthus";
       shape.fontSize = 16;
+      shape.roughness = 1;
+      shape.fillStyle = FillStyle.HACHURE;
+      shape.strokeWidth = 2;
     } catch (error) {
       console.error("Error handling shape initialization:", error);
     }
@@ -75,6 +85,23 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       setSelection([...shapes]);
       window.app.updateUIState();
     }, 0);
+  };
+
+  const handlePropsChange = (props: ShapeProps) => {
+    try {
+      const app = window.app;
+      // if (isShapeTool) {
+      //   styleStore.setStyleProps(activeHandler!, props);
+      // } else {
+      const shapes = app.editor.selection.getShapes();
+      // const shapeType = merge(shapes.map((shape) => shape.type));
+      app.editor.actions.update(props);
+      // styleStore.setStyleProps(shapeType!, props);
+      setSelection([...shapes]);
+      // }
+    } catch (error) {
+      console.error("Error handling props change:", error);
+    }
   };
 
   return (
@@ -131,8 +158,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
             />
           </div>
         </ApplicationContextMenu>
+        <Palette selection={selection} onChange={handlePropsChange} />
         <Toolbar />
-        <Palette />
+        <HelpTool />
       </article>
     </div>
   );

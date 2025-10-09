@@ -8,14 +8,22 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
 }
 
-export function Header({ children, rightArea, ...others }: HeaderProps) {
+export function Header({
+  children,
+  className,
+  rightArea,
+  ...others
+}: HeaderProps) {
   const platform = useAppStore((state) => state.platform);
   const showSidebar = useSettingStore((state) => state.showSidebar);
 
   return (
     <header
       data-tauri-drag-region
-      className="flex items-center justify-between w-full h-12 px-4"
+      className={cn(
+        "flex items-center justify-between w-full h-12 px-4",
+        className
+      )}
       {...others}
     >
       <div

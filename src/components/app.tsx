@@ -5,11 +5,11 @@ import { apiContext } from "@/api";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
-import { EditorView } from "./views/editor-view";
+import { EditorView } from "./editor/editor-view";
 import { FolderView } from "./views/folder-view";
 
 declare global {

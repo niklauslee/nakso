@@ -330,88 +330,6 @@
       "command": "view:fit-to-screen"
     }
   ],
-  "table": [
-    {
-      "label": "Align columns",
-      "id": "table.align-columns",
-      "command": "table:align-columns"
-    },
-    { "type": "separator" },
-    {
-      "label": "Duplicate column",
-      "id": "table.duplicate-column",
-      "command": "table:duplicate-column"
-    },
-    {
-      "label": "Duplicate row",
-      "id": "table.duplicate-row",
-      "command": "table:duplicate-row"
-    },
-    { "type": "separator" },
-    {
-      "label": "Insert column left",
-      "id": "table.insert-column-left",
-      "command": "table:insert-column-left"
-    },
-    {
-      "label": "Insert column right",
-      "id": "table.insert-column-right",
-      "command": "table:insert-column-right"
-    },
-    {
-      "label": "Insert row above",
-      "id": "table.insert-row-above",
-      "command": "table:insert-row-above"
-    },
-    {
-      "label": "Insert row below",
-      "id": "table.insert-row-below",
-      "command": "table:insert-row-below"
-    },
-    { "type": "separator" },
-    {
-      "label": "Move column left",
-      "id": "table.move-column-left",
-      "command": "table:move-column-left"
-    },
-    {
-      "label": "Move column right",
-      "id": "table.move-column-right",
-      "command": "table:move-column-right"
-    },
-    {
-      "label": "Move row up",
-      "id": "table.move-row-up",
-      "command": "table:move-row-up"
-    },
-    {
-      "label": "Move row down",
-      "id": "table.move-row-down",
-      "command": "table:move-row-down"
-    },
-    { "type": "separator" },
-    {
-      "label": "Select column",
-      "id": "table.select-column",
-      "command": "table:select-column"
-    },
-    {
-      "label": "Select row",
-      "id": "table.select-row",
-      "command": "table:select-row"
-    },
-    { "type": "separator" },
-    {
-      "label": "Delete column",
-      "id": "table.delete-column",
-      "command": "table:delete-column"
-    },
-    {
-      "label": "Delete row",
-      "id": "table.delete-row",
-      "command": "table:delete-row"
-    }
-  ],
   "context": [
     {
       "label": "Copy",
@@ -489,6 +407,42 @@
       "id": "shape.container",
       "type": "checkbox",
       "command": "shape:toggle-container"
+    }
+  ],
+  "help": [
+    {
+      "label": "About...",
+      "id": "help.about",
+      "command": "help:about"
+    },
+    {
+      "label": "License activation...",
+      "id": "help.license-activation",
+      "command": "help:license-activation"
+    },
+    { "type": "separator" },
+    {
+      "label": "Homepage",
+      "id": "help.homepage",
+      "command": "help:homepage",
+      "external": true
+    },
+    {
+      "label": "Documentation",
+      "id": "help.documentation",
+      "command": "help:documentation",
+      "external": true
+    },
+    {
+      "label": "Keyboard shortcuts",
+      "id": "help.keyboard-shortcuts",
+      "command": "help:keyboard-shortcuts"
+    },
+    { "type": "separator" },
+    {
+      "label": "Toggle developer tools",
+      "id": "view.toggle-dev-tools",
+      "command": "help:toggle-dev-tools"
     }
   ]
 }
