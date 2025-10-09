@@ -49,7 +49,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       shape.fontFamily = "Loranthus";
       shape.fontSize = 20;
       shape.roughness = 1;
-      shape.fillStyle = FillStyle.HACHURE;
+      shape.fillStyle = FillStyle.SOLID;
       shape.strokeWidth = 2;
     } catch (error) {
       console.error("Error handling shape initialization:", error);

@@ -31,7 +31,6 @@
   "shift-left": "shape:move-left",
   "shift-right": "shape:move-right",
   "mod-shift-l": "shape:toggle-lock",
-  "mod-shift-h": "shape:toggle-hide",
   "mod-shift-t": "shape:toggle-container",
 
   "v": "tool:select",

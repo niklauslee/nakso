@@ -302,19 +302,6 @@ export function registerCommands() {
   );
 
   app.commands.register(
-    "shape:toggle-hide",
-    "Toggle hide of selected shapes",
-    {},
-    async () => {
-      const app = window.app;
-      const editor = app.editor;
-      const selection = editor.selection.getShapes();
-      const visible = selection.every((s) => s.visible);
-      editor.actions.update({ visible: !visible }, selection);
-    }
-  );
-
-  app.commands.register(
     "shape:toggle-container",
     "Toggle container of selected shapes",
     {},

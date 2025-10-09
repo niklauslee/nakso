@@ -135,12 +135,6 @@
           "command": "shape:toggle-lock"
         },
         {
-          "label": "Hide",
-          "id": "shape.hide",
-          "type": "checkbox",
-          "command": "shape:toggle-hide"
-        },
-        {
           "label": "Container",
           "id": "shape.container",
           "type": "checkbox",
@@ -395,12 +389,6 @@
       "id": "shape.lock",
       "type": "checkbox",
       "command": "shape:toggle-lock"
-    },
-    {
-      "label": "Hide",
-      "id": "shape.hide",
-      "type": "checkbox",
-      "command": "shape:toggle-hide"
     },
     {
       "label": "Container",
