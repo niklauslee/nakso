@@ -47,7 +47,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const handleShapeInitialize = (shape: Shape) => {
     try {
       shape.fontFamily = "Loranthus";
-      shape.fontSize = 16;
+      shape.fontSize = 20;
       shape.roughness = 1;
       shape.fillStyle = FillStyle.HACHURE;
       shape.strokeWidth = 2;
@@ -81,6 +81,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   };
 
   const handleSelectionChange = (shapes: Shape[]) => {
+    console.log("Selection changed:", shapes);
     setTimeout(() => {
       setSelection([...shapes]);
       window.app.updateUIState();

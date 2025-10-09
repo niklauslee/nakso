@@ -20,8 +20,11 @@ export function ColorIcon({
     : value;
   return (
     <div
-      className={cn("rounded-sm w-4 h-4", className)}
-      style={{ backgroundColor: c }}
+      className={cn("rounded-sm w-4 h-4", border && "border-2", className)}
+      style={{
+        ...(!border && { backgroundColor: c }),
+        ...(border && { borderColor: c }),
+      }}
     ></div>
   );
 }
