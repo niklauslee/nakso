@@ -416,12 +416,6 @@
       "command": "help:about"
     },
     {
-      "label": "License activation...",
-      "id": "help.license-activation",
-      "command": "help:license-activation"
-    },
-    { "type": "separator" },
-    {
       "label": "Homepage",
       "id": "help.homepage",
       "command": "help:homepage",

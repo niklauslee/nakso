@@ -59,18 +59,13 @@ export function Palette({ selection, onChange }: PaletteProps) {
     <div className="absolute right-4 top-2 flex flex-col gap-2 w-40 bg-background dark:bg-neutral-900 border shadow-lg/5 rounded-lg p-2 pointer-events-auto">
       <FillColorTool selection={selection} onChange={onChange} />
       <FillStyleTool selection={selection} onChange={onChange} />
-
       <Separator className="opacity-50" />
-
       <StrokeColorTool selection={selection} onChange={onChange} />
       <StrokeWidthTool selection={selection} onChange={onChange} />
       <StrokePatternTool selection={selection} onChange={onChange} />
-
       <Separator className="opacity-50" />
-
       <FontSizeTool selection={selection} onChange={onChange} />
       <TextAlignTool selection={selection} onChange={onChange} />
-
       <Separator className="opacity-50" />
 
       <div className="flex items-center gap-1">
@@ -270,21 +265,12 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        pressed={strokeWidth === 1}
-        onPressedChange={() => {
-          onChange?.({ strokeWidth: 1 });
-        }}
-      >
-        <MinusIcon size={16} strokeWidth={1.5} />
-      </Toggle>
-      <Toggle
-        size="sm"
         pressed={strokeWidth === 2}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 2 });
         }}
       >
-        <MinusIcon size={16} strokeWidth={2.5} />
+        <MinusIcon size={16} strokeWidth={2} />
       </Toggle>
       <Toggle
         size="sm"
@@ -293,7 +279,16 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
           onChange?.({ strokeWidth: 4 });
         }}
       >
-        <MinusIcon size={16} strokeWidth={4} />
+        <MinusIcon size={16} strokeWidth={3.5} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={strokeWidth === 6}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 6 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={6} />
       </Toggle>
     </div>
   );

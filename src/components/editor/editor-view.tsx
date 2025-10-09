@@ -17,7 +17,7 @@ import { EllipsisVerticalIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditingStore } from "@/store/editing-store";
-import { HelpTool } from "./help-tool";
+import { HelpButton } from "./help-button";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -161,7 +161,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
         </ApplicationContextMenu>
         <Palette selection={selection} onChange={handlePropsChange} />
         <Toolbar />
-        <HelpTool />
+        <HelpButton />
       </article>
     </div>
   );

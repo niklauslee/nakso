@@ -15,16 +15,16 @@ import { useMenuStore } from "../../store/menu-store";
 import { ApplicationMenu } from "@/components/menu/menu";
 import { Button } from "@/components/ui/button";
 
-export function HelpTool() {
+export function HelpButton() {
   const helpMenu = useMenuStore((state) => state.menus.help);
 
   return (
-    <div className="fixed right-4 bottom-4 z-10 flex justify-center gap-2">
+    <div className="fixed right-4 bottom-5 z-10 flex justify-center gap-2">
       <ApplicationMenu menu={helpMenu} align="end">
         <Button
-          variant="ghost"
+          variant="outline"
           title="Help"
-          className="text-sm h-8 w-8 bg-accent rounded-full shadow-md"
+          className="text-sm h-8 w-8 rounded-full shadow-lg/5"
         >
           ?
         </Button>
