@@ -2,8 +2,6 @@
   "mod-n": "file:new",
   "mod-o": "file:open",
   "mod-s": "file:save",
-  "mod-shift-s": "file:save-as",
-  "mod-e": "view:show-export-image-dialog",
   "mod-q": "file:quit",
 
   "mod-z": "edit:undo",
@@ -45,8 +43,6 @@
   "f": "tool:freehand",
   "g": "tool:highlighter",
 
-  "mod-enter": "view:presentation",
-  "mod-i": "view:show-insert-shape-dialog",
   "mod-b": "view:toggle-sidebar",
   "mod-'": "view:toggle-grid",
   "mod-=": "view:zoom-in",
