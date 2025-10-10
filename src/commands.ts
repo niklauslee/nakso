@@ -16,6 +16,9 @@ import { Shape } from "@dgmjs/core";
 import { z } from "zod";
 import { ZOOMS } from "./const";
 import { useEditingStore } from "./store/editing-store";
+import { useDocStore } from "./store/doc-store";
+import { toast } from "sonner";
+import { useAppStore } from "./store/app-store";
 
 /**
  * Find the shapes by the given id array.
@@ -39,6 +42,55 @@ export function registerCommands() {
   const app = window.app;
 
   // file commands -------------------------------------------------------------
+
+  app.commands.register("file:new", "Open a new file", {}, async () => {
+    // await window.api.window.create();
+  });
+
+  app.commands.register(
+    "file:open",
+    "Open a file.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      const workspace = window.api.workspace;
+      const app = window.app;
+      try {
+        const data = await workspace.readFile(filePath);
+        const json = JSON.parse(data);
+        app.editor.loadFromJSON(json);
+        useDocStore.getState().setFilePath(filePath);
+        useDocStore.getState().setModified(false);
+        useDocStore.getState().setDoc(app.editor.getDoc());
+        useAppStore.getState().setView("editor");
+      } catch (err) {
+        toast.error("Failed to open file: " + filePath);
+        console.error("Failed to open file: " + filePath, err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:save",
+    "Save the working file",
+    {
+      allowSaveAs: z.boolean().optional().default(true),
+    },
+    async ({ allowSaveAs }) => {
+      // const app = window.app;
+      // const api = window.api;
+      // const filePath = useDocStore.getState().filePath;
+      // if (filePath) {
+      //   const app = window.app;
+      //   const content = JSON.stringify(app.editor.store.toJSON());
+      //   await api.fs.write(filePath, content);
+      //   useDocStore.getState().setModified(false);
+      // } else if (allowSaveAs) {
+      //   await app.commands.execute("file:save-as");
+      // }
+    }
+  );
 
   app.commands.register("file:quit", "Quit the application", {}, async () => {
     setTimeout(() => {

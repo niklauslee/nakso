@@ -1,4 +1,10 @@
-import { readDir, exists, mkdir, readTextFile } from "@tauri-apps/plugin-fs";
+import {
+  readDir,
+  exists,
+  mkdir,
+  readTextFile,
+  stat,
+} from "@tauri-apps/plugin-fs";
 import { join, documentDir } from "@tauri-apps/api/path";
 
 const WORKSPACE_NAME = "Nakso";
@@ -10,6 +16,12 @@ export type FileEntry = {
   isDirectory: boolean;
   fullPath: string;
   name: string;
+  size: number;
+  mode: number;
+  atime: Date | null;
+  mtime: Date | null;
+  birthtime: Date | null;
+  readonly: boolean;
 };
 
 /*
@@ -55,10 +67,18 @@ async function getFolders(): Promise<FileEntry[]> {
   const fileEntries = [];
   for (const f of files) {
     if (f.isDirectory && !f.name.startsWith(".")) {
+      const fullPath = await join(dir, f.name);
+      const info = await stat(fullPath);
       fileEntries.push({
         isDirectory: true,
-        fullPath: await join(dir, f.name),
+        fullPath,
         name: f.name,
+        mode: info.mode ?? 0,
+        size: info.size,
+        atime: info.atime,
+        mtime: info.mtime,
+        birthtime: info.birthtime,
+        readonly: info.readonly,
       });
     }
   }
@@ -85,10 +105,18 @@ async function getFiles(path: string): Promise<FileEntry[]> {
   const fileEntries = [];
   for (const f of files) {
     if (!f.isDirectory && f.name.endsWith(EXT_NAME)) {
+      const fullPath = await join(path, f.name);
+      const info = await stat(fullPath);
       fileEntries.push({
         isDirectory: f.isDirectory,
-        fullPath: await join(path, f.name),
+        fullPath,
         name: f.name,
+        mode: info.mode ?? 0,
+        size: info.size,
+        atime: info.atime,
+        mtime: info.mtime,
+        birthtime: info.birthtime,
+        readonly: info.readonly,
       });
     }
   }

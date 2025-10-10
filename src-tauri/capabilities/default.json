@@ -11,6 +11,7 @@
     "os:default",
     "process:allow-exit",
     "fs:default",
+    "fs:allow-app-meta",
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "**/*" }]

@@ -40,9 +40,17 @@ export function FileCard({ file, className }: FileCardProps) {
     fetchFile();
   }, [file.fullPath]);
 
+  const handleDoubleClick = () => {
+    console.log("double click", file.fullPath);
+    window.app.commands.execute("file:open", { filePath: file.fullPath });
+  };
+
   return (
     <div className="w-48 h-fit rounded-xl">
-      <div className="w-48 h-40 flex items-center justify-center border rounded-xl">
+      <div
+        className="w-48 h-40 flex items-center justify-center border rounded-xl"
+        onDoubleClick={handleDoubleClick}
+      >
         {page && (
           <DGMPageView
             ref={pageViewRef}

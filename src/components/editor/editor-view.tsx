@@ -17,6 +17,7 @@ import { EllipsisVerticalIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditingStore } from "@/store/editing-store";
+import { useDocStore } from "@/store/doc-store";
 import { HelpButton } from "./help-button";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,6 +32,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const selection = useEditingStore((state) => state.selection);
   const setSelection = useEditingStore((state) => state.setSelection);
   const setActiveHandler = useEditingStore((state) => state.setActiveHandler);
+  const setModified = useDocStore((state) => state.setModified);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -57,6 +59,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   };
 
   const handleAction = () => {
+    setModified(true);
     setTimeout(() => window.app.updateUIState(), 0);
   };
 

@@ -72,7 +72,7 @@ interface PaletteProps {
 
 export function Palette({ selection, onChange }: PaletteProps) {
   return (
-    <div className="absolute right-4 top-2 flex flex-col gap-2 w-40 bg-background dark:bg-neutral-900 border shadow-lg/5 rounded-lg p-2 pointer-events-auto">
+    <div className="absolute right-4 top-4 flex flex-col gap-2 w-40 bg-background dark:bg-neutral-900 border shadow-lg/5 rounded-lg p-2 pointer-events-auto">
       <FillColorTool selection={selection} onChange={onChange} />
       <FillStyleTool selection={selection} onChange={onChange} />
       <OpacityTool selection={selection} onChange={onChange} />
