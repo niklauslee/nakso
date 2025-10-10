@@ -41,8 +41,8 @@ export class AppContext {
   }
 
   async initialize() {
-    const theme = await getCurrentWindow().theme();
-    useSettingStore.getState().setDarkMode(theme === "dark");
+    const darkMode = useSettingStore.getState().darkMode;
+    await getCurrentWindow().setTheme(darkMode ? "dark" : "light");
     await this.wiring();
     await this.loadFonts();
     this.loadKeymap();
@@ -54,11 +54,6 @@ export class AppContext {
   async wiring() {
     await getCurrentWindow().onCloseRequested(async () => {
       await this.ensureSave();
-    });
-
-    await getCurrentWindow().onThemeChanged(({ payload }) => {
-      useSettingStore.getState().setDarkMode(payload === "dark");
-      this.updateUI();
     });
 
     window.addEventListener("resize", () => {
