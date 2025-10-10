@@ -13,6 +13,7 @@ import { MenuItemState, useMenuStore } from "@/store/menu-store";
 import { useWorkspaceStore } from "./store/workspace-store";
 import { AutoSaver } from "./engine/auto-saver";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { confirm } from "@tauri-apps/plugin-dialog";
 
 export class AppContext {
   productName: string;
@@ -36,13 +37,18 @@ export class AppContext {
       commandManager: this.commands,
     });
     this.autoSaver = new AutoSaver(async () => {
-      await this.commands.execute("file:save");
+      await this.ensureSave();
     });
   }
 
   async initialize() {
-    await getCurrentWindow().onCloseRequested(async () => {
-      await this.ensureSave();
+    await getCurrentWindow().onCloseRequested(async (event) => {
+      // await this.ensureSave();
+      const confirmed = await confirm("Are you sure?");
+      if (!confirmed) {
+        // user did not confirm closing the window; let's prevent it
+        event.preventDefault();
+      }
     });
     window.addEventListener("resize", () => {
       this.editor.fit();
