@@ -13,10 +13,13 @@ import { FileEntry } from "@/api/workspace";
 import { Button } from "../ui/button";
 import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FileCard } from "./file-card";
 
-interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface ExplorerViewProps extends React.HTMLAttributes<HTMLDivElement> {
+  folder: FileEntry | null;
+}
 
-export function FolderView({ ...others }: FolderViewProps) {
+export function ExplorerView({ folder, ...others }: ExplorerViewProps) {
   const currentFolder = useWorkspaceStore((state) => state.currentFolder);
   const [fetched, setFetched] = useState(false);
   const [files, setFiles] = useState<FileEntry[]>([]);
@@ -48,7 +51,7 @@ export function FolderView({ ...others }: FolderViewProps) {
         {fetched && files.length > 0 && (
           <div className="flex flex-wrap justify-start gap-6 w-full">
             {files.map((file) => (
-              <Card key={file.fullPath} file={file} />
+              <FileCard key={file.fullPath} file={file} />
             ))}
           </div>
         )}
@@ -84,17 +87,6 @@ export function FolderView({ ...others }: FolderViewProps) {
         )}
         <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
       </article>
-    </div>
-  );
-}
-
-function Card({ file }: { file: FileEntry }) {
-  return (
-    <div className="w-48 h-fit rounded-xl">
-      <div className="w-48 h-40 bg-muted/50 rounded-xl"></div>
-      <div className="w-full h-8 flex items-center text-muted-foreground text-sm">
-        {file.name}
-      </div>
     </div>
   );
 }

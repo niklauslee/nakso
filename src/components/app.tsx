@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { EditorView } from "./editor/editor-view";
-import { FolderView } from "./views/folder-view";
+import { ExplorerView } from "./explorer/explorer-view";
 
 declare global {
   interface Window {
@@ -59,7 +59,10 @@ function App() {
             onMount={handleAppReady}
             className={cn(view !== "editor" && "hidden")}
           />
-          <FolderView className={cn(view !== "folder" && "hidden")} />
+          <ExplorerView
+            folder={null}
+            className={cn(view !== "folder" && "hidden")}
+          />
         </SidebarInset>
       </SidebarProvider>
     </div>

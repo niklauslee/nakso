@@ -1,4 +1,4 @@
-import { readDir, exists, mkdir } from "@tauri-apps/plugin-fs";
+import { readDir, exists, mkdir, readTextFile } from "@tauri-apps/plugin-fs";
 import { join, documentDir } from "@tauri-apps/api/path";
 
 const WORKSPACE_NAME = "Nakso";
@@ -95,10 +95,16 @@ async function getFiles(path: string): Promise<FileEntry[]> {
   return fileEntries;
 }
 
+async function readFile(path: string): Promise<string> {
+  const data = await readTextFile(path);
+  return data;
+}
+
 export const workspace = {
   ensureWorkspace,
   getFolders,
   getRecentFiles,
   getFavoriteFiles,
   getFiles,
+  readFile,
 };
