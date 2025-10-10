@@ -9,9 +9,9 @@ import packageJson from "../package.json";
 import fontJson from "./fonts.json";
 import menuJson from "./menu.json";
 import keymapJson from "./keymap.json";
-import { toast } from "sonner";
 import { MenuItemState, useMenuStore } from "@/store/menu-store";
 import { useWorkspaceStore } from "./store/workspace-store";
+import { AutoSaver } from "./engine/auto-saver";
 
 export class AppContext {
   productName: string;
@@ -21,6 +21,7 @@ export class AppContext {
   editor: Editor;
   commands: CommandManager;
   keymaps: KeymapManager;
+  autoSaver: AutoSaver;
 
   constructor(editor: Editor) {
     this.productName = packageJson.productName;
@@ -32,6 +33,9 @@ export class AppContext {
     this.keymaps = new KeymapManager({
       platform: this.platform,
       commandManager: this.commands,
+    });
+    this.autoSaver = new AutoSaver(async () => {
+      await this.commands.execute("file:save");
     });
   }
 

@@ -75,6 +75,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleAction = () => {
     setModified(true);
+    window.app.autoSaver.tick();
     setTimeout(() => window.app.updateUIState(), 0);
   };
 
