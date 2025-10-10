@@ -18,7 +18,6 @@ import { ZOOMS } from "./const";
 import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { useAppStore } from "./store/app-store";
-import { use } from "react";
 
 /**
  * Find the shapes by the given id array.
@@ -43,8 +42,16 @@ export function registerCommands() {
 
   // file commands -------------------------------------------------------------
 
-  app.commands.register("file:new", "Open a new file", {}, async () => {
-    // await window.api.window.create();
+  app.commands.register("file:new", "Create a new file", {}, async () => {
+    const workspace = window.api.workspace;
+    const app = window.app;
+    try {
+      await app.ensureSave();
+      // ...
+    } catch (err) {
+      toast.error("Failed to create file: ");
+      console.error("Failed to create file: ", err);
+    }
   });
 
   app.commands.register(
@@ -57,6 +64,7 @@ export function registerCommands() {
       const workspace = window.api.workspace;
       const app = window.app;
       try {
+        await app.ensureSave();
         const data = await workspace.readFile(filePath);
         const fileEntry = await workspace.getFileEntry(filePath);
         const json = JSON.parse(data);
@@ -78,38 +86,27 @@ export function registerCommands() {
     {},
     async ({}) => {
       const workspace = window.api.workspace;
-      const app = window.app;
       try {
         const file = useEditorStore.getState().file;
-        if (file) {
+        const modified = useEditorStore.getState().modified;
+        if (file && modified) {
           const app = window.app;
           const content = JSON.stringify(app.editor.store.toJSON());
           await workspace.writeFile(file.fullPath, content);
           const fileEntry = await workspace.getFileEntry(file.fullPath);
           useEditorStore.getState().setFile(fileEntry);
           useEditorStore.getState().setModified(false);
-          toast.success("File saved: " + file.name);
         }
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
       }
-
-      // const app = window.app;
-      // const api = window.api;
-      // const filePath = useEditorStore.getState().filePath;
-      // if (filePath) {
-      //   const app = window.app;
-      //   const content = JSON.stringify(app.editor.store.toJSON());
-      //   await api.fs.write(filePath, content);
-      //   useEditorStore.getState().setModified(false);
-      // } else if (allowSaveAs) {
-      //   await app.commands.execute("file:save-as");
-      // }
     }
   );
 
   app.commands.register("file:quit", "Quit the application", {}, async () => {
+    const app = window.app;
+    await app.ensureSave();
     setTimeout(() => {
       window.api.window.quit();
     }, 300); // delay to complete any pending actions

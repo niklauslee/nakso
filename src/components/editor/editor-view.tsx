@@ -100,7 +100,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   };
 
   const handleSelectionChange = (shapes: Shape[]) => {
-    console.log("Selection changed:", shapes);
     setTimeout(() => {
       setSelection([...shapes]);
       window.app.updateUIState();

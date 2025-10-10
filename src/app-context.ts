@@ -12,6 +12,7 @@ import keymapJson from "./keymap.json";
 import { MenuItemState, useMenuStore } from "@/store/menu-store";
 import { useWorkspaceStore } from "./store/workspace-store";
 import { AutoSaver } from "./engine/auto-saver";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 export class AppContext {
   productName: string;
@@ -40,6 +41,9 @@ export class AppContext {
   }
 
   async initialize() {
+    await getCurrentWindow().onCloseRequested(async () => {
+      await this.ensureSave();
+    });
     window.addEventListener("resize", () => {
       this.editor.fit();
     });
@@ -149,6 +153,10 @@ export class AppContext {
     } catch (err) {
       console.error("Failed to load workspace", err);
     }
+  }
+
+  async ensureSave() {
+    await this.commands.execute("file:save");
   }
 
   updateUIState() {
