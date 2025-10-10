@@ -147,35 +147,6 @@ export class AppContext {
     }
   }
 
-  async openDoc(filePath: string) {
-    try {
-      // const data = await window.api.fs.read(filePath);
-      // const json = JSON.parse(data);
-      // this.editor.loadFromJSON(json);
-      // useDocStore.getState().setFilePath(filePath);
-      // useDocStore.getState().setModified(false);
-      // useDocStore.getState().setDoc(this.editor.getDoc());
-    } catch (err) {
-      toast.error("Failed to open file: " + filePath);
-      console.error("Failed to open file: " + filePath, err);
-      this.editor.newDoc();
-      // useDocStore.getState().setFilePath(null);
-      // useDocStore.getState().setModified(false);
-      // useDocStore.getState().setDoc(this.editor.getDoc());
-      // useSettingStore.getState().removeOpenRecent(filePath);
-    }
-  }
-
-  async newDoc() {
-    try {
-      this.editor.newDoc();
-      // useDocStore.getState().setDoc(this.editor.getDoc());
-    } catch (err) {
-      toast.error("Failed to create a new document");
-      console.error(err);
-    }
-  }
-
   updateUIState() {
     try {
       const app = window.app;

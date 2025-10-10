@@ -4,8 +4,9 @@ import {
   mkdir,
   readTextFile,
   stat,
+  writeTextFile,
 } from "@tauri-apps/plugin-fs";
-import { join, documentDir } from "@tauri-apps/api/path";
+import { join, documentDir, basename } from "@tauri-apps/api/path";
 
 const WORKSPACE_NAME = "Nakso";
 const CONFIG_DIR_NAME = ".nakso";
@@ -123,9 +124,30 @@ async function getFiles(path: string): Promise<FileEntry[]> {
   return fileEntries;
 }
 
+async function getFileEntry(path: string): Promise<FileEntry> {
+  const info = await stat(path);
+  const name = await basename(path);
+  const fileEntry: FileEntry = {
+    isDirectory: false,
+    fullPath: path,
+    name,
+    mode: info.mode ?? 0,
+    size: info.size,
+    atime: info.atime,
+    mtime: info.mtime,
+    birthtime: info.birthtime,
+    readonly: info.readonly,
+  };
+  return fileEntry;
+}
+
 async function readFile(path: string): Promise<string> {
   const data = await readTextFile(path);
   return data;
+}
+
+async function writeFile(path: string, data: string): Promise<void> {
+  await writeTextFile(path, data);
 }
 
 export const workspace = {
@@ -134,5 +156,7 @@ export const workspace = {
   getRecentFiles,
   getFavoriteFiles,
   getFiles,
+  getFileEntry,
   readFile,
+  writeFile,
 };

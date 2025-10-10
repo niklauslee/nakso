@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Editor as EditorType,
   FillStyle,
@@ -16,8 +16,7 @@ import { ApplicationMenu } from "../menu/menu";
 import { EllipsisVerticalIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
-import { useEditingStore } from "@/store/editing-store";
-import { useDocStore } from "@/store/doc-store";
+import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -26,13 +25,18 @@ interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function EditorView({ onMount, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [editor, setEditor] = useState<EditorType | null>(null);
+
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
   const showGrid = useSettingStore((state) => state.showGrid);
-  const selection = useEditingStore((state) => state.selection);
-  const setSelection = useEditingStore((state) => state.setSelection);
-  const setActiveHandler = useEditingStore((state) => state.setActiveHandler);
-  const setModified = useDocStore((state) => state.setModified);
+
+  const file = useEditorStore((state) => state.file);
+  const modified = useEditorStore((state) => state.modified);
+  const setModified = useEditorStore((state) => state.setModified);
+  const selection = useEditorStore((state) => state.selection);
+  const setSelection = useEditorStore((state) => state.setSelection);
+  const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -45,6 +49,17 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     wrapperRef.current && observer.observe(wrapperRef.current);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (file && editor) {
+      editor.setEnabled(file.readonly === false);
+    }
+  }, [file, file?.readonly]);
+
+  const handleMount = (editor: EditorType) => {
+    setEditor(editor);
+    if (onMount) onMount(editor);
+  };
 
   const handleShapeInitialize = (shape: Shape) => {
     try {
@@ -76,7 +91,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const handleActiveHandlerLockChange = (lock: boolean) => {
     try {
       const app = window.app;
-      useEditingStore.getState().setActiveHandlerLock(lock);
+      useEditorStore.getState().setActiveHandlerLock(lock);
       app?.editor.focus();
     } catch (error) {
       console.error("Error handling active handler lock change:", error);
@@ -123,7 +138,15 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
           </ApplicationMenu>
         }
       >
-        <div className="text-sm">Editor...</div>
+        <div className="text-sm">
+          <span>{file?.name}</span>
+          {modified && <span> •</span>}
+          {file?.readonly && (
+            <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">
+              Readonly
+            </span>
+          )}
+        </div>
       </Header>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
@@ -146,7 +169,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
               className="absolute inset-0"
               showGrid={showGrid}
               darkMode={darkMode}
-              onMount={onMount}
+              onMount={handleMount}
               onShapeInitialize={handleShapeInitialize}
               onAction={handleAction}
               onUndo={handleAction}

@@ -38,7 +38,7 @@ export function FileCard({ file, className }: FileCardProps) {
 
   useEffect(() => {
     fetchFile();
-  }, [file.fullPath]);
+  }, [file.fullPath, file.mtime, file.size]);
 
   const handleDoubleClick = () => {
     console.log("double click", file.fullPath);

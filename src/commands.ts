@@ -15,10 +15,10 @@ import { useSettingStore } from "./store/setting-store";
 import { Shape } from "@dgmjs/core";
 import { z } from "zod";
 import { ZOOMS } from "./const";
-import { useEditingStore } from "./store/editing-store";
-import { useDocStore } from "./store/doc-store";
+import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { useAppStore } from "./store/app-store";
+import { use } from "react";
 
 /**
  * Find the shapes by the given id array.
@@ -58,11 +58,12 @@ export function registerCommands() {
       const app = window.app;
       try {
         const data = await workspace.readFile(filePath);
+        const fileEntry = await workspace.getFileEntry(filePath);
         const json = JSON.parse(data);
         app.editor.loadFromJSON(json);
-        useDocStore.getState().setFilePath(filePath);
-        useDocStore.getState().setModified(false);
-        useDocStore.getState().setDoc(app.editor.getDoc());
+        useEditorStore.getState().setFile(fileEntry);
+        useEditorStore.getState().setModified(false);
+        useEditorStore.getState().setDoc(app.editor.getDoc());
         useAppStore.getState().setView("editor");
       } catch (err) {
         toast.error("Failed to open file: " + filePath);
@@ -74,18 +75,34 @@ export function registerCommands() {
   app.commands.register(
     "file:save",
     "Save the working file",
-    {
-      allowSaveAs: z.boolean().optional().default(true),
-    },
-    async ({ allowSaveAs }) => {
+    {},
+    async ({}) => {
+      const workspace = window.api.workspace;
+      const app = window.app;
+      try {
+        const file = useEditorStore.getState().file;
+        if (file) {
+          const app = window.app;
+          const content = JSON.stringify(app.editor.store.toJSON());
+          await workspace.writeFile(file.fullPath, content);
+          const fileEntry = await workspace.getFileEntry(file.fullPath);
+          useEditorStore.getState().setFile(fileEntry);
+          useEditorStore.getState().setModified(false);
+          toast.success("File saved: " + file.name);
+        }
+      } catch (error) {
+        toast.error("Failed to save file");
+        console.error("Failed to save file", error);
+      }
+
       // const app = window.app;
       // const api = window.api;
-      // const filePath = useDocStore.getState().filePath;
+      // const filePath = useEditorStore.getState().filePath;
       // if (filePath) {
       //   const app = window.app;
       //   const content = JSON.stringify(app.editor.store.toJSON());
       //   await api.fs.write(filePath, content);
-      //   useDocStore.getState().setModified(false);
+      //   useEditorStore.getState().setModified(false);
       // } else if (allowSaveAs) {
       //   await app.commands.execute("file:save-as");
       // }
@@ -614,7 +631,7 @@ export function registerCommands() {
     }
     if (zoomIndex < ZOOMS.length - 1) {
       editor.zoom(ZOOMS[zoomIndex + 1]);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   });
 
@@ -627,14 +644,14 @@ export function registerCommands() {
     }
     if (zoomIndex > 0) {
       editor.zoom(ZOOMS[zoomIndex - 1]);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   });
 
   app.commands.register("view:actual-size", "Actual size", {}, async () => {
     const editor = window.app.editor;
     editor.zoom(1);
-    useEditingStore.getState().setScale(editor.getScale());
+    useEditorStore.getState().setScale(editor.getScale());
   });
 
   app.commands.register(
@@ -647,7 +664,7 @@ export function registerCommands() {
     async ({ scaleAdjust, maxScale }) => {
       const editor = window.app.editor;
       editor.fitToScreen(scaleAdjust, maxScale);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   );
 

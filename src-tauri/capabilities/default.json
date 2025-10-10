@@ -12,6 +12,7 @@
     "process:allow-exit",
     "fs:default",
     "fs:allow-app-meta",
+    "fs:allow-app-write",
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "**/*" }]
