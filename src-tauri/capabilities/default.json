@@ -8,6 +8,8 @@
     "opener:default",
     "core:window:default",
     "core:window:allow-start-dragging",
+    "core:window:allow-destroy",
+    "core:window:allow-set-theme",
     "os:default",
     "process:allow-exit",
     "fs:default",

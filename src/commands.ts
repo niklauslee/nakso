@@ -18,6 +18,7 @@ import { ZOOMS } from "./const";
 import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { useAppStore } from "./store/app-store";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 /**
  * Find the shapes by the given id array.
@@ -704,8 +705,9 @@ export function registerCommands() {
   );
 
   app.commands.register("view:dark-mode", "Toggle dark mode", {}, async () => {
-    const { darkMode, setDarkMode } = useSettingStore.getState();
-    setDarkMode(!darkMode);
+    const darkMode = useSettingStore.getState().darkMode;
+    await getCurrentWindow().setTheme(darkMode ? "light" : "dark");
+    useSettingStore.getState().setDarkMode(!darkMode);
   });
 
   app.commands.register("view:snap-to-grid", "Snap to grid", {}, async () =>

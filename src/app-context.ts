@@ -1,4 +1,4 @@
-import { Editor, Group, Mirror } from "@dgmjs/core";
+import { Editor, Group } from "@dgmjs/core";
 import { CommandManager } from "@/engine/command-manager";
 import { KeymapManager } from "@/engine/keymap-manager";
 import { Font, insertFontsToDocument, useFontStore } from "@/store/font-store";
@@ -13,7 +13,6 @@ import { MenuItemState, useMenuStore } from "@/store/menu-store";
 import { useWorkspaceStore } from "./store/workspace-store";
 import { AutoSaver } from "./engine/auto-saver";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { confirm } from "@tauri-apps/plugin-dialog";
 
 export class AppContext {
   productName: string;
@@ -42,19 +41,9 @@ export class AppContext {
   }
 
   async initialize() {
-    await getCurrentWindow().onCloseRequested(async (event) => {
-      // await this.ensureSave();
-      const confirmed = await confirm("Are you sure?");
-      if (!confirmed) {
-        // user did not confirm closing the window; let's prevent it
-        event.preventDefault();
-      }
-    });
-    window.addEventListener("resize", () => {
-      this.editor.fit();
-    });
-    this.wiring();
-    await this.loadConfig();
+    const theme = await getCurrentWindow().theme();
+    useSettingStore.getState().setDarkMode(theme === "dark");
+    await this.wiring();
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
@@ -62,67 +51,34 @@ export class AppContext {
     registerCommands();
   }
 
-  wiring() {
-    this.editor.onDblClick.addListener(({ shape }) => {
-      try {
-        if (shape instanceof Mirror) {
-          const subject = shape.subject;
-          if (subject) {
-            const page = subject.getPage();
-            if (page) {
-              this.editor.setCurrentPage(page);
-              const cp = subject.getCenter();
-              this.editor.scrollCenterTo(cp);
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Failed to handle double click:", err);
-      }
+  async wiring() {
+    await getCurrentWindow().onCloseRequested(async () => {
+      await this.ensureSave();
     });
 
-    this.editor.transform.onAction.addListener(() => {
-      try {
-        // this.autoSaver.tick();
-      } catch (err) {
-        console.error("Failed to handle action:", err);
-      }
+    await getCurrentWindow().onThemeChanged(({ payload }) => {
+      useSettingStore.getState().setDarkMode(payload === "dark");
+      this.updateUI();
     });
 
-    this.editor.transform.onUndo.addListener(() => {
-      // this.autoSaver.tick();
-    });
-
-    this.editor.transform.onRedo.addListener(() => {
-      // this.autoSaver.tick();
+    window.addEventListener("resize", () => {
+      this.editor.fit();
     });
 
     // update ui states
     useSettingStore.subscribe(() => {
       try {
-        window.app.updateUIState();
+        window.app.updateUI();
       } catch (err) {
         console.error("Failed to update UI state:", err);
       }
     });
-
-    // window.api.window.setDarkMode(useSettingStore.getState().darkMode);
-  }
-
-  async loadConfig() {
-    try {
-      // useConfigStore.getState().fetchConfig();
-    } catch (err) {
-      console.error("Failed to load config", err);
-    }
   }
 
   async loadFonts() {
     try {
       insertFontsToDocument(fontJson as Font[]);
       await useFontStore.getState().fetchFonts(fontJson as Font[]);
-      // const systemFonts = await window.api.font.getSystemFonts();
-      // useFontStore.getState().addFonts(systemFonts);
     } catch (err) {
       console.error("Failed to load fonts", err);
     }
@@ -165,7 +121,7 @@ export class AppContext {
     await this.commands.execute("file:save");
   }
 
-  updateUIState() {
+  updateUI() {
     try {
       const app = window.app;
       const state = useSettingStore.getState();

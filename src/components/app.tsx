@@ -44,7 +44,7 @@ function App() {
         editor.fit();
       });
 
-      window.app.updateUIState();
+      window.app.updateUI();
       setAppReady(true, editor.platform);
     } catch (error) {
       console.error("Failed to initialize the app:", error);

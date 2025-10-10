@@ -4,6 +4,7 @@ import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 async function load(path: string): Promise<Page | null> {
   const workspace = window.api.workspace;
@@ -41,8 +42,12 @@ export function FileCard({ file, className }: FileCardProps) {
   }, [file.fullPath, file.mtime, file.size]);
 
   const handleDoubleClick = () => {
-    console.log("double click", file.fullPath);
-    window.app.commands.execute("file:open", { filePath: file.fullPath });
+    try {
+      window.app.commands.execute("file:open", { filePath: file.fullPath });
+    } catch (err) {
+      toast.error("Failed to open file");
+      console.error("Failed to open file:", err);
+    }
   };
 
   return (
