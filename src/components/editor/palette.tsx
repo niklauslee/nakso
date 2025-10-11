@@ -67,6 +67,13 @@ import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "../ui/scroll-area";
 import { useEditorStore } from "@/store/editor-store";
 import { SelectArrowhead } from "./select-arrowhead";
+import {
+  DEFAULT_HAND_FONT,
+  DEFAULT_MONO_FONT,
+  DEFAULT_SANS_FONT,
+  DEFAULT_SERIF_FONT,
+} from "@/const";
+import { de } from "zod/v4/locales";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -120,7 +127,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
   const hasFrame = hasShapeType(tool, selection, "Frame");
   const hasLine = hasShapeType(tool, selection, "Line");
   const hasClosedLine = selection.some(
-    (s) => s.type === "Line" && (s as Line).isClosed()
+    (s) => s instanceof Line && s.isClosed()
   );
   const hasConnector = hasShapeType(tool, selection, "Connector");
   const hasFreehand = hasShapeType(tool, selection, "Freehand");
@@ -168,8 +175,6 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {/* <OpacityTool selection={selection} onChange={onChange} /> */}
-
           {!hasImage && !hasGroup && (
             <StrokeColorTool selection={selection} onChange={onChange} />
           )}
@@ -190,6 +195,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
           {(hasRectangle || hasEllipse || hasText) && (
             <>
               <Separator className="opacity-50" />
+              <FontFamilyTool selection={selection} onChange={onChange} />
               <FontSizeTool selection={selection} onChange={onChange} />
               <TextAlignTool selection={selection} onChange={onChange} />
             </>
@@ -198,13 +204,14 @@ export function Palette({ selection, onChange }: PaletteProps) {
           {(hasLine || hasConnector) && (
             <>
               <Separator className="opacity-50" />
-              <LineRouteTool selection={selection} onChange={onChange} />
-              <ArrowheadTool selection={selection} onChange={onChange} />
+              <LineTool selection={selection} onChange={onChange} />
             </>
           )}
 
           {hasSelection && (
             <>
+              <Separator className="opacity-50" />
+              <OpacityTool selection={selection} onChange={onChange} />
               <Separator className="opacity-50" />
               <LayerTool selection={selection} onChange={onChange} />
               {hasMulti && (
@@ -335,9 +342,21 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$purple4" darkMode={darkMode} />
         </Toggle>
-        <Button size="icon-sm" variant="ghost" title="More colors">
+        <Toggle
+          size="sm"
+          title="Fill color ⎯ Light Orange"
+          pressed={fillColor === "$orange4"}
+          onPressedChange={(pressed) => {
+            if (pressed) {
+              onChange?.({ fillColor: "$orange4" });
+            }
+          }}
+        >
+          <ColorIcon value="$orange4" darkMode={darkMode} />
+        </Toggle>
+        {/* <Button size="icon-sm" variant="ghost" title="More colors">
           <EllipsisVerticalIcon size={16} />
-        </Button>
+        </Button> */}
       </div>
     </>
   );
@@ -400,16 +419,21 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function OpacityTool({}: ToolProps) {
+function OpacityTool({ selection, onChange }: ToolProps) {
+  const opacity = merge(selection.map((s) => s.opacity));
+
   return (
     <div className="flex items-center gap-1 py-2 px-1">
       <Slider
-        title="Opacity"
-        defaultValue={[1]}
+        title={`Opacity`}
+        value={[opacity || 1]}
         min={0}
         max={1}
         step={0.1}
         className={"w-full"}
+        onValueChange={(value) => {
+          onChange?.({ opacity: value.length > 0 ? value[0] : 1 });
+        }}
       />
     </div>
   );
@@ -636,6 +660,65 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
   );
 }
 
+function FontFamilyTool({ selection, onChange }: ToolProps) {
+  const fontFamily = merge(selection.map((s) => (s as Text).fontFamily));
+  const defaultFonts = {
+    sans: DEFAULT_SANS_FONT,
+    serif: DEFAULT_SERIF_FONT,
+    mono: DEFAULT_MONO_FONT,
+    hand: DEFAULT_HAND_FONT,
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      <Toggle
+        size="sm"
+        title="Handwriting"
+        className="font-medium font-hand"
+        pressed={fontFamily === defaultFonts.hand}
+        onPressedChange={() => {
+          onChange?.({ fontFamily: defaultFonts.hand });
+        }}
+      >
+        Aa
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Sans Serif"
+        className="font-medium font-sans"
+        pressed={fontFamily === defaultFonts.sans}
+        onPressedChange={() => {
+          onChange?.({ fontFamily: defaultFonts.sans });
+        }}
+      >
+        Aa
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Serif"
+        className="font-medium font-serif"
+        pressed={fontFamily === defaultFonts.serif}
+        onPressedChange={() => {
+          onChange?.({ fontFamily: defaultFonts.serif });
+        }}
+      >
+        Aa
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Monospace"
+        className="font-medium font-mono"
+        pressed={fontFamily === defaultFonts.mono}
+        onPressedChange={() => {
+          onChange?.({ fontFamily: defaultFonts.mono });
+        }}
+      >
+        Aa
+      </Toggle>
+    </div>
+  );
+}
+
 function FontSizeTool({ selection, onChange }: ToolProps) {
   const fontSize = merge(selection.map((s) => (s as Text).fontSize));
   return (
@@ -779,62 +862,48 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function LineRouteTool({ selection, onChange }: ToolProps) {
+function LineTool({ selection, onChange }: ToolProps) {
   const lineType = merge(selection.map((s) => (s as Line).lineType));
-
-  return (
-    <div className="flex items-center justify-between gap-1">
-      <div className="text-xs text-muted-foreground px-2">Arrows</div>
-      <div className="flex items-center gap-1">
-        <Toggle
-          size="sm"
-          title="Straight line"
-          pressed={lineType === LineType.STRAIGHT}
-          onPressedChange={() => {
-            onChange?.({ lineType: LineType.STRAIGHT });
-          }}
-        >
-          <LineStraightIcon size={16} />
-        </Toggle>
-        <Toggle
-          size="sm"
-          title="Curved line"
-          pressed={lineType === LineType.CURVE}
-          onPressedChange={() => {
-            onChange?.({ lineType: LineType.CURVE });
-          }}
-        >
-          <LineCurveIcon size={16} />
-        </Toggle>
-      </div>
-    </div>
-  );
-}
-
-function ArrowheadTool({ selection, onChange }: ToolProps) {
   const tailEndType = merge(selection.map((s) => (s as Line).tailEndType));
   const headEndType = merge(selection.map((s) => (s as Line).headEndType));
 
   return (
-    <div className="flex items-center justify-between gap-1">
-      <div className="text-xs text-muted-foreground px-2">Arrows</div>
-      <div className="flex items-center gap-1">
-        <SelectArrowhead
-          title="Arrowhead start"
-          rotate={true}
-          value={tailEndType}
-          onValueChange={(value) => {
-            onChange?.({ tailEndType: value as LineEndTypeEnum });
-          }}
-        />
-        <SelectArrowhead
-          title="Arrowhead end"
-          value={headEndType}
-          onValueChange={(value) => {
-            onChange?.({ headEndType: value as LineEndTypeEnum });
-          }}
-        />
-      </div>
+    <div className="flex items-center gap-1">
+      <Toggle
+        size="sm"
+        title="Straight line"
+        pressed={lineType === LineType.STRAIGHT}
+        onPressedChange={() => {
+          onChange?.({ lineType: LineType.STRAIGHT });
+        }}
+      >
+        <LineStraightIcon size={16} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Curved line"
+        pressed={lineType === LineType.CURVE}
+        onPressedChange={() => {
+          onChange?.({ lineType: LineType.CURVE });
+        }}
+      >
+        <LineCurveIcon size={16} />
+      </Toggle>
+      <SelectArrowhead
+        title="Arrowhead start"
+        rotate={true}
+        value={tailEndType}
+        onValueChange={(value) => {
+          onChange?.({ tailEndType: value as LineEndTypeEnum });
+        }}
+      />
+      <SelectArrowhead
+        title="Arrowhead end"
+        value={headEndType}
+        onValueChange={(value) => {
+          onChange?.({ headEndType: value as LineEndTypeEnum });
+        }}
+      />
     </div>
   );
 }
