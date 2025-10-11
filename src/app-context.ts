@@ -1,3 +1,4 @@
+import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
 import { Editor, Group } from "@dgmjs/core";
 import { CommandManager } from "@/engine/command-manager";
 import { KeymapManager } from "@/engine/keymap-manager";
@@ -44,6 +45,7 @@ export class AppContext {
     const darkMode = useSettingStore.getState().darkMode;
     await getCurrentWindow().setTheme(darkMode ? "dark" : "light");
     await this.wiring();
+    await this.setupNativeMenu();
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
@@ -68,6 +70,24 @@ export class AppContext {
         console.error("Failed to update UI state:", err);
       }
     });
+  }
+
+  async setupNativeMenu() {
+    const aboutSubmenu = await Submenu.new({
+      text: "About",
+      items: [
+        await MenuItem.new({
+          id: "quit",
+          text: "Quit",
+          accelerator: "CmdOrCtrl+Q",
+          action: () => {
+            window.app.commands.execute("file:quit");
+          },
+        }),
+      ],
+    });
+    const menu = await Menu.new({ items: [aboutSubmenu] });
+    await menu.setAsAppMenu();
   }
 
   async loadFonts() {

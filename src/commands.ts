@@ -110,7 +110,7 @@ export function registerCommands() {
     await app.ensureSave();
     setTimeout(() => {
       window.api.window.quit();
-    }, 300); // delay to complete any pending actions
+    }, 100);
   });
 
   // edit commands -------------------------------------------------------------
