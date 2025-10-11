@@ -14,8 +14,9 @@ import {
   AlignBringToFrontIcon,
   AlignSendBackwardIcon,
   AlignSendToBackIcon,
-  RoundedIcon,
   RoundedLargeIcon,
+  LineStraightIcon,
+  LineCurveIcon,
 } from "@/components/icons";
 import {
   EllipsisVerticalIcon,
@@ -35,6 +36,8 @@ import {
   AlignCenterHorizontalIcon,
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
+  ChevronRightIcon,
+  Settings2Icon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -47,6 +50,7 @@ import {
   VertAlign,
   Line,
   LineEndTypeEnum,
+  LineType,
 } from "@dgmjs/core";
 import { merge } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
@@ -62,20 +66,23 @@ import { useKeymapStore } from "@/store/keymap-store";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "../ui/scroll-area";
 import { useEditorStore } from "@/store/editor-store";
-import { useStyleStore } from "@/store/style-store";
 import { SelectArrowhead } from "./select-arrowhead";
 
 interface ToolProps {
-  selection: Shape[];
+  selection: ShapeProps[];
   onChange?: (values: ShapeProps) => void;
 }
 
 interface PaletteProps {
-  selection: Shape[];
+  selection: ShapeProps[];
   onChange?: (values: ShapeProps) => void;
 }
 
-function hasShapeType(tool: string | null, selection: Shape[], type: string) {
+function hasShapeType(
+  tool: string | null,
+  selection: ShapeProps[],
+  type: string
+) {
   return tool === type || selection.some((s) => s.type === type);
 }
 
@@ -191,6 +198,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
           {(hasLine || hasConnector) && (
             <>
               <Separator className="opacity-50" />
+              <LineRouteTool selection={selection} onChange={onChange} />
               <ArrowheadTool selection={selection} onChange={onChange} />
             </>
           )}
@@ -219,7 +227,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
                   <TypeIcon size={16} />
                 </Toggle>
                 <Toggle size="sm">
-                  <EllipsisVerticalIcon size={16} />
+                  <Settings2Icon size={16} />
                 </Toggle>
               </div>
             </>
@@ -232,11 +240,8 @@ export function Palette({ selection, onChange }: PaletteProps) {
 
 function FillColorTool({ selection, onChange }: ToolProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
-  const styleProps = useStyleStore((state) => state.styleProps);
-  const fillColor =
-    selection.length > 0
-      ? merge(selection.map((s) => s.fillColor))
-      : styleProps.fillColor;
+  const fillColor = merge(selection.map((s) => s.fillColor));
+
   return (
     <>
       <div className="flex items-center gap-1">
@@ -339,11 +344,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
 }
 
 function FillStyleTool({ selection, onChange }: ToolProps) {
-  const styleProps = useStyleStore((state) => state.styleProps);
-  const fillStyle =
-    selection.length > 0
-      ? merge(selection.map((s) => s.fillStyle))
-      : styleProps.fillStyle;
+  const fillStyle = merge(selection.map((s) => s.fillStyle));
 
   return (
     <div className="flex items-center gap-1">
@@ -416,11 +417,7 @@ function OpacityTool({}: ToolProps) {
 
 function StrokeColorTool({ selection, onChange }: ToolProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
-  const styleProps = useStyleStore((state) => state.styleProps);
-  const strokeColor =
-    selection.length > 0
-      ? merge(selection.map((s) => s.strokeColor))
-      : styleProps.strokeColor;
+  const strokeColor = merge(selection.map((s) => s.strokeColor));
   return (
     <>
       <div className="flex items-center gap-1">
@@ -522,12 +519,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
 }
 
 function StrokeWidthTool({ selection, onChange }: ToolProps) {
-  const styleProps = useStyleStore((state) => state.styleProps);
-  const strokeWidth =
-    selection.length > 0
-      ? merge(selection.map((s) => s.strokeWidth)) ?? 2
-      : styleProps.strokeWidth;
-
+  const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
   return (
     <div className="flex items-center gap-1">
       <Toggle
@@ -575,33 +567,23 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
 }
 
 function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
-  const styleProps = useStyleStore((state) => state.styleProps);
   const tool = useEditorStore((state) => state.activeHandler);
   const hasRectangle = hasShapeType(tool, selection, "Rectangle");
   const hasFrame = hasShapeType(tool, selection, "Frame");
 
-  const strokePattern =
-    selection.length > 0
-      ? merge(
-          selection.map((s) => s.strokePattern),
-          true
-        )
-      : styleProps.strokePattern;
-
-  const corners =
-    selection.length > 0
-      ? merge(
-          selection.map((s) => (s as Box).corners ?? [0, 0, 0, 0]),
-          true
-        ) ?? [0, 0, 0, 0]
-      : styleProps.corners ?? [0, 0, 0, 0];
-
+  const strokePattern = merge(
+    selection.map((s) => s.strokePattern),
+    true
+  );
+  const corners = merge(
+    selection.map((s) => (s as Box).corners ?? [0, 0, 0, 0]),
+    true
+  ) ?? [0, 0, 0, 0];
   const stringifiedPattern = Array.isArray(strokePattern)
     ? strokePattern.length > 0
       ? strokePattern.join(",")
       : "0"
     : undefined;
-
   const stringifiedCorners = corners.join(",");
 
   return (
@@ -655,12 +637,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
 }
 
 function FontSizeTool({ selection, onChange }: ToolProps) {
-  const styleProps = useStyleStore((state) => state.styleProps);
-  const fontSize =
-    selection.length > 0
-      ? merge(selection.map((s) => (s as Text).fontSize))
-      : styleProps.fontSize;
-
+  const fontSize = merge(selection.map((s) => (s as Text).fontSize));
   return (
     <div className="flex items-center gap-1">
       <Toggle
@@ -713,17 +690,8 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
 
 function TextAlignTool({ selection, onChange }: ToolProps) {
   const [popupOpen, setPopupOpen] = useState(false);
-  const styleProps = useStyleStore((state) => state.styleProps);
-
-  const horzAlign =
-    selection.length > 0
-      ? merge(selection.map((s) => (s as Box).horzAlign))
-      : styleProps.horzAlign;
-
-  const vertAlign =
-    selection.length > 0
-      ? merge(selection.map((s) => (s as Box).vertAlign))
-      : styleProps.vertAlign;
+  const horzAlign = merge(selection.map((s) => (s as Box).horzAlign));
+  const vertAlign = merge(selection.map((s) => (s as Box).vertAlign));
 
   return (
     <div className="flex items-center gap-1">
@@ -811,18 +779,41 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
   );
 }
 
+function LineRouteTool({ selection, onChange }: ToolProps) {
+  const lineType = merge(selection.map((s) => (s as Line).lineType));
+
+  return (
+    <div className="flex items-center justify-between gap-1">
+      <div className="text-xs text-muted-foreground px-2">Arrows</div>
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          title="Straight line"
+          pressed={lineType === LineType.STRAIGHT}
+          onPressedChange={() => {
+            onChange?.({ lineType: LineType.STRAIGHT });
+          }}
+        >
+          <LineStraightIcon size={16} />
+        </Toggle>
+        <Toggle
+          size="sm"
+          title="Curved line"
+          pressed={lineType === LineType.CURVE}
+          onPressedChange={() => {
+            onChange?.({ lineType: LineType.CURVE });
+          }}
+        >
+          <LineCurveIcon size={16} />
+        </Toggle>
+      </div>
+    </div>
+  );
+}
+
 function ArrowheadTool({ selection, onChange }: ToolProps) {
-  const styleProps = useStyleStore((state) => state.styleProps);
-
-  const tailEndType =
-    selection.length > 0
-      ? merge(selection.map((s) => (s as Line).tailEndType))
-      : styleProps.tailEndType;
-
-  const headEndType =
-    selection.length > 0
-      ? merge(selection.map((s) => (s as Line).headEndType))
-      : styleProps.headEndType;
+  const tailEndType = merge(selection.map((s) => (s as Line).tailEndType));
+  const headEndType = merge(selection.map((s) => (s as Line).headEndType));
 
   return (
     <div className="flex items-center justify-between gap-1">

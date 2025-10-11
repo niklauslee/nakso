@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Editor as EditorType,
-  FillStyle,
-  Shape,
-  ShapeProps,
-} from "@dgmjs/core";
-import { cn } from "@/lib/utils";
+import { Box, Editor as EditorType, Shape, ShapeProps } from "@dgmjs/core";
+import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
 import { useMenuStore } from "@/store/menu-store";
@@ -37,8 +32,26 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const setModified = useEditorStore((state) => state.setModified);
   const selection = useEditorStore((state) => state.selection);
   const setSelection = useEditorStore((state) => state.setSelection);
+  const activeHandler = useEditorStore((state) => state.activeHandler);
   const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
-  const setStyleProps = useStyleStore((state) => state.setStyleProps);
+  const styleStore = useStyleStore();
+
+  const isShapeTool =
+    activeHandler &&
+    [
+      "Rectangle",
+      "Ellipse",
+      "Text",
+      "Frame",
+      "Line",
+      "Connector",
+      "Freehand",
+      "Highlighter",
+    ].includes(activeHandler);
+
+  const shapeProps = isShapeTool
+    ? [{ type: activeHandler, ...styleStore.getStyleProps(activeHandler!) }]
+    : selection;
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -65,11 +78,11 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleShapeInitialize = (shape: Shape) => {
     try {
-      const props = { ...useStyleStore.getState().styleProps };
-      if (shape.type === "Text") {
-        delete (props as any).fillStyle;
-      }
-      Object.assign(shape, props);
+      const styleProps = structuredClone(
+        useStyleStore.getState().getStyleProps(shape.type)
+      );
+      Object.assign(shape, trimObject(styleProps));
+      if (shape instanceof Box) applyTextHorzAlign(shape);
     } catch (error) {
       console.error("Error handling shape initialization:", error);
     }
@@ -111,14 +124,15 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const handlePropsChange = (props: ShapeProps) => {
     try {
       const app = window.app;
-      // if (isShapeTool) {
-      //   styleStore.setStyleProps(activeHandler!, props);
-      // } else {
-      const shapes = app.editor.selection.getShapes();
-      app.editor.actions.update(props);
-      setStyleProps(props);
-      setSelection([...shapes]);
-      // }
+      if (isShapeTool) {
+        styleStore.setStyleProps(activeHandler!, props);
+      } else {
+        const shapes = app.editor.selection.getShapes();
+        const shapeType = merge(shapes.map((shape) => shape.type));
+        app.editor.actions.update(props);
+        styleStore.setStyleProps(shapeType!, props);
+        setSelection([...shapes]);
+      }
     } catch (error) {
       console.error("Error handling props change:", error);
     }
@@ -186,7 +200,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
             />
           </div>
         </ApplicationContextMenu>
-        <Palette selection={selection} onChange={handlePropsChange} />
+        <Palette selection={shapeProps} onChange={handlePropsChange} />
         <Toolbar />
         <HelpButton />
       </article>
