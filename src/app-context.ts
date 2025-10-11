@@ -42,10 +42,8 @@ export class AppContext {
   }
 
   async initialize() {
-    const darkMode = useSettingStore.getState().darkMode;
-    await getCurrentWindow().setTheme(darkMode ? "dark" : "light");
+    await this.setupNativeUI();
     await this.wiring();
-    await this.setupNativeMenu();
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
@@ -72,7 +70,14 @@ export class AppContext {
     });
   }
 
-  async setupNativeMenu() {
+  async setupNativeUI() {
+    const appWindow = getCurrentWindow();
+
+    // set initial theme
+    const darkMode = useSettingStore.getState().darkMode;
+    await appWindow.setTheme(darkMode ? "dark" : "light");
+
+    // setup native menu for macOS
     const aboutSubmenu = await Submenu.new({
       text: "About",
       items: [
@@ -88,6 +93,21 @@ export class AppContext {
     });
     const menu = await Menu.new({ items: [aboutSubmenu] });
     await menu.setAsAppMenu();
+
+    // setup window drag area
+    const dragRegions = document.querySelectorAll(
+      "[data-manual-window-drag-region]"
+    );
+    dragRegions.forEach((region) => {
+      region.addEventListener("mousedown", (e) => {
+        const mouseEvent = e as MouseEvent;
+        if (mouseEvent.buttons === 1) {
+          mouseEvent.detail === 2
+            ? appWindow.toggleMaximize() // maximize on double click
+            : appWindow.startDragging(); // else start dragging
+        }
+      });
+    });
   }
 
   async loadFonts() {

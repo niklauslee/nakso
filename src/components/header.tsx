@@ -19,7 +19,7 @@ export function Header({
 
   return (
     <header
-      data-tauri-drag-region
+      data-manual-window-drag-region
       className={cn(
         "flex items-center justify-between w-full h-12 px-4",
         className

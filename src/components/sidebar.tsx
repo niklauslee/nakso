@@ -35,7 +35,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader data-tauri-drag-region className="w-full h-12">
+      <SidebarHeader data-manual-window-drag-region className="w-full h-12">
         <div className="w-full h-full flex items-center justify-between">
           <div className="flex items-center"></div>
           <div className="flex items-center">

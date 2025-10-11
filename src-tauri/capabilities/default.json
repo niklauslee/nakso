@@ -10,6 +10,8 @@
     "core:window:allow-start-dragging",
     "core:window:allow-destroy",
     "core:window:allow-set-theme",
+    "core:window:allow-toggle-maximize",
+    "window-state:default",
     "os:default",
     "process:allow-exit",
     "fs:default",
