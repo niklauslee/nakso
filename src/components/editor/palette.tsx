@@ -44,6 +44,7 @@ import {
   Text,
   HorzAlign,
   VertAlign,
+  Line,
 } from "@dgmjs/core";
 import { merge } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
@@ -74,6 +75,24 @@ export function Palette({ selection, onChange }: PaletteProps) {
   const innerRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const hasMulti = selection.length > 1;
+  const hasSelection = selection.length > 0;
+
+  const hasRectangle = selection.some((s) => s.type === "Rectangle");
+  const hasEllipse = selection.some((s) => s.type === "Ellipse");
+  const hasText = selection.some((s) => s.type === "Text");
+  const hasImage = selection.some((s) => s.type === "Image");
+  const hasIcon = selection.some((s) => s.type === "Icon");
+  const hasGroup = selection.some((s) => s.type === "Group");
+  const hasFrame = selection.some((s) => s.type === "Frame");
+  const hasLine = selection.some((s) => s.type === "Line");
+  const hasClosedLine = selection.some(
+    (s) => s.type === "Line" && (s as Line).isClosed()
+  );
+  const hasConnector = selection.some((s) => s.type === "Connector");
+  const hasFreehand = selection.some((s) => s.type === "Freehand");
+  const hasHighlighter = selection.some((s) => s.type === "Highlighter");
+
   // keep scroll area height in sync with container
   useEffect(() => {
     if (!outerRef.current) return;
@@ -103,36 +122,65 @@ export function Palette({ selection, onChange }: PaletteProps) {
         className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg"
       >
         <div ref={innerRef} className="flex flex-col gap-2 w-full h-fit p-2">
-          <FillColorTool selection={selection} onChange={onChange} />
-          <FillStyleTool selection={selection} onChange={onChange} />
-          <OpacityTool selection={selection} onChange={onChange} />
-          <Separator className="opacity-50" />
+          {(hasRectangle || hasEllipse || hasFrame || hasClosedLine) && (
+            <>
+              <FillColorTool selection={selection} onChange={onChange} />
+              <FillStyleTool selection={selection} onChange={onChange} />
+              <Separator className="opacity-50" />
+            </>
+          )}
+
+          {/* <OpacityTool selection={selection} onChange={onChange} /> */}
+
           <StrokeColorTool selection={selection} onChange={onChange} />
-          <StrokeWidthTool selection={selection} onChange={onChange} />
-          <StrokePatternTool selection={selection} onChange={onChange} />
-          <Separator className="opacity-50" />
-          <FontSizeTool selection={selection} onChange={onChange} />
-          <TextAlignTool selection={selection} onChange={onChange} />
-          <Separator className="opacity-50" />
+          {(hasRectangle ||
+            hasEllipse ||
+            hasFrame ||
+            hasLine ||
+            hasConnector) && (
+            <>
+              <StrokeWidthTool selection={selection} onChange={onChange} />
+              <StrokePatternTool selection={selection} onChange={onChange} />
+            </>
+          )}
 
-          <LayerTool selection={selection} onChange={onChange} />
-          <AlignmentTool selection={selection} onChange={onChange} />
+          {(hasRectangle || hasEllipse || hasText) && (
+            <>
+              <Separator className="opacity-50" />
+              <FontSizeTool selection={selection} onChange={onChange} />
+              <TextAlignTool selection={selection} onChange={onChange} />
+            </>
+          )}
 
-          <Separator className="opacity-50" />
-          <div className="flex items-center gap-1">
-            <Toggle size="sm">
-              <PaintBucketIcon size={16} />
-            </Toggle>
-            <Toggle size="sm">
-              <PenLineIcon size={16} />
-            </Toggle>
-            <Toggle size="sm">
-              <TypeIcon size={16} />
-            </Toggle>
-            <Toggle size="sm">
-              <EllipsisVerticalIcon size={16} />
-            </Toggle>
-          </div>
+          {hasSelection && (
+            <>
+              <Separator className="opacity-50" />
+              <LayerTool selection={selection} onChange={onChange} />
+              {hasMulti && (
+                <AlignmentTool selection={selection} onChange={onChange} />
+              )}
+            </>
+          )}
+
+          {hasSelection && (
+            <>
+              <Separator className="opacity-50" />
+              <div className="flex items-center gap-1">
+                <Toggle size="sm">
+                  <PaintBucketIcon size={16} />
+                </Toggle>
+                <Toggle size="sm">
+                  <PenLineIcon size={16} />
+                </Toggle>
+                <Toggle size="sm">
+                  <TypeIcon size={16} />
+                </Toggle>
+                <Toggle size="sm">
+                  <EllipsisVerticalIcon size={16} />
+                </Toggle>
+              </div>
+            </>
+          )}
         </div>
       </ScrollArea>
     </div>
@@ -327,7 +375,10 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$foreground"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$foreground" });
+              onChange?.({
+                strokeColor: "$foreground",
+                fontColor: "$foreground",
+              });
             }
           }}
         >
@@ -339,7 +390,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$gray9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$gray9" });
+              onChange?.({ strokeColor: "$gray9", fontColor: "$gray9" });
             }
           }}
         >
@@ -351,7 +402,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$red9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$red9" });
+              onChange?.({ strokeColor: "$red9", fontColor: "$red9" });
             }
           }}
         >
@@ -363,7 +414,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$blue9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$blue9" });
+              onChange?.({ strokeColor: "$blue9", fontColor: "$blue9" });
             }
           }}
         >
@@ -377,7 +428,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$green9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$green9" });
+              onChange?.({ strokeColor: "$green9", fontColor: "$green9" });
             }
           }}
         >
@@ -389,7 +440,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$yellow9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$yellow9" });
+              onChange?.({ strokeColor: "$yellow9", fontColor: "$yellow9" });
             }
           }}
         >
@@ -401,7 +452,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           pressed={strokeColor === "$purple9"}
           onPressedChange={(pressed) => {
             if (pressed) {
-              onChange?.({ strokeColor: "$purple9" });
+              onChange?.({ strokeColor: "$purple9", fontColor: "$purple9" });
             }
           }}
         >
@@ -465,6 +516,9 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
 }
 
 function StrokePatternTool({ selection, onChange }: ToolProps) {
+  const hasRectangle = selection.some((s) => s.type === "Rectangle");
+  const hasFrame = selection.some((s) => s.type === "Frame");
+
   const strokePattern = merge(
     selection.map((s) => s.strokePattern),
     true
@@ -512,18 +566,20 @@ function StrokePatternTool({ selection, onChange }: ToolProps) {
       >
         <StrokeDashedIcon size={16} />
       </Toggle>
-      <Toggle
-        size="sm"
-        title="Rounded corners"
-        pressed={stringifiedCorners === "-10,-10,-10,-10"}
-        onPressedChange={(pressed) => {
-          onChange?.({
-            corners: pressed ? [-10, -10, -10, -10] : [0, 0, 0, 0],
-          });
-        }}
-      >
-        <RoundedIcon size={16} />
-      </Toggle>
+      {(hasRectangle || hasFrame) && (
+        <Toggle
+          size="sm"
+          title="Rounded corners"
+          pressed={stringifiedCorners === "-10,-10,-10,-10"}
+          onPressedChange={(pressed) => {
+            onChange?.({
+              corners: pressed ? [-10, -10, -10, -10] : [0, 0, 0, 0],
+            });
+          }}
+        >
+          <RoundedIcon size={16} />
+        </Toggle>
+      )}
     </div>
   );
 }
@@ -679,6 +735,9 @@ function LayerTool({}: ToolProps) {
         size="icon-sm"
         variant="ghost"
         title={`Bring to front ⎯ ${formattedKeys["align:bring-to-front"]}`}
+        onClick={() => {
+          window.app.commands.execute("align:bring-to-front");
+        }}
       >
         <AlignBringToFrontIcon size={16} />
       </Button>
@@ -686,6 +745,9 @@ function LayerTool({}: ToolProps) {
         size="icon-sm"
         variant="ghost"
         title={`Bring forward ⎯ ${formattedKeys["align:bring-forward"]}`}
+        onClick={() => {
+          window.app.commands.execute("align:bring-forward");
+        }}
       >
         <AlignBringForwardIcon size={16} />
       </Button>
@@ -693,6 +755,9 @@ function LayerTool({}: ToolProps) {
         size="icon-sm"
         variant="ghost"
         title={`Send backward ⎯ ${formattedKeys["align:send-backward"]}`}
+        onClick={() => {
+          window.app.commands.execute("align:send-backward");
+        }}
       >
         <AlignSendBackwardIcon size={16} />
       </Button>
@@ -700,6 +765,9 @@ function LayerTool({}: ToolProps) {
         size="icon-sm"
         variant="ghost"
         title={`Send to back ⎯ ${formattedKeys["align:send-to-back"]}`}
+        onClick={() => {
+          window.app.commands.execute("align:send-to-back");
+        }}
       >
         <AlignSendToBackIcon size={16} />
       </Button>
@@ -711,30 +779,86 @@ function AlignmentTool({}: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Align left">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align left"
+          onClick={() => {
+            window.app.commands.execute("align:align-left");
+          }}
+        >
           <AlignStartVerticalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Align center">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align center"
+          onClick={() => {
+            window.app.commands.execute("align:align-center");
+          }}
+        >
           <AlignCenterVerticalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Align right">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align right"
+          onClick={() => {
+            window.app.commands.execute("align:align-right");
+          }}
+        >
           <AlignEndVerticalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Distribute horizontally">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Distribute horizontally"
+          onClick={() => {
+            window.app.commands.execute("align:distribute-horizontally");
+          }}
+        >
           <AlignHorizontalSpaceAroundIcon size={16} />
         </Button>
       </div>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Align top">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align top"
+          onClick={() => {
+            window.app.commands.execute("align:align-top");
+          }}
+        >
           <AlignStartHorizontalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Align middle">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align middle"
+          onClick={() => {
+            window.app.commands.execute("align:align-middle");
+          }}
+        >
           <AlignCenterHorizontalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Align bottom">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Align bottom"
+          onClick={() => {
+            window.app.commands.execute("align:align-bottom");
+          }}
+        >
           <AlignEndHorizontalIcon size={16} />
         </Button>
-        <Button size="icon-sm" variant="ghost" title="Distribute vertically">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Distribute vertically"
+          onClick={() => {
+            window.app.commands.execute("align:distribute-vertically");
+          }}
+        >
           <AlignVerticalSpaceAroundIcon size={16} />
         </Button>
       </div>
