@@ -54,9 +54,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useKeymapStore } from "@/store/keymap-store";
 import { Slider } from "@/components/ui/slider";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface ToolProps {
   selection: Shape[];
@@ -69,10 +70,39 @@ interface PaletteProps {
 }
 
 export function Palette({ selection, onChange }: PaletteProps) {
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // keep scroll area height in sync with container
+  useEffect(() => {
+    if (!outerRef.current) return;
+    const observer = new ResizeObserver(() => {
+      const outer = outerRef.current;
+      const inner = innerRef.current;
+      const scroll = scrollRef.current;
+      if (!outer || !inner || !scroll) return;
+      const outerHeight = outer.getBoundingClientRect().height;
+      const innerHeight = inner.getBoundingClientRect().height;
+      if (innerHeight + 2 > outerHeight) {
+        scroll.style.setProperty("height", `${outerHeight}px`);
+      } else {
+        scroll.style.removeProperty("height");
+      }
+    });
+    observer.observe(outerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="absolute top-4 bottom-4 right-4 w-40">
-      <div className="w-full h-fit max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex flex-col gap-2 w-full h-fit p-2">
+    <div ref={outerRef} className="absolute top-4 bottom-4 right-4 w-40 z-10">
+      <ScrollArea
+        ref={scrollRef}
+        className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg"
+      >
+        <div ref={innerRef} className="flex flex-col gap-2 w-full h-fit p-2">
           <FillColorTool selection={selection} onChange={onChange} />
           <FillStyleTool selection={selection} onChange={onChange} />
           <OpacityTool selection={selection} onChange={onChange} />
@@ -104,7 +134,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </Toggle>
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }
