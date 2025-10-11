@@ -62,3 +62,13 @@ export function trimObject(obj: any) {
 export function dateFromNow(date: Date): string {
   return dayjs(date).fromNow();
 }
+
+/**
+ * Return the string with the first letter capitalized.
+ */
+export function toPascalCaseWithSpace(str: string) {
+  return str
+    .split("-")
+    .map((s) => s[0].toUpperCase() + s.slice(1))
+    .join(" ");
+}

@@ -11,12 +11,14 @@ const SvgRoundedSmall = ({
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
-      d="M2 9H11C13.2091 9 15 10.7909 15 13V22"
+      d="M5 6H14C16.2091 6 18 7.79086 18 10V19"
       stroke="currentColor"
       strokeWidth={strokeWidth}
     />
   </svg>
 );
+
 export default SvgRoundedSmall;

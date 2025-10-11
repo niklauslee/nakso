@@ -1,4 +1,3 @@
-import * as React from "react";
 import type { IconProps } from "./types";
 
 const SvgRoundedNone = ({
@@ -7,14 +6,15 @@ const SvgRoundedNone = ({
   ...props
 }: IconProps) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
     width={size}
     height={size}
+    viewBox="0 0 24 24"
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path stroke="currentColor" strokeWidth={strokeWidth} d="M2 9h13v13" />
+    <path d="M5 6H18V19" stroke="currentColor" strokeWidth={strokeWidth} />
   </svg>
 );
+
 export default SvgRoundedNone;

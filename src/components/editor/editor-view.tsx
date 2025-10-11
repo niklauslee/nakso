@@ -18,6 +18,7 @@ import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
+import { useStyleStore } from "@/store/style-store";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -37,6 +38,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const selection = useEditorStore((state) => state.selection);
   const setSelection = useEditorStore((state) => state.setSelection);
   const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
+  const setStyleProps = useStyleStore((state) => state.setStyleProps);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -63,11 +65,11 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleShapeInitialize = (shape: Shape) => {
     try {
-      shape.fontFamily = "Loranthus";
-      shape.fontSize = 20;
-      shape.roughness = 1;
-      shape.fillStyle = FillStyle.SOLID;
-      shape.strokeWidth = 2;
+      const props = { ...useStyleStore.getState().styleProps };
+      if (shape.type === "Text") {
+        delete (props as any).fillStyle;
+      }
+      Object.assign(shape, props);
     } catch (error) {
       console.error("Error handling shape initialization:", error);
     }
@@ -113,9 +115,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       //   styleStore.setStyleProps(activeHandler!, props);
       // } else {
       const shapes = app.editor.selection.getShapes();
-      // const shapeType = merge(shapes.map((shape) => shape.type));
       app.editor.actions.update(props);
-      // styleStore.setStyleProps(shapeType!, props);
+      setStyleProps(props);
       setSelection([...shapes]);
       // }
     } catch (error) {

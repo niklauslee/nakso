@@ -15,6 +15,7 @@ import {
   AlignSendBackwardIcon,
   AlignSendToBackIcon,
   RoundedIcon,
+  RoundedLargeIcon,
 } from "@/components/icons";
 import {
   EllipsisVerticalIcon,
@@ -45,6 +46,7 @@ import {
   HorzAlign,
   VertAlign,
   Line,
+  LineEndTypeEnum,
 } from "@dgmjs/core";
 import { merge } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
@@ -59,6 +61,9 @@ import { useEffect, useRef, useState } from "react";
 import { useKeymapStore } from "@/store/keymap-store";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "../ui/scroll-area";
+import { useEditorStore } from "@/store/editor-store";
+import { useStyleStore } from "@/store/style-store";
+import { SelectArrowhead } from "./select-arrowhead";
 
 interface ToolProps {
   selection: Shape[];
@@ -70,28 +75,49 @@ interface PaletteProps {
   onChange?: (values: ShapeProps) => void;
 }
 
+function hasShapeType(tool: string | null, selection: Shape[], type: string) {
+  return tool === type || selection.some((s) => s.type === type);
+}
+
+function isShapeTool(tool: string | null) {
+  return [
+    "Rectangle",
+    "Ellipse",
+    "Text",
+    "Image",
+    "Icon",
+    "Group",
+    "Frame",
+    "Line",
+    "Connector",
+    "Freehand",
+    "Highlighter",
+  ].includes(tool || "");
+}
+
 export function Palette({ selection, onChange }: PaletteProps) {
   const outerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const tool = useEditorStore((state) => state.activeHandler);
   const hasMulti = selection.length > 1;
   const hasSelection = selection.length > 0;
 
-  const hasRectangle = selection.some((s) => s.type === "Rectangle");
-  const hasEllipse = selection.some((s) => s.type === "Ellipse");
-  const hasText = selection.some((s) => s.type === "Text");
-  const hasImage = selection.some((s) => s.type === "Image");
-  const hasIcon = selection.some((s) => s.type === "Icon");
-  const hasGroup = selection.some((s) => s.type === "Group");
-  const hasFrame = selection.some((s) => s.type === "Frame");
-  const hasLine = selection.some((s) => s.type === "Line");
+  const hasRectangle = hasShapeType(tool, selection, "Rectangle");
+  const hasEllipse = hasShapeType(tool, selection, "Ellipse");
+  const hasText = hasShapeType(tool, selection, "Text");
+  const hasImage = hasShapeType(tool, selection, "Image");
+  const hasIcon = hasShapeType(tool, selection, "Icon");
+  const hasGroup = hasShapeType(tool, selection, "Group");
+  const hasFrame = hasShapeType(tool, selection, "Frame");
+  const hasLine = hasShapeType(tool, selection, "Line");
   const hasClosedLine = selection.some(
     (s) => s.type === "Line" && (s as Line).isClosed()
   );
-  const hasConnector = selection.some((s) => s.type === "Connector");
-  const hasFreehand = selection.some((s) => s.type === "Freehand");
-  const hasHighlighter = selection.some((s) => s.type === "Highlighter");
+  const hasConnector = hasShapeType(tool, selection, "Connector");
+  const hasFreehand = hasShapeType(tool, selection, "Freehand");
+  const hasHighlighter = hasShapeType(tool, selection, "Highlighter");
 
   // keep scroll area height in sync with container
   useEffect(() => {
@@ -115,6 +141,11 @@ export function Palette({ selection, onChange }: PaletteProps) {
     };
   }, []);
 
+  // don't show palette when no selection and not shape tool
+  if (!hasSelection && !isShapeTool(tool)) {
+    return null;
+  }
+
   return (
     <div ref={outerRef} className="absolute top-4 bottom-4 right-4 w-40 z-10">
       <ScrollArea
@@ -132,7 +163,9 @@ export function Palette({ selection, onChange }: PaletteProps) {
 
           {/* <OpacityTool selection={selection} onChange={onChange} /> */}
 
-          <StrokeColorTool selection={selection} onChange={onChange} />
+          {!hasImage && !hasGroup && (
+            <StrokeColorTool selection={selection} onChange={onChange} />
+          )}
           {(hasRectangle ||
             hasEllipse ||
             hasFrame ||
@@ -140,7 +173,10 @@ export function Palette({ selection, onChange }: PaletteProps) {
             hasConnector) && (
             <>
               <StrokeWidthTool selection={selection} onChange={onChange} />
-              <StrokePatternTool selection={selection} onChange={onChange} />
+              <StrokePatternAndCornerTool
+                selection={selection}
+                onChange={onChange}
+              />
             </>
           )}
 
@@ -149,6 +185,13 @@ export function Palette({ selection, onChange }: PaletteProps) {
               <Separator className="opacity-50" />
               <FontSizeTool selection={selection} onChange={onChange} />
               <TextAlignTool selection={selection} onChange={onChange} />
+            </>
+          )}
+
+          {(hasLine || hasConnector) && (
+            <>
+              <Separator className="opacity-50" />
+              <ArrowheadTool selection={selection} onChange={onChange} />
             </>
           )}
 
@@ -189,7 +232,11 @@ export function Palette({ selection, onChange }: PaletteProps) {
 
 function FillColorTool({ selection, onChange }: ToolProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
-  const fillColor = merge(selection.map((s) => s.fillColor));
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const fillColor =
+    selection.length > 0
+      ? merge(selection.map((s) => s.fillColor))
+      : styleProps.fillColor;
   return (
     <>
       <div className="flex items-center gap-1">
@@ -292,7 +339,11 @@ function FillColorTool({ selection, onChange }: ToolProps) {
 }
 
 function FillStyleTool({ selection, onChange }: ToolProps) {
-  const fillStyle = merge(selection.map((s) => s.fillStyle));
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const fillStyle =
+    selection.length > 0
+      ? merge(selection.map((s) => s.fillStyle))
+      : styleProps.fillStyle;
 
   return (
     <div className="flex items-center gap-1">
@@ -365,7 +416,11 @@ function OpacityTool({}: ToolProps) {
 
 function StrokeColorTool({ selection, onChange }: ToolProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
-  const strokeColor = merge(selection.map((s) => s.strokeColor));
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const strokeColor =
+    selection.length > 0
+      ? merge(selection.map((s) => s.strokeColor))
+      : styleProps.strokeColor;
   return (
     <>
       <div className="flex items-center gap-1">
@@ -467,7 +522,11 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
 }
 
 function StrokeWidthTool({ selection, onChange }: ToolProps) {
-  const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 1;
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const strokeWidth =
+    selection.length > 0
+      ? merge(selection.map((s) => s.strokeWidth)) ?? 2
+      : styleProps.strokeWidth;
 
   return (
     <div className="flex items-center gap-1">
@@ -515,23 +574,34 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokePatternTool({ selection, onChange }: ToolProps) {
-  const hasRectangle = selection.some((s) => s.type === "Rectangle");
-  const hasFrame = selection.some((s) => s.type === "Frame");
+function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const tool = useEditorStore((state) => state.activeHandler);
+  const hasRectangle = hasShapeType(tool, selection, "Rectangle");
+  const hasFrame = hasShapeType(tool, selection, "Frame");
 
-  const strokePattern = merge(
-    selection.map((s) => s.strokePattern),
-    true
-  );
-  const corners = merge(
-    selection.map((s) => (s as Box).corners ?? [-1, -1, -1, -1]),
-    true
-  ) ?? [-1, -1, -1, -1];
+  const strokePattern =
+    selection.length > 0
+      ? merge(
+          selection.map((s) => s.strokePattern),
+          true
+        )
+      : styleProps.strokePattern;
+
+  const corners =
+    selection.length > 0
+      ? merge(
+          selection.map((s) => (s as Box).corners ?? [0, 0, 0, 0]),
+          true
+        ) ?? [0, 0, 0, 0]
+      : styleProps.corners ?? [0, 0, 0, 0];
+
   const stringifiedPattern = Array.isArray(strokePattern)
     ? strokePattern.length > 0
       ? strokePattern.join(",")
       : "0"
     : undefined;
+
   const stringifiedCorners = corners.join(",");
 
   return (
@@ -577,7 +647,7 @@ function StrokePatternTool({ selection, onChange }: ToolProps) {
             });
           }}
         >
-          <RoundedIcon size={16} />
+          <RoundedLargeIcon size={16} />
         </Toggle>
       )}
     </div>
@@ -585,7 +655,12 @@ function StrokePatternTool({ selection, onChange }: ToolProps) {
 }
 
 function FontSizeTool({ selection, onChange }: ToolProps) {
-  const fontSize = merge(selection.map((s) => (s as Text).fontSize));
+  const styleProps = useStyleStore((state) => state.styleProps);
+  const fontSize =
+    selection.length > 0
+      ? merge(selection.map((s) => (s as Text).fontSize))
+      : styleProps.fontSize;
+
   return (
     <div className="flex items-center gap-1">
       <Toggle
@@ -638,8 +713,17 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
 
 function TextAlignTool({ selection, onChange }: ToolProps) {
   const [popupOpen, setPopupOpen] = useState(false);
-  const horzAlign = merge(selection.map((s) => (s as Box).horzAlign));
-  const vertAlign = merge(selection.map((s) => (s as Box).vertAlign));
+  const styleProps = useStyleStore((state) => state.styleProps);
+
+  const horzAlign =
+    selection.length > 0
+      ? merge(selection.map((s) => (s as Box).horzAlign))
+      : styleProps.horzAlign;
+
+  const vertAlign =
+    selection.length > 0
+      ? merge(selection.map((s) => (s as Box).vertAlign))
+      : styleProps.vertAlign;
 
   return (
     <div className="flex items-center gap-1">
@@ -723,6 +807,43 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           </div>
         </PopoverContent>
       </Popover>
+    </div>
+  );
+}
+
+function ArrowheadTool({ selection, onChange }: ToolProps) {
+  const styleProps = useStyleStore((state) => state.styleProps);
+
+  const tailEndType =
+    selection.length > 0
+      ? merge(selection.map((s) => (s as Line).tailEndType))
+      : styleProps.tailEndType;
+
+  const headEndType =
+    selection.length > 0
+      ? merge(selection.map((s) => (s as Line).headEndType))
+      : styleProps.headEndType;
+
+  return (
+    <div className="flex items-center justify-between gap-1">
+      <div className="text-xs text-muted-foreground px-2">Arrows</div>
+      <div className="flex items-center gap-1">
+        <SelectArrowhead
+          title="Arrowhead start"
+          rotate={true}
+          value={tailEndType}
+          onValueChange={(value) => {
+            onChange?.({ tailEndType: value as LineEndTypeEnum });
+          }}
+        />
+        <SelectArrowhead
+          title="Arrowhead end"
+          value={headEndType}
+          onValueChange={(value) => {
+            onChange?.({ headEndType: value as LineEndTypeEnum });
+          }}
+        />
+      </div>
     </div>
   );
 }
