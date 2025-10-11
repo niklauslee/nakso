@@ -34,8 +34,6 @@ import {
   AlignCenterHorizontalIcon,
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
-  CircleEllipsisIcon,
-  EllipsisIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -72,36 +70,40 @@ interface PaletteProps {
 
 export function Palette({ selection, onChange }: PaletteProps) {
   return (
-    <div className="absolute right-4 top-4 flex flex-col gap-2 w-40 bg-background dark:bg-neutral-900 border shadow-lg/5 rounded-lg p-2 pointer-events-auto">
-      <FillColorTool selection={selection} onChange={onChange} />
-      <FillStyleTool selection={selection} onChange={onChange} />
-      <OpacityTool selection={selection} onChange={onChange} />
-      <Separator className="opacity-50" />
-      <StrokeColorTool selection={selection} onChange={onChange} />
-      <StrokeWidthTool selection={selection} onChange={onChange} />
-      <StrokePatternTool selection={selection} onChange={onChange} />
-      <Separator className="opacity-50" />
-      <FontSizeTool selection={selection} onChange={onChange} />
-      <TextAlignTool selection={selection} onChange={onChange} />
-      <Separator className="opacity-50" />
+    <div className="absolute top-4 bottom-4 right-4 w-40">
+      <div className="w-full h-fit max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex flex-col gap-2 w-full h-fit p-2">
+          <FillColorTool selection={selection} onChange={onChange} />
+          <FillStyleTool selection={selection} onChange={onChange} />
+          <OpacityTool selection={selection} onChange={onChange} />
+          <Separator className="opacity-50" />
+          <StrokeColorTool selection={selection} onChange={onChange} />
+          <StrokeWidthTool selection={selection} onChange={onChange} />
+          <StrokePatternTool selection={selection} onChange={onChange} />
+          <Separator className="opacity-50" />
+          <FontSizeTool selection={selection} onChange={onChange} />
+          <TextAlignTool selection={selection} onChange={onChange} />
+          <Separator className="opacity-50" />
 
-      <LayerTool selection={selection} onChange={onChange} />
-      <AlignmentTool selection={selection} onChange={onChange} />
+          <LayerTool selection={selection} onChange={onChange} />
+          <AlignmentTool selection={selection} onChange={onChange} />
 
-      <Separator className="opacity-50" />
-      <div className="flex items-center gap-1">
-        <Toggle size="sm">
-          <PaintBucketIcon size={16} />
-        </Toggle>
-        <Toggle size="sm">
-          <PenLineIcon size={16} />
-        </Toggle>
-        <Toggle size="sm">
-          <TypeIcon size={16} />
-        </Toggle>
-        <Toggle size="sm">
-          <EllipsisVerticalIcon size={16} />
-        </Toggle>
+          <Separator className="opacity-50" />
+          <div className="flex items-center gap-1">
+            <Toggle size="sm">
+              <PaintBucketIcon size={16} />
+            </Toggle>
+            <Toggle size="sm">
+              <PenLineIcon size={16} />
+            </Toggle>
+            <Toggle size="sm">
+              <TypeIcon size={16} />
+            </Toggle>
+            <Toggle size="sm">
+              <EllipsisVerticalIcon size={16} />
+            </Toggle>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -126,7 +128,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorIcon
             value="$background"
             darkMode={darkMode}
-            className="border-1"
+            className="border-1 border-neutral-300 dark:border-neutral-600"
           />
         </Toggle>
         <Toggle

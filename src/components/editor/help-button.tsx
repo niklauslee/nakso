@@ -19,7 +19,7 @@ export function HelpButton() {
   const helpMenu = useMenuStore((state) => state.menus.help);
 
   return (
-    <div className="fixed right-4 bottom-5 z-10 flex justify-center gap-2">
+    <div className="fixed right-4 bottom-4 z-10 flex justify-center gap-2">
       <ApplicationMenu menu={helpMenu} align="end">
         <Button
           variant="outline"
