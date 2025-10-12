@@ -61,10 +61,12 @@ function App() {
               onMount={handleAppReady}
               className={cn(view !== "editor" && "hidden")}
             />
-            <ExplorerView
-              folder={null}
-              className={cn(view !== "folder" && "hidden")}
-            />
+            {view === "folder" && (
+              <ExplorerView
+                folder={null}
+                className={cn(view !== "folder" && "hidden")}
+              />
+            )}
           </SidebarInset>
         </SidebarProvider>
       </div>
