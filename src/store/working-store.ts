@@ -3,22 +3,32 @@ import { devtools, persist } from "zustand/middleware";
 
 const MAX_RECENT_FILES = 10;
 
+// Rename to 'WorkspaceStore'.
+// Make this store as persistent.
+// 0. workspacePath: string | null
+// 1. workingFile: string | null
+// 2. workingFolder: string | null
+// 3. recentFiles
+// 4. favoriteFiles
+
 export interface WorkingState {
+  workspacePath: string | null;
   workingFile: string | null;
-  currentFolder: string | null;
+  workingFolder: string | null;
   recentFiles: string[];
   favoriteFiles: string[];
   setWorkingFile: (file: string | null) => void;
   addRecentFile: (file: string) => void;
-  setCurrentFolder: (folder: string | null) => void;
+  setWorkingFolder: (folder: string | null) => void;
 }
 
 export const useWorkingStore = create<WorkingState>()(
   devtools(
     persist(
       (set) => ({
+        workspacePath: null,
         workingFile: null,
-        currentFolder: null,
+        workingFolder: null,
         recentFiles: [],
         favoriteFiles: [],
         setWorkingFile: (file) => set(() => ({ workingFile: file })),
@@ -31,7 +41,7 @@ export const useWorkingStore = create<WorkingState>()(
             }
             return { recentFiles };
           }),
-        setCurrentFolder: (folder) => set(() => ({ currentFolder: folder })),
+        setWorkingFolder: (folder) => set(() => ({ workingFolder: folder })),
       }),
       { name: "working-storage" }
     ),

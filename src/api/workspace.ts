@@ -30,11 +30,11 @@ export type FileEntry = {
   /.nakso
     /workspace.json
     /trash
-    /draft
-  /folder1
+  /Draft
+  /Folder1
     /file1.nakso
     /file2.nakso
-  /folder2
+  /Folder2
 */
 
 async function ensureDir(path: string): Promise<string> {

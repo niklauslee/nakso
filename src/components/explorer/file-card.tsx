@@ -23,6 +23,8 @@ interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
   file: FileEntry;
 }
 
+// TODO: expose onDoubleClick prop
+// TODO: expose onFileError prop
 export function FileCard({ file, className }: FileCardProps) {
   const pageViewRef = useRef<DGMPageViewHandle>(null);
   const darkMode = useSettingStore((state) => state.darkMode);
