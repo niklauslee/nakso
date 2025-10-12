@@ -6,12 +6,13 @@ import { Font, insertFontsToDocument, useFontStore } from "@/store/font-store";
 import { registerCommands } from "./commands";
 import { useSettingStore } from "@/store/setting-store";
 import { useKeymapStore } from "@/store/keymap-store";
+import { MenuItemState, useMenuStore } from "@/store/menu-store";
+import { useWorkspaceStore } from "@/store/workspace-store";
+import { useWorkingStore } from "@/store/working-store";
 import packageJson from "../package.json";
 import fontJson from "./fonts.json";
 import menuJson from "./menu.json";
 import keymapJson from "./keymap.json";
-import { MenuItemState, useMenuStore } from "@/store/menu-store";
-import { useWorkspaceStore } from "./store/workspace-store";
 import { AutoSaver } from "./engine/auto-saver";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
@@ -49,6 +50,7 @@ export class AppContext {
     this.loadMenus();
     this.loadWorkspace();
     registerCommands();
+    await this.loadWorkingState();
   }
 
   async wiring() {
@@ -149,6 +151,25 @@ export class AppContext {
       useWorkspaceStore.getState().initialize();
     } catch (err) {
       console.error("Failed to load workspace", err);
+    }
+  }
+
+  async loadWorkingState() {
+    try {
+      const workspace = window.api.workspace;
+      const workingFile = useWorkingStore.getState().workingFile;
+      if (workingFile && (await workspace.existsFile(workingFile))) {
+        setTimeout(async () => {
+          await this.commands.execute("file:open", { filePath: workingFile });
+        }, 0);
+      } else {
+        // TODO: 1. Find the last opened file from recent files
+        // TODO: 2. If not found, find the most recently modified file from workspace
+        // TODO: 3. If not found, just create a new file in 'Draft' folder
+        console.log("No working file to restore");
+      }
+    } catch (err) {
+      console.error("Failed to load working state", err);
     }
   }
 

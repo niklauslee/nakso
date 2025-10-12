@@ -19,6 +19,7 @@ import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { useAppStore } from "./store/app-store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useWorkingStore } from "./store/working-store";
 
 /**
  * Find the shapes by the given id array.
@@ -73,6 +74,8 @@ export function registerCommands() {
         useEditorStore.getState().setFile(fileEntry);
         useEditorStore.getState().setModified(false);
         useEditorStore.getState().setDoc(app.editor.getDoc());
+        useWorkingStore.getState().setWorkingFile(filePath);
+        useWorkingStore.getState().addRecentFile(filePath);
         useAppStore.getState().setView("editor");
       } catch (err) {
         toast.error("Failed to open file: " + filePath);

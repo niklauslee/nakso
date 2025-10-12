@@ -128,7 +128,7 @@ async function getFileEntry(path: string): Promise<FileEntry> {
   const info = await stat(path);
   const name = await basename(path);
   const fileEntry: FileEntry = {
-    isDirectory: false,
+    isDirectory: info.isDirectory,
     fullPath: path,
     name,
     mode: info.mode ?? 0,
@@ -139,6 +139,10 @@ async function getFileEntry(path: string): Promise<FileEntry> {
     readonly: info.readonly,
   };
   return fileEntry;
+}
+
+async function existsFile(path: string): Promise<boolean> {
+  return await exists(path);
 }
 
 async function readFile(path: string): Promise<string> {
@@ -157,6 +161,7 @@ export const workspace = {
   getFavoriteFiles,
   getFiles,
   getFileEntry,
+  existsFile,
   readFile,
   writeFile,
 };
