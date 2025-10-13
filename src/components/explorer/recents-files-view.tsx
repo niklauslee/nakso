@@ -13,7 +13,7 @@ import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
-import { useRecentFilesStore } from "@/store/recent-files-store";
+import { useRecentFilesStore } from "@/store/recents-store";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
 

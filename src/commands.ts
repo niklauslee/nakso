@@ -22,7 +22,7 @@ import { useAppStore } from "./store/app-store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
-import { useRecentFilesStore } from "./store/recent-files-store";
+import { useRecentFilesStore } from "./store/recents-store";
 
 /**
  * Find the shapes by the given id array.
@@ -100,7 +100,7 @@ export function registerCommands() {
           await workspace.writeFile(filePath, content);
           useEditorStore.getState().setModified(false);
           useExplorerStore.getState().updateFile(filePath);
-          useRecentFilesStore.getState().addRecentFile(filePath);
+          useRecentFilesStore.getState().addToRecents(filePath);
         }
       } catch (error) {
         toast.error("Failed to save file");

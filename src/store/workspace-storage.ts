@@ -28,4 +28,4 @@ const fileStorage: StateStorage = {
   },
 };
 
-export const workspaceConfigStorage = createJSONStorage(() => fileStorage);
+export const workspaceStorage = createJSONStorage(() => fileStorage);
