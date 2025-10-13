@@ -15,6 +15,7 @@ import keymapJson from "./keymap.json";
 import { AutoSaver } from "./engine/auto-saver";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useExplorerStore } from "./store/explorer-store";
+import { workspace } from "@/api/workspace";
 
 export class AppContext {
   productName: string;
@@ -156,7 +157,6 @@ export class AppContext {
 
   async loadWorkingState() {
     try {
-      const workspace = window.api.workspace;
       const workingFile = useWorkingStore.getState().workingFile;
       if (workingFile && (await workspace.existsFile(workingFile))) {
         setTimeout(async () => {

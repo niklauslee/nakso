@@ -12,28 +12,50 @@ import { Button } from "../ui/button";
 import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
-import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
+import { useRecentFilesStore } from "@/store/recent-files-store";
+import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
 
-interface ExplorerViewProps extends React.HTMLAttributes<HTMLDivElement> {
-  path: string | null;
-}
+const PAGE_SIZE = 20;
 
-export function ExplorerView({ path, ...others }: ExplorerViewProps) {
-  if (!path) return;
+interface RecentFilesViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+export function RecentFilesView({ ...others }: RecentFilesViewProps) {
   const [loading, setLoading] = useState(false);
-  const files = useExplorerStore((state) => state.files);
-  const loadedFiles = useExplorerStore((state) => state.loadedFiles);
-  const sortBy = useExplorerStore((state) => state.sortBy);
-  const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
-  const fetchFiles = useExplorerStore((state) => state.fetchFiles);
-  const setSortBy = useExplorerStore((state) => state.setSortBy);
+  const [files, setFiles] = useState<FileEntry[]>([]);
+  const [loadedFiles, setLoadedFiles] = useState<FileEntry[]>([]);
+  const [sortBy, setSortBy] = useState<FileSortType>({
+    field: "mtime",
+    direction: "desc",
+  });
+  const recentFiles = useRecentFilesStore((state) => state.files);
+
+  const fetchAllFiles = async () => {
+    const files: FileEntry[] = [];
+    if (recentFiles) {
+      for (const path of recentFiles) {
+        try {
+          const file = await workspace.getFileEntry(path);
+          if (file) {
+            files.push(file);
+          }
+        } catch (e) {
+          console.error("Failed to fetch recent file:", path, e);
+        }
+      }
+    }
+    setFiles(workspace.sortFiles(files, sortBy));
+    setLoadedFiles([]);
+  };
+
+  const fetchFiles = () => {
+    setLoadedFiles(files.slice(0, loadedFiles.length + PAGE_SIZE));
+  };
 
   useEffect(() => {
-    if (path) setCurrentFolder(path);
-  }, [path]);
+    fetchAllFiles();
+  }, [recentFiles, sortBy]);
 
   return (
     <div className="absolute inset-0" {...others}>
@@ -49,7 +71,7 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
           </div>
         }
       >
-        <div className="text-sm">{path}</div>
+        <div className="text-sm">Recents</div>
       </Header>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
@@ -60,7 +82,7 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
           count={loadedFiles.length}
           totalCount={files.length}
           loading={loading}
-          fetchFirstDeps={[path]}
+          fetchFirstDeps={[files]}
           fetchFirst={async () => {
             setLoading(true);
             await fetchFiles();

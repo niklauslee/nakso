@@ -17,10 +17,12 @@ import { z } from "zod";
 import { ZOOMS } from "./const";
 import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
+import { workspace } from "@/api/workspace";
 import { useAppStore } from "./store/app-store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
+import { useRecentFilesStore } from "./store/recent-files-store";
 
 /**
  * Find the shapes by the given id array.
@@ -46,7 +48,6 @@ export function registerCommands() {
   // file commands -------------------------------------------------------------
 
   app.commands.register("file:new", "Create a new file", {}, async () => {
-    const workspace = window.api.workspace;
     const app = window.app;
     try {
       await app.ensureSave();
@@ -64,7 +65,6 @@ export function registerCommands() {
       filePath: z.string(),
     },
     async ({ filePath }) => {
-      const workspace = window.api.workspace;
       const app = window.app;
       try {
         await app.ensureSave();
@@ -91,7 +91,6 @@ export function registerCommands() {
     "Save the working file",
     {},
     async ({}) => {
-      const workspace = window.api.workspace;
       try {
         const filePath = useEditorStore.getState().filePath;
         const modified = useEditorStore.getState().modified;
@@ -101,6 +100,7 @@ export function registerCommands() {
           await workspace.writeFile(filePath, content);
           useEditorStore.getState().setModified(false);
           useExplorerStore.getState().updateFile(filePath);
+          useRecentFilesStore.getState().addRecentFile(filePath);
         }
       } catch (error) {
         toast.error("Failed to save file");

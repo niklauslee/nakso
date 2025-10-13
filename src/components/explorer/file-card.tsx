@@ -1,4 +1,4 @@
-import { FileEntry } from "@/api/workspace";
+import { FileEntry, workspace } from "@/api/workspace";
 import { cn } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 async function load(path: string): Promise<Page | null> {
-  const workspace = window.api.workspace;
   const data = await workspace.readFile(path);
   const json = JSON.parse(data);
   const store = new Store(shapeInstantiator);

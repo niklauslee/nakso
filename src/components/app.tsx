@@ -1,7 +1,6 @@
 // import { invoke } from "@tauri-apps/api/core";
 import "../globals.css";
 import { AppContext } from "@/app-context";
-import { apiContext } from "@/api";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
@@ -13,6 +12,8 @@ import { EditorView } from "./editor/editor-view";
 import { ExplorerView } from "./explorer/explorer-view";
 import { Toaster } from "@/components/ui/sonner";
 import { useWorkingStore } from "@/store/working-store";
+import { RecentFilesView } from "./explorer/recents-files-view";
+import { apiContext } from "@/api";
 
 declare global {
   interface Window {
@@ -64,6 +65,7 @@ function App() {
               onMount={handleAppReady}
               className={cn(view !== "editor" && "hidden")}
             />
+            <RecentFilesView className={cn(view !== "recents" && "hidden")} />
             <ExplorerView
               path={workingFolder}
               className={cn(view !== "folder" && "hidden")}

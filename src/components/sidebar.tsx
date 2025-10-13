@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useWorkingStore } from "@/store/working-store";
-import { DRAFTS_DIR_NAME } from "@/api/workspace";
+import { DRAFTS_FOLDER_NAME } from "@/api/workspace";
 import { useExplorerStore } from "@/store/explorer-store";
 
 export function AppSidebar() {
@@ -120,7 +120,7 @@ export function AppSidebar() {
                     asChild
                   >
                     <a href="#">
-                      {folder.name === DRAFTS_DIR_NAME ? (
+                      {folder.name === DRAFTS_FOLDER_NAME ? (
                         <FolderCheckIcon size={16} />
                       ) : (
                         <FolderIcon size={16} />
