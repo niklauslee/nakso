@@ -17,6 +17,7 @@ export interface ExplorerState {
   setPath: (path: string) => Promise<void>;
   fetchFiles: () => Promise<void>;
   setSortBy: (sortBy: SortType) => void;
+  updateFile: (path: string) => void;
 }
 
 export const useExplorertore = create<ExplorerState>()(
@@ -46,6 +47,18 @@ export const useExplorertore = create<ExplorerState>()(
       setSortBy: (sortBy) => {
         const files = sortFiles(get().files, sortBy);
         set({ sortBy: { ...sortBy }, files: [...files], loadedFiles: [] });
+      },
+      updateFile: async (path) => {
+        const file = get().files.find((f) => f.fullPath === path);
+        if (file) {
+          const updated = await window.api.workspace.getFileEntry(path);
+          set((state) => {
+            const files = state.files.map((f) =>
+              f.fullPath === path ? updated : f
+            );
+            return { files, loadedFiles: [] };
+          });
+        }
       },
     }),
     { name: "ExplorerStore" }
