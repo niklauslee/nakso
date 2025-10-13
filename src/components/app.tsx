@@ -12,6 +12,7 @@ import { AppSidebar } from "./sidebar";
 import { EditorView } from "./editor/editor-view";
 import { ExplorerView } from "./explorer/explorer-view";
 import { Toaster } from "@/components/ui/sonner";
+import { useWorkingStore } from "@/store/working-store";
 
 declare global {
   interface Window {
@@ -25,6 +26,8 @@ function App() {
   const view = useAppStore((state) => state.view);
   const showSidebar = useSettingStore((state) => state.showSidebar);
   const darkMode = useSettingStore((state) => state.darkMode);
+  const workingFolder = useWorkingStore((state) => state.workingFolder);
+  const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -62,7 +65,7 @@ function App() {
               className={cn(view !== "editor" && "hidden")}
             />
             <ExplorerView
-              folder={null}
+              path={workingFolder}
               className={cn(view !== "folder" && "hidden")}
             />
           </SidebarInset>

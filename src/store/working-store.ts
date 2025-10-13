@@ -18,8 +18,8 @@ export interface WorkingState {
   recentFiles: string[];
   favoriteFiles: string[];
   setWorkingFile: (file: string | null) => void;
-  addRecentFile: (file: string) => void;
   setWorkingFolder: (folder: string | null) => void;
+  addRecentFile: (file: string) => void;
 }
 
 export const useWorkingStore = create<WorkingState>()(
@@ -32,6 +32,7 @@ export const useWorkingStore = create<WorkingState>()(
         recentFiles: [],
         favoriteFiles: [],
         setWorkingFile: (file) => set(() => ({ workingFile: file })),
+        setWorkingFolder: (folder) => set(() => ({ workingFolder: folder })),
         addRecentFile: (file) =>
           set((state) => {
             const recentFiles = state.recentFiles.filter((f) => f !== file);
@@ -41,7 +42,6 @@ export const useWorkingStore = create<WorkingState>()(
             }
             return { recentFiles };
           }),
-        setWorkingFolder: (folder) => set(() => ({ workingFolder: folder })),
       }),
       { name: "working-storage" }
     ),

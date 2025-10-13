@@ -25,13 +25,14 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useWorkspaceStore } from "@/store/workspace-store";
+import { useWorkingStore } from "@/store/working-store";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
   const setView = useAppStore((state) => state.setView);
   const folders = useWorkspaceStore((state) => state.folders);
-  const currentFolder = useWorkspaceStore((state) => state.currentFolder);
-  const setCurrentFolder = useWorkspaceStore((state) => state.setCurrentFolder);
+  const workingFolder = useWorkingStore((state) => state.workingFolder);
+  const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
 
   return (
     <Sidebar>
@@ -110,9 +111,9 @@ export function AppSidebar() {
               {folders.map((folder) => (
                 <SidebarMenuItem key={folder.name}>
                   <SidebarMenuButton
-                    isActive={folder.fullPath === currentFolder?.fullPath}
+                    isActive={folder.fullPath === workingFolder}
                     onClick={() => {
-                      setCurrentFolder(folder);
+                      setWorkingFolder(folder.fullPath);
                       setView("folder");
                     }}
                     asChild

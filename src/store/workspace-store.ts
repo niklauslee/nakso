@@ -4,7 +4,6 @@ import { devtools } from "zustand/middleware";
 
 export interface WorkspaceState {
   path: string;
-  currentFolder: FileEntry | null;
   recents: FileEntry[];
   favorites: FileEntry[];
   folders: FileEntry[];
@@ -16,7 +15,6 @@ export const useWorkspaceStore = create<WorkspaceState>()(
   devtools(
     (set) => ({
       path: "",
-      currentFolder: null,
       recents: [],
       favorites: [],
       folders: [],
@@ -25,9 +23,6 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         const path = await workspace.ensureWorkspace();
         const folders = await workspace.getFolders();
         set({ path, folders });
-      },
-      setCurrentFolder: (folder: FileEntry | null) => {
-        set({ currentFolder: folder });
       },
     }),
     { name: "WorkspaceStore" }
