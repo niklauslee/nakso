@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { useAppStore } from "./store/app-store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
-import { useExplorertore } from "./store/explorer-store";
+import { useExplorerStore } from "./store/explorer-store";
 
 /**
  * Find the shapes by the given id array.
@@ -72,12 +72,12 @@ export function registerCommands() {
         const fileEntry = await workspace.getFileEntry(filePath);
         const json = JSON.parse(data);
         app.editor.loadFromJSON(json);
-        useEditorStore.getState().setFile(fileEntry);
-        useEditorStore.getState().setModified(false);
-        useEditorStore.getState().setDoc(app.editor.getDoc());
+        const doc = app.editor.getDoc();
+        useEditorStore
+          .getState()
+          .setFilePath(filePath, doc, fileEntry.readonly);
         useWorkingStore.getState().setWorkingFile(filePath);
-        useWorkingStore.getState().addRecentFile(filePath);
-        useExplorertore.getState().updateFile(filePath);
+        useExplorerStore.getState().updateFile(filePath);
         useAppStore.getState().setView("editor");
       } catch (err) {
         toast.error("Failed to open file: " + filePath);
@@ -93,15 +93,14 @@ export function registerCommands() {
     async ({}) => {
       const workspace = window.api.workspace;
       try {
-        const file = useEditorStore.getState().file;
+        const filePath = useEditorStore.getState().filePath;
         const modified = useEditorStore.getState().modified;
-        if (file && modified) {
+        if (filePath && modified) {
           const app = window.app;
           const content = JSON.stringify(app.editor.store.toJSON());
-          await workspace.writeFile(file.fullPath, content);
-          const fileEntry = await workspace.getFileEntry(file.fullPath);
-          useEditorStore.getState().setFile(fileEntry);
+          await workspace.writeFile(filePath, content);
           useEditorStore.getState().setModified(false);
+          useExplorerStore.getState().updateFile(filePath);
         }
       } catch (error) {
         toast.error("Failed to save file");

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 import { produce } from "immer";
 import type { KeyMap } from "../engine/keymap-manager";
 import { trimObject } from "@/lib/utils";
@@ -63,72 +62,67 @@ export function mergeKeymap(menu: Menu, keymap: KeyMap): Menu {
   });
 }
 
-export const useMenuStore = create<MenuState>()(
-  devtools(
-    (set, get) => ({
-      menus: {},
-      setMenus: (menus, keymap) => {
-        const initializedMenus = Object.fromEntries(
-          Object.entries(menus).map(([key, menu]) => [
+export const useMenuStore = create<MenuState>()((set, get) => ({
+  menus: {},
+  setMenus: (menus, keymap) => {
+    const initializedMenus = Object.fromEntries(
+      Object.entries(menus).map(([key, menu]) => [
+        key,
+        keymap ? mergeKeymap(menu, keymap) : menu,
+      ])
+    );
+    set({ menus: initializedMenus });
+  },
+  updateStates: (id: string, itemStates: MenuItemState) =>
+    set(
+      produce<MenuState>((state) => {
+        const updatedMenus = Object.fromEntries(
+          Object.entries(state.menus).map(([key, menu]) => [
             key,
-            keymap ? mergeKeymap(menu, keymap) : menu,
+            traverseCopy(menu, (item) => {
+              if (item.id === id) Object.assign(item, itemStates);
+            }),
           ])
         );
-        set({ menus: initializedMenus });
-      },
-      updateStates: (id: string, itemStates: MenuItemState) =>
-        set(
-          produce<MenuState>((state) => {
-            const updatedMenus = Object.fromEntries(
-              Object.entries(state.menus).map(([key, menu]) => [
-                key,
-                traverseCopy(menu, (item) => {
-                  if (item.id === id) Object.assign(item, itemStates);
-                }),
-              ])
-            );
-            state.menus = updatedMenus;
-          })
-        ),
-      setOpenRecent: (recent: string[]) =>
-        set(
-          produce<MenuState>((state) => {
-            const updatedMenus = Object.fromEntries(
-              Object.entries(state.menus).map(([key, menu]) => [
-                key,
-                traverseCopy(menu, (item) => {
-                  if (item.id === "file.open-recent") {
-                    const submenu =
-                      recent.length === 0
-                        ? [
-                            {
-                              label: "No recent files",
-                              enabled: false,
-                              checked: false,
-                            },
-                          ]
-                        : recent.map((r, i) => ({
-                            label: r,
-                            id: `file.open-recent-${i}`,
-                            enabled: true,
-                            checked: false,
-                            command: "file:open-recent",
-                            "command-args": { filePath: r },
-                          }));
-                    Object.assign(
-                      item,
-                      trimObject({
-                        submenu: submenu,
-                      })
-                    );
-                  }
-                }),
-              ])
-            );
-            state.menus = updatedMenus;
-          })
-        ),
-    }),
-    { name: "MenuStore" }
-  )
-);
+        state.menus = updatedMenus;
+      })
+    ),
+  setOpenRecent: (recent: string[]) =>
+    set(
+      produce<MenuState>((state) => {
+        const updatedMenus = Object.fromEntries(
+          Object.entries(state.menus).map(([key, menu]) => [
+            key,
+            traverseCopy(menu, (item) => {
+              if (item.id === "file.open-recent") {
+                const submenu =
+                  recent.length === 0
+                    ? [
+                        {
+                          label: "No recent files",
+                          enabled: false,
+                          checked: false,
+                        },
+                      ]
+                    : recent.map((r, i) => ({
+                        label: r,
+                        id: `file.open-recent-${i}`,
+                        enabled: true,
+                        checked: false,
+                        command: "file:open-recent",
+                        "command-args": { filePath: r },
+                      }));
+                Object.assign(
+                  item,
+                  trimObject({
+                    submenu: submenu,
+                  })
+                );
+              }
+            }),
+          ])
+        );
+        state.menus = updatedMenus;
+      })
+    ),
+}));

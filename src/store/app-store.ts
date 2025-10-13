@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 type ViewType =
   | "editor"
@@ -17,15 +16,10 @@ export interface AppState {
   setView(view: ViewType): void;
 }
 
-export const useAppStore = create<AppState>()(
-  devtools(
-    (set) => ({
-      appReady: false,
-      platform: "unknown",
-      view: "editor",
-      setAppReady: (ready, platform) => set({ appReady: ready, platform }),
-      setView: (view) => set({ view }),
-    }),
-    { name: "AppStore" }
-  )
-);
+export const useAppStore = create<AppState>()((set) => ({
+  appReady: false,
+  platform: "unknown",
+  view: "editor",
+  setAppReady: (ready, platform) => set({ appReady: ready, platform }),
+  setView: (view) => set({ view }),
+}));

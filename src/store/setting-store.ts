@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 export interface SettingState {
   darkMode: boolean;
@@ -15,24 +15,21 @@ export interface SettingState {
 }
 
 export const useSettingStore = create<SettingState>()(
-  devtools(
-    persist(
-      (set) => ({
-        darkMode: false,
-        showGrid: false,
-        snapToGrid: false,
-        snapToObjects: false,
-        showSidebar: true,
-        setDarkMode: (darkMode) => set(() => ({ darkMode })),
-        toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
-        toggleSnapToGrid: () =>
-          set((state) => ({ snapToGrid: !state.snapToGrid })),
-        toggleSnapToObjects: () =>
-          set((state) => ({ snapToObjects: !state.snapToObjects })),
-        setShowSidebar: (show) => set({ showSidebar: show }),
-      }),
-      { name: "setting-storage" }
-    ),
-    { name: "SettingStore" }
+  persist(
+    (set) => ({
+      darkMode: false,
+      showGrid: false,
+      snapToGrid: false,
+      snapToObjects: false,
+      showSidebar: true,
+      setDarkMode: (darkMode) => set(() => ({ darkMode })),
+      toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+      toggleSnapToGrid: () =>
+        set((state) => ({ snapToGrid: !state.snapToGrid })),
+      toggleSnapToObjects: () =>
+        set((state) => ({ snapToObjects: !state.snapToObjects })),
+      setShowSidebar: (show) => set({ showSidebar: show }),
+    }),
+    { name: "setting-storage" }
   )
 );

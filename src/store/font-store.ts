@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 export type Font = {
   category?: "sans" | "serif" | "mono" | "hand";
@@ -23,65 +22,60 @@ export interface FontState {
   getFontWeights: (family: string) => number[];
 }
 
-export const useFontStore = create<FontState>()(
-  devtools(
-    (set, get) => ({
-      fonts: [] as Font[],
-      fetched: false,
-      fetchFonts: async (fonts) => {
-        const fontPromises = fonts.map((font) => {
-          const css = `${font.style === "italic" ? "italic" : ""} ${
-            font.weight
-          } 1em '${font.family}'`;
-          return document.fonts.load(css, "Eng123한글中文ひらがな🙂🙏🏻");
-        });
-        await Promise.all(fontPromises);
-        set({ fonts, fetched: true });
-      },
-      addFonts: (fonts: Font[]) => {
-        set((state) => ({
-          fonts: [
-            ...state.fonts,
-            ...fonts.map((font) => ({
-              ...font,
-              style: font.style ?? "normal",
-              weight: font.weight ?? 400,
-              builtin: font.builtin ?? false,
-            })),
-          ],
-        }));
-      },
-      getFamilies: (builtin: boolean = true) => {
-        if (builtin) {
-          const builtinFonts = get().fonts.filter((font) => font.builtin);
-          return Array.from(new Set(builtinFonts.map((font) => font.family)));
-        } else {
-          const sytemFonts = get().fonts.filter((font) => !font.builtin);
-          return Array.from(new Set(sytemFonts.map((font) => font.family)));
-        }
-      },
-      getDeprecatedFamilies: () => {
-        return Array.from(
-          new Set(
-            get()
-              .fonts.filter((font) => font.deprecated)
-              .map((font) => font.family)
-          )
-        );
-      },
-      getFontWeights: (family) => {
-        return Array.from(
-          new Set(
-            get()
-              .fonts.filter((font) => font.family === family)
-              .map((font) => font.weight)
-          )
-        ).sort();
-      },
-    }),
-    { name: "FontStore" }
-  )
-);
+export const useFontStore = create<FontState>()((set, get) => ({
+  fonts: [] as Font[],
+  fetched: false,
+  fetchFonts: async (fonts) => {
+    const fontPromises = fonts.map((font) => {
+      const css = `${font.style === "italic" ? "italic" : ""} ${
+        font.weight
+      } 1em '${font.family}'`;
+      return document.fonts.load(css, "Eng123한글中文ひらがな🙂🙏🏻");
+    });
+    await Promise.all(fontPromises);
+    set({ fonts, fetched: true });
+  },
+  addFonts: (fonts: Font[]) => {
+    set((state) => ({
+      fonts: [
+        ...state.fonts,
+        ...fonts.map((font) => ({
+          ...font,
+          style: font.style ?? "normal",
+          weight: font.weight ?? 400,
+          builtin: font.builtin ?? false,
+        })),
+      ],
+    }));
+  },
+  getFamilies: (builtin: boolean = true) => {
+    if (builtin) {
+      const builtinFonts = get().fonts.filter((font) => font.builtin);
+      return Array.from(new Set(builtinFonts.map((font) => font.family)));
+    } else {
+      const sytemFonts = get().fonts.filter((font) => !font.builtin);
+      return Array.from(new Set(sytemFonts.map((font) => font.family)));
+    }
+  },
+  getDeprecatedFamilies: () => {
+    return Array.from(
+      new Set(
+        get()
+          .fonts.filter((font) => font.deprecated)
+          .map((font) => font.family)
+      )
+    );
+  },
+  getFontWeights: (family) => {
+    return Array.from(
+      new Set(
+        get()
+          .fonts.filter((font) => font.family === family)
+          .map((font) => font.weight)
+      )
+    ).sort();
+  },
+}));
 
 function fontFaceToString(font: Font, urlPrefix?: string): string {
   const fontSrc =

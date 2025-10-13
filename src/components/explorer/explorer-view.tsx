@@ -11,9 +11,7 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -26,9 +24,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
-import { useExplorertore } from "@/store/explorer-store";
+import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
-import { set } from "zod";
 
 interface ExplorerViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
@@ -38,12 +35,12 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
   if (!path) return;
 
   const [loading, setLoading] = useState(false);
-  const files = useExplorertore((state) => state.files);
-  const loadedFiles = useExplorertore((state) => state.loadedFiles);
-  const sortBy = useExplorertore((state) => state.sortBy);
-  const setPath = useExplorertore((state) => state.setPath);
-  const fetchFiles = useExplorertore((state) => state.fetchFiles);
-  const setSortBy = useExplorertore((state) => state.setSortBy);
+  const files = useExplorerStore((state) => state.files);
+  const loadedFiles = useExplorerStore((state) => state.loadedFiles);
+  const sortBy = useExplorerStore((state) => state.sortBy);
+  const setPath = useExplorerStore((state) => state.setCurrentFolder);
+  const fetchFiles = useExplorerStore((state) => state.fetchFiles);
+  const setSortBy = useExplorerStore((state) => state.setSortBy);
 
   console.log("ExplorerView files:", sortBy, files);
 

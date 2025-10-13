@@ -27,7 +27,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
   const showGrid = useSettingStore((state) => state.showGrid);
 
-  const file = useEditorStore((state) => state.file);
+  const filePath = useEditorStore((state) => state.filePath);
+  const readonly = useEditorStore((state) => state.readonly);
   const modified = useEditorStore((state) => state.modified);
   const setModified = useEditorStore((state) => state.setModified);
   const selection = useEditorStore((state) => state.selection);
@@ -66,10 +67,10 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   }, []);
 
   useEffect(() => {
-    if (file && editor) {
-      editor.setEnabled(file.readonly === false);
+    if (filePath && editor) {
+      editor.setEnabled(readonly === false);
     }
-  }, [file, file?.readonly]);
+  }, [filePath, readonly]);
 
   const handleMount = (editor: EditorType) => {
     setEditor(editor);
@@ -154,9 +155,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
         }
       >
         <div className="text-sm">
-          <span>{file?.name}</span>
+          <span>{filePath}</span>
           {modified && <span> •</span>}
-          {file?.readonly && (
+          {readonly && (
             <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">
               Readonly
             </span>

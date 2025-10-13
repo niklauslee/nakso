@@ -24,14 +24,14 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { useWorkspaceStore } from "@/store/workspace-store";
 import { useWorkingStore } from "@/store/working-store";
 import { DRAFTS_DIR_NAME } from "@/api/workspace";
+import { useExplorerStore } from "@/store/explorer-store";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
   const setView = useAppStore((state) => state.setView);
-  const folders = useWorkspaceStore((state) => state.folders);
+  const folders = useExplorerStore((state) => state.folders);
   const workingFolder = useWorkingStore((state) => state.workingFolder);
   const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
 

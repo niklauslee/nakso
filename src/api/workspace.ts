@@ -28,6 +28,8 @@ export type FileEntry = {
 /*
 ~/Documents/Nakso
   /.nakso
+    /recents.json
+    /favorites.json
     /workspace.json
     /trash
   /Drafts

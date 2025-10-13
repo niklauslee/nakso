@@ -73,7 +73,6 @@ import {
   DEFAULT_SANS_FONT,
   DEFAULT_SERIF_FONT,
 } from "@/const";
-import { de } from "zod/v4/locales";
 
 interface ToolProps {
   selection: ShapeProps[];
