@@ -1,31 +1,40 @@
+import {
+  BaseDirectory,
+  readTextFile,
+  remove,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 import { createJSONStorage, StateStorage } from "zustand/middleware";
-import { workspace } from "@/api/workspace";
 
 const fileStorage: StateStorage = {
   getItem: async (name: string) => {
     try {
-      return await workspace.readConfigFile(`${name}.json`);
+      return await readTextFile(`${name}.json`, {
+        baseDir: BaseDirectory.AppData,
+      });
     } catch (e) {
-      console.error("Failed to read state from file:", e);
+      console.warn(`Failed to read state from file: ${name}.json`, e);
     }
     return null;
   },
 
-  setItem: (name, value) => {
+  setItem: async (name, value) => {
     try {
-      workspace.writeConfigFile(`${name}.json`, value);
+      await writeTextFile(`${name}.json`, value, {
+        baseDir: BaseDirectory.AppData,
+      });
     } catch (e) {
-      console.error("Failed to write state to file:", e);
+      console.warn(`Failed to write state to file: ${name}.json`, e);
     }
   },
 
-  removeItem: (name) => {
+  removeItem: async (name) => {
     try {
-      workspace.deleteConfigFile(`${name}.json`);
+      await remove(`${name}.json`, { baseDir: BaseDirectory.AppData });
     } catch (e) {
-      console.error("Failed to remove state file:", e);
+      console.warn(`Failed to remove state file: ${name}.json`, e);
     }
   },
 };
 
-export const workspaceStorage = createJSONStorage(() => fileStorage);
+export const appDataStorage = createJSONStorage(() => fileStorage);

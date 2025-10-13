@@ -47,7 +47,7 @@ export const useEditorStore = create<EditorState>()(
       setDragging: (dragging) => set({ dragging }),
     }),
     {
-      name: "editor-store",
+      name: "editor",
       partialize: (state) => ({}),
     }
   )

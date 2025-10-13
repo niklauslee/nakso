@@ -7,5 +7,5 @@ export interface KeymapState {
 
 export const useKeymapStore = create<KeymapState>()((set) => ({
   formattedKeys: {},
-  setFormattedKeys: (formattedKeys) => set((state) => ({ formattedKeys })),
+  setFormattedKeys: (formattedKeys) => set({ formattedKeys }),
 }));

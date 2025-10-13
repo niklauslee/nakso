@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const MAX_RECENT_FILES = 10;
-
 // Rename to 'WorkspaceStore'.
 // Make this store as persistent.
 // 0. workspacePath: string | null
@@ -28,6 +26,6 @@ export const useWorkingStore = create<WorkingState>()(
       setWorkingFile: (file) => set(() => ({ workingFile: file })),
       setWorkingFolder: (folder) => set(() => ({ workingFolder: folder })),
     }),
-    { name: "working-storage" }
+    { name: "working" }
   )
 );

@@ -262,6 +262,6 @@ export const useStyleStore = create<StyleState>()(
         }
       },
     }),
-    { name: "style-storage" }
+    { name: "styles" }
   )
 );

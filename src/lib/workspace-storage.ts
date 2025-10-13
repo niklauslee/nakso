@@ -6,24 +6,24 @@ const fileStorage: StateStorage = {
     try {
       return await workspace.readConfigFile(`${name}.json`);
     } catch (e) {
-      console.error("Failed to read state from file:", e);
+      console.warn(`Failed to read state from file: ${name}.json`, e);
     }
     return null;
   },
 
-  setItem: (name, value) => {
+  setItem: async (name, value) => {
     try {
-      workspace.writeConfigFile(`${name}.json`, value);
+      await workspace.writeConfigFile(`${name}.json`, value);
     } catch (e) {
-      console.error("Failed to write state to file:", e);
+      console.warn(`Failed to write state to file: ${name}.json`, e);
     }
   },
 
-  removeItem: (name) => {
+  removeItem: async (name) => {
     try {
-      workspace.deleteConfigFile(`${name}.json`);
+      await workspace.deleteConfigFile(`${name}.json`);
     } catch (e) {
-      console.error("Failed to remove state file:", e);
+      console.warn(`Failed to remove state file: ${name}.json`, e);
     }
   },
 };
