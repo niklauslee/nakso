@@ -1,11 +1,6 @@
-import { useEffect, useRef } from "react";
-import {
-  Editor as EditorType,
-  FillStyle,
-  Shape,
-  ShapeProps,
-} from "@dgmjs/core";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { Box, Editor as EditorType, Shape, ShapeProps } from "@dgmjs/core";
+import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
 import { useMenuStore } from "@/store/menu-store";
@@ -16,8 +11,9 @@ import { ApplicationMenu } from "../menu/menu";
 import { EllipsisVerticalIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
-import { useEditingStore } from "@/store/editing-store";
+import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
+import { useStyleStore } from "@/store/style-store";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -25,12 +21,37 @@ interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function EditorView({ onMount, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [editor, setEditor] = useState<EditorType | null>(null);
+
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
   const showGrid = useSettingStore((state) => state.showGrid);
-  const selection = useEditingStore((state) => state.selection);
-  const setSelection = useEditingStore((state) => state.setSelection);
-  const setActiveHandler = useEditingStore((state) => state.setActiveHandler);
+
+  const file = useEditorStore((state) => state.file);
+  const modified = useEditorStore((state) => state.modified);
+  const setModified = useEditorStore((state) => state.setModified);
+  const selection = useEditorStore((state) => state.selection);
+  const setSelection = useEditorStore((state) => state.setSelection);
+  const activeHandler = useEditorStore((state) => state.activeHandler);
+  const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
+  const styleStore = useStyleStore();
+
+  const isShapeTool =
+    activeHandler &&
+    [
+      "Rectangle",
+      "Ellipse",
+      "Text",
+      "Frame",
+      "Line",
+      "Connector",
+      "Freehand",
+      "Highlighter",
+    ].includes(activeHandler);
+
+  const shapeProps = isShapeTool
+    ? [{ type: activeHandler, ...styleStore.getStyleProps(activeHandler!) }]
+    : selection;
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -44,20 +65,33 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (file && editor) {
+      editor.setEnabled(file.readonly === false);
+    }
+  }, [file, file?.readonly]);
+
+  const handleMount = (editor: EditorType) => {
+    setEditor(editor);
+    if (onMount) onMount(editor);
+  };
+
   const handleShapeInitialize = (shape: Shape) => {
     try {
-      shape.fontFamily = "Loranthus";
-      shape.fontSize = 20;
-      shape.roughness = 1;
-      shape.fillStyle = FillStyle.SOLID;
-      shape.strokeWidth = 2;
+      const styleProps = structuredClone(
+        useStyleStore.getState().getStyleProps(shape.type)
+      );
+      Object.assign(shape, trimObject(styleProps));
+      if (shape instanceof Box) applyTextHorzAlign(shape);
     } catch (error) {
       console.error("Error handling shape initialization:", error);
     }
   };
 
   const handleAction = () => {
-    setTimeout(() => window.app.updateUIState(), 0);
+    setModified(true);
+    window.app.autoSaver.tick();
+    setTimeout(() => window.app.updateUI(), 0);
   };
 
   const handleActiveHandlerChange = (handlerId: string) => {
@@ -73,7 +107,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const handleActiveHandlerLockChange = (lock: boolean) => {
     try {
       const app = window.app;
-      useEditingStore.getState().setActiveHandlerLock(lock);
+      useEditorStore.getState().setActiveHandlerLock(lock);
       app?.editor.focus();
     } catch (error) {
       console.error("Error handling active handler lock change:", error);
@@ -81,25 +115,24 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   };
 
   const handleSelectionChange = (shapes: Shape[]) => {
-    console.log("Selection changed:", shapes);
     setTimeout(() => {
       setSelection([...shapes]);
-      window.app.updateUIState();
+      window.app.updateUI();
     }, 0);
   };
 
   const handlePropsChange = (props: ShapeProps) => {
     try {
       const app = window.app;
-      // if (isShapeTool) {
-      //   styleStore.setStyleProps(activeHandler!, props);
-      // } else {
-      const shapes = app.editor.selection.getShapes();
-      // const shapeType = merge(shapes.map((shape) => shape.type));
-      app.editor.actions.update(props);
-      // styleStore.setStyleProps(shapeType!, props);
-      setSelection([...shapes]);
-      // }
+      if (isShapeTool) {
+        styleStore.setStyleProps(activeHandler!, props);
+      } else {
+        const shapes = app.editor.selection.getShapes();
+        const shapeType = merge(shapes.map((shape) => shape.type));
+        app.editor.actions.update(props);
+        styleStore.setStyleProps(shapeType!, props);
+        setSelection([...shapes]);
+      }
     } catch (error) {
       console.error("Error handling props change:", error);
     }
@@ -120,7 +153,15 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
           </ApplicationMenu>
         }
       >
-        <div className="text-sm">Editor...</div>
+        <div className="text-sm">
+          <span>{file?.name}</span>
+          {modified && <span> •</span>}
+          {file?.readonly && (
+            <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">
+              Readonly
+            </span>
+          )}
+        </div>
       </Header>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
@@ -143,7 +184,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
               className="absolute inset-0"
               showGrid={showGrid}
               darkMode={darkMode}
-              onMount={onMount}
+              onMount={handleMount}
               onShapeInitialize={handleShapeInitialize}
               onAction={handleAction}
               onUndo={handleAction}
@@ -159,7 +200,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
             />
           </div>
         </ApplicationContextMenu>
-        <Palette selection={selection} onChange={handlePropsChange} />
+        <Palette selection={shapeProps} onChange={handlePropsChange} />
         <Toolbar />
         <HelpButton />
       </article>

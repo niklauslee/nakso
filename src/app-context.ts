@@ -1,17 +1,20 @@
-import { Editor, Group, Mirror } from "@dgmjs/core";
+import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
+import { Editor, Group } from "@dgmjs/core";
 import { CommandManager } from "@/engine/command-manager";
 import { KeymapManager } from "@/engine/keymap-manager";
 import { Font, insertFontsToDocument, useFontStore } from "@/store/font-store";
 import { registerCommands } from "./commands";
 import { useSettingStore } from "@/store/setting-store";
 import { useKeymapStore } from "@/store/keymap-store";
+import { MenuItemState, useMenuStore } from "@/store/menu-store";
+import { useWorkspaceStore } from "@/store/workspace-store";
+import { useWorkingStore } from "@/store/working-store";
 import packageJson from "../package.json";
 import fontJson from "./fonts.json";
 import menuJson from "./menu.json";
 import keymapJson from "./keymap.json";
-import { toast } from "sonner";
-import { MenuItemState, useMenuStore } from "@/store/menu-store";
-import { useWorkspaceStore } from "./store/workspace-store";
+import { AutoSaver } from "./engine/auto-saver";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 export class AppContext {
   productName: string;
@@ -21,6 +24,7 @@ export class AppContext {
   editor: Editor;
   commands: CommandManager;
   keymaps: KeymapManager;
+  autoSaver: AutoSaver;
 
   constructor(editor: Editor) {
     this.productName = packageJson.productName;
@@ -33,82 +37,85 @@ export class AppContext {
       platform: this.platform,
       commandManager: this.commands,
     });
+    this.autoSaver = new AutoSaver(async () => {
+      await this.ensureSave();
+    });
   }
 
   async initialize() {
-    window.addEventListener("resize", () => {
-      this.editor.fit();
-    });
-    this.wiring();
-    await this.loadConfig();
+    await this.setupNativeUI();
+    await this.wiring();
     await this.loadFonts();
     this.loadKeymap();
     this.loadMenus();
     this.loadWorkspace();
     registerCommands();
+    await this.loadWorkingState();
   }
 
-  wiring() {
-    this.editor.onDblClick.addListener(({ shape }) => {
-      try {
-        if (shape instanceof Mirror) {
-          const subject = shape.subject;
-          if (subject) {
-            const page = subject.getPage();
-            if (page) {
-              this.editor.setCurrentPage(page);
-              const cp = subject.getCenter();
-              this.editor.scrollCenterTo(cp);
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Failed to handle double click:", err);
-      }
+  async wiring() {
+    await getCurrentWindow().onCloseRequested(async () => {
+      await this.ensureSave();
     });
 
-    this.editor.transform.onAction.addListener(() => {
-      try {
-        // this.autoSaver.tick();
-      } catch (err) {
-        console.error("Failed to handle action:", err);
-      }
-    });
-
-    this.editor.transform.onUndo.addListener(() => {
-      // this.autoSaver.tick();
-    });
-
-    this.editor.transform.onRedo.addListener(() => {
-      // this.autoSaver.tick();
+    window.addEventListener("resize", () => {
+      this.editor.fit();
     });
 
     // update ui states
     useSettingStore.subscribe(() => {
       try {
-        window.app.updateUIState();
+        window.app.updateUI();
       } catch (err) {
         console.error("Failed to update UI state:", err);
       }
     });
-
-    // window.api.window.setDarkMode(useSettingStore.getState().darkMode);
   }
 
-  async loadConfig() {
-    try {
-      // useConfigStore.getState().fetchConfig();
-    } catch (err) {
-      console.error("Failed to load config", err);
-    }
+  async setupNativeUI() {
+    const appWindow = getCurrentWindow();
+
+    // set initial theme
+    const darkMode = useSettingStore.getState().darkMode;
+    await appWindow.setTheme(darkMode ? "dark" : "light");
+
+    // setup native menu for macOS
+    const aboutSubmenu = await Submenu.new({
+      text: "About",
+      items: [
+        await MenuItem.new({
+          id: "quit",
+          text: "Quit",
+          accelerator: "CmdOrCtrl+Q",
+          action: () => {
+            window.app.commands.execute("file:quit");
+          },
+        }),
+      ],
+    });
+    const menu = await Menu.new({ items: [aboutSubmenu] });
+    await menu.setAsAppMenu();
+
+    // setup window drag area
+    const dragRegions = document.querySelectorAll(
+      "[data-manual-window-drag-region]"
+    );
+    dragRegions.forEach((region) => {
+      region.addEventListener("mousedown", (e) => {
+        const mouseEvent = e as MouseEvent;
+        if (mouseEvent.buttons === 1) {
+          mouseEvent.detail === 2
+            ? appWindow.toggleMaximize() // maximize on double click
+            : appWindow.startDragging(); // else start dragging
+        }
+      });
+    });
   }
 
   async loadFonts() {
     try {
       insertFontsToDocument(fontJson as Font[]);
       await useFontStore.getState().fetchFonts(fontJson as Font[]);
-      // const systemFonts = await window.api.font.getSystemFonts();
-      // useFontStore.getState().addFonts(systemFonts);
     } catch (err) {
       console.error("Failed to load fonts", err);
     }
@@ -147,36 +154,30 @@ export class AppContext {
     }
   }
 
-  async openDoc(filePath: string) {
+  async loadWorkingState() {
     try {
-      // const data = await window.api.fs.read(filePath);
-      // const json = JSON.parse(data);
-      // this.editor.loadFromJSON(json);
-      // useDocStore.getState().setFilePath(filePath);
-      // useDocStore.getState().setModified(false);
-      // useDocStore.getState().setDoc(this.editor.getDoc());
+      const workspace = window.api.workspace;
+      const workingFile = useWorkingStore.getState().workingFile;
+      if (workingFile && (await workspace.existsFile(workingFile))) {
+        setTimeout(async () => {
+          await this.commands.execute("file:open", { filePath: workingFile });
+        }, 0);
+      } else {
+        // TODO: 1. Find the last opened file from recent files
+        // TODO: 2. If not found, find the most recently modified file from workspace
+        // TODO: 3. If not found, just create a new file in 'Draft' folder
+        console.log("No working file to restore");
+      }
     } catch (err) {
-      toast.error("Failed to open file: " + filePath);
-      console.error("Failed to open file: " + filePath, err);
-      this.editor.newDoc();
-      // useDocStore.getState().setFilePath(null);
-      // useDocStore.getState().setModified(false);
-      // useDocStore.getState().setDoc(this.editor.getDoc());
-      // useSettingStore.getState().removeOpenRecent(filePath);
+      console.error("Failed to load working state", err);
     }
   }
 
-  async newDoc() {
-    try {
-      this.editor.newDoc();
-      // useDocStore.getState().setDoc(this.editor.getDoc());
-    } catch (err) {
-      toast.error("Failed to create a new document");
-      console.error(err);
-    }
+  async ensureSave() {
+    await this.commands.execute("file:save");
   }
 
-  updateUIState() {
+  updateUI() {
     try {
       const app = window.app;
       const state = useSettingStore.getState();

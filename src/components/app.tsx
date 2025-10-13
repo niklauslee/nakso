@@ -11,6 +11,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { EditorView } from "./editor/editor-view";
 import { ExplorerView } from "./explorer/explorer-view";
+import { Toaster } from "@/components/ui/sonner";
 
 declare global {
   interface Window {
@@ -43,7 +44,7 @@ function App() {
         editor.fit();
       });
 
-      window.app.updateUIState();
+      window.app.updateUI();
       setAppReady(true, editor.platform);
     } catch (error) {
       console.error("Failed to initialize the app:", error);
@@ -51,21 +52,26 @@ function App() {
   };
 
   return (
-    <div className="fixed inset-0 select-none">
-      <SidebarProvider open={showSidebar}>
-        <AppSidebar />
-        <SidebarInset>
-          <EditorView
-            onMount={handleAppReady}
-            className={cn(view !== "editor" && "hidden")}
-          />
-          <ExplorerView
-            folder={null}
-            className={cn(view !== "folder" && "hidden")}
-          />
-        </SidebarInset>
-      </SidebarProvider>
-    </div>
+    <>
+      <div className="fixed inset-0 select-none">
+        <SidebarProvider open={showSidebar}>
+          <AppSidebar />
+          <SidebarInset>
+            <EditorView
+              onMount={handleAppReady}
+              className={cn(view !== "editor" && "hidden")}
+            />
+            {view === "folder" && (
+              <ExplorerView
+                folder={null}
+                className={cn(view !== "folder" && "hidden")}
+              />
+            )}
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
+      <Toaster position="top-center" />
+    </>
   );
 }
 

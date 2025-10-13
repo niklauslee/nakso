@@ -15,7 +15,11 @@ import { useSettingStore } from "./store/setting-store";
 import { Shape } from "@dgmjs/core";
 import { z } from "zod";
 import { ZOOMS } from "./const";
-import { useEditingStore } from "./store/editing-store";
+import { useEditorStore } from "./store/editor-store";
+import { toast } from "sonner";
+import { useAppStore } from "./store/app-store";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useWorkingStore } from "./store/working-store";
 
 /**
  * Find the shapes by the given id array.
@@ -40,10 +44,76 @@ export function registerCommands() {
 
   // file commands -------------------------------------------------------------
 
+  app.commands.register("file:new", "Create a new file", {}, async () => {
+    const workspace = window.api.workspace;
+    const app = window.app;
+    try {
+      await app.ensureSave();
+      // ...
+    } catch (err) {
+      toast.error("Failed to create file: ");
+      console.error("Failed to create file: ", err);
+    }
+  });
+
+  app.commands.register(
+    "file:open",
+    "Open a file.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      const workspace = window.api.workspace;
+      const app = window.app;
+      try {
+        await app.ensureSave();
+        const data = await workspace.readFile(filePath);
+        const fileEntry = await workspace.getFileEntry(filePath);
+        const json = JSON.parse(data);
+        app.editor.loadFromJSON(json);
+        useEditorStore.getState().setFile(fileEntry);
+        useEditorStore.getState().setModified(false);
+        useEditorStore.getState().setDoc(app.editor.getDoc());
+        useWorkingStore.getState().setWorkingFile(filePath);
+        useWorkingStore.getState().addRecentFile(filePath);
+        useAppStore.getState().setView("editor");
+      } catch (err) {
+        toast.error("Failed to open file: " + filePath);
+        console.error("Failed to open file: " + filePath, err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:save",
+    "Save the working file",
+    {},
+    async ({}) => {
+      const workspace = window.api.workspace;
+      try {
+        const file = useEditorStore.getState().file;
+        const modified = useEditorStore.getState().modified;
+        if (file && modified) {
+          const app = window.app;
+          const content = JSON.stringify(app.editor.store.toJSON());
+          await workspace.writeFile(file.fullPath, content);
+          const fileEntry = await workspace.getFileEntry(file.fullPath);
+          useEditorStore.getState().setFile(fileEntry);
+          useEditorStore.getState().setModified(false);
+        }
+      } catch (error) {
+        toast.error("Failed to save file");
+        console.error("Failed to save file", error);
+      }
+    }
+  );
+
   app.commands.register("file:quit", "Quit the application", {}, async () => {
+    const app = window.app;
+    await app.ensureSave();
     setTimeout(() => {
       window.api.window.quit();
-    }, 300); // delay to complete any pending actions
+    }, 100);
   });
 
   // edit commands -------------------------------------------------------------
@@ -562,7 +632,7 @@ export function registerCommands() {
     }
     if (zoomIndex < ZOOMS.length - 1) {
       editor.zoom(ZOOMS[zoomIndex + 1]);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   });
 
@@ -575,14 +645,14 @@ export function registerCommands() {
     }
     if (zoomIndex > 0) {
       editor.zoom(ZOOMS[zoomIndex - 1]);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   });
 
   app.commands.register("view:actual-size", "Actual size", {}, async () => {
     const editor = window.app.editor;
     editor.zoom(1);
-    useEditingStore.getState().setScale(editor.getScale());
+    useEditorStore.getState().setScale(editor.getScale());
   });
 
   app.commands.register(
@@ -595,7 +665,7 @@ export function registerCommands() {
     async ({ scaleAdjust, maxScale }) => {
       const editor = window.app.editor;
       editor.fitToScreen(scaleAdjust, maxScale);
-      useEditingStore.getState().setScale(editor.getScale());
+      useEditorStore.getState().setScale(editor.getScale());
     }
   );
 
@@ -638,8 +708,9 @@ export function registerCommands() {
   );
 
   app.commands.register("view:dark-mode", "Toggle dark mode", {}, async () => {
-    const { darkMode, setDarkMode } = useSettingStore.getState();
-    setDarkMode(!darkMode);
+    const darkMode = useSettingStore.getState().darkMode;
+    await getCurrentWindow().setTheme(darkMode ? "light" : "dark");
+    useSettingStore.getState().setDarkMode(!darkMode);
   });
 
   app.commands.register("view:snap-to-grid", "Snap to grid", {}, async () =>

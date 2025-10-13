@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    sketchnote_lib::run()
+  sketchnote_lib::run()
 }

@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { HorzAlign, Text } from "@dgmjs/core";
 dayjs.extend(relativeTime);
 
 export function cn(...inputs: ClassValue[]) {
@@ -61,4 +62,49 @@ export function trimObject(obj: any) {
  */
 export function dateFromNow(date: Date): string {
   return dayjs(date).fromNow();
+}
+
+/**
+ * Return the string with the first letter capitalized.
+ */
+export function toPascalCaseWithSpace(str: string) {
+  return str
+    .split("-")
+    .map((s) => s[0].toUpperCase() + s.slice(1))
+    .join(" ");
+}
+
+/**
+ * Apply text's horzAlign to text doc
+ */
+export function applyTextHorzAlign(shape: Text) {
+  if (
+    shape.text &&
+    shape.text.type === "doc" &&
+    Array.isArray(shape.text.content)
+  ) {
+    switch (shape.horzAlign) {
+      case HorzAlign.CENTER:
+        shape.text.content.forEach((paragraph: any) => {
+          if (paragraph.type === "paragraph" && paragraph.attrs) {
+            paragraph.attrs.textAlign = "center";
+          }
+        });
+        break;
+      case HorzAlign.LEFT:
+        shape.text.content.forEach((paragraph: any) => {
+          if (paragraph.type === "paragraph" && paragraph.attrs) {
+            paragraph.attrs.textAlign = "left";
+          }
+        });
+        break;
+      case HorzAlign.RIGHT:
+        shape.text.content.forEach((paragraph: any) => {
+          if (paragraph.type === "paragraph" && paragraph.attrs) {
+            paragraph.attrs.textAlign = "right";
+          }
+        });
+        break;
+    }
+  }
 }

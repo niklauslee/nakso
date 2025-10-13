@@ -8,9 +8,16 @@
     "opener:default",
     "core:window:default",
     "core:window:allow-start-dragging",
+    "core:window:allow-destroy",
+    "core:window:allow-set-theme",
+    "core:window:allow-toggle-maximize",
+    "window-state:default",
     "os:default",
     "process:allow-exit",
     "fs:default",
+    "fs:allow-app-meta",
+    "fs:allow-app-write",
+    "dialog:default",
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "**/*" }]

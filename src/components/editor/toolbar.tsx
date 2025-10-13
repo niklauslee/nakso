@@ -25,7 +25,7 @@ import {
   EraserIcon,
 } from "lucide-react";
 import { ConnectorIcon, LineIcon } from "@/components/icons";
-import { useEditingStore } from "@/store/editing-store";
+import { useEditorStore } from "@/store/editor-store";
 import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 import { useKeymapStore } from "@/store/keymap-store";
@@ -69,8 +69,8 @@ function ToolItem({
 
 export function Toolbar({}) {
   const formattedKeys = useKeymapStore((state) => state.formattedKeys);
-  const activeHandler = useEditingStore((state) => state.activeHandler);
-  const activeHandlerLock = useEditingStore((state) => state.activeHandlerLock);
+  const activeHandler = useEditorStore((state) => state.activeHandler);
+  const activeHandlerLock = useEditorStore((state) => state.activeHandlerLock);
 
   return (
     <div
