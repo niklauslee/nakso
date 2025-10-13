@@ -8,12 +8,27 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "../ui/button";
-import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  FolderIcon,
+  MoveDownIcon,
+  MoveUpIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { useExplorertore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
+import { set } from "zod";
 
 interface ExplorerViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
@@ -25,10 +40,12 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
   const [loading, setLoading] = useState(false);
   const files = useExplorertore((state) => state.files);
   const loadedFiles = useExplorertore((state) => state.loadedFiles);
+  const sortBy = useExplorertore((state) => state.sortBy);
   const setPath = useExplorertore((state) => state.setPath);
   const fetchFiles = useExplorertore((state) => state.fetchFiles);
+  const setSortBy = useExplorertore((state) => state.setSortBy);
 
-  console.log("ExplorerView files:", files);
+  console.log("ExplorerView files:", sortBy, files);
 
   useEffect(() => {
     if (path) setPath(path);
@@ -36,7 +53,46 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
 
   return (
     <div className="absolute inset-0" {...others}>
-      <Header>
+      <Header
+        rightArea={
+          <div className="pointer-events-auto">
+            <Select
+              value={`${sortBy.field}-${sortBy.direction}`}
+              onValueChange={(value) => {
+                console.log("value", value);
+                setSortBy({
+                  field: value.split("-")[0] as any,
+                  direction: value.split("-")[1] as any,
+                });
+              }}
+            >
+              <SelectTrigger className="text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name-asc">
+                  Alphabetical <MoveUpIcon />
+                </SelectItem>
+                <SelectItem value="name-desc">
+                  Alphabetical <MoveDownIcon />
+                </SelectItem>
+                <SelectItem value="mtime-asc">
+                  Updated <MoveUpIcon />
+                </SelectItem>
+                <SelectItem value="mtime-desc">
+                  Updated <MoveDownIcon />
+                </SelectItem>
+                <SelectItem value="birthtime-asc">
+                  Created <MoveUpIcon />
+                </SelectItem>
+                <SelectItem value="birthtime-desc">
+                  Created <MoveDownIcon />
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        }
+      >
         <div className="text-sm">{path}</div>
       </Header>
       <article
