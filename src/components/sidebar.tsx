@@ -26,6 +26,7 @@ import {
 import { Button } from "./ui/button";
 import { useWorkspaceStore } from "@/store/workspace-store";
 import { useWorkingStore } from "@/store/working-store";
+import { DRAFTS_DIR_NAME } from "@/api/workspace";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
@@ -119,7 +120,7 @@ export function AppSidebar() {
                     asChild
                   >
                     <a href="#">
-                      {folder.name === "Draft" ? (
+                      {folder.name === DRAFTS_DIR_NAME ? (
                         <FolderCheckIcon size={16} />
                       ) : (
                         <FolderIcon size={16} />

@@ -28,6 +28,8 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
   const setPath = useExplorertore((state) => state.setPath);
   const fetchFiles = useExplorertore((state) => state.fetchFiles);
 
+  console.log("ExplorerView files:", files);
+
   useEffect(() => {
     if (path) setPath(path);
   }, [path]);

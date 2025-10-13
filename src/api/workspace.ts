@@ -8,10 +8,10 @@ import {
 } from "@tauri-apps/plugin-fs";
 import { join, documentDir, basename } from "@tauri-apps/api/path";
 
-const WORKSPACE_NAME = "Nakso";
-const CONFIG_DIR_NAME = ".nakso";
-const DRAFT_DIR_NAME = "Draft";
-const EXT_NAME = ".nakso";
+export const WORKSPACE_NAME = "Nakso";
+export const CONFIG_DIR_NAME = ".nakso";
+export const DRAFTS_DIR_NAME = "Drafts";
+export const EXT_NAME = ".nakso";
 
 export type FileEntry = {
   isDirectory: boolean;
@@ -30,7 +30,7 @@ export type FileEntry = {
   /.nakso
     /workspace.json
     /trash
-  /Draft
+  /Drafts
   /Folder1
     /file1.nakso
     /file2.nakso
@@ -54,8 +54,8 @@ async function getWorkspaceDir(): Promise<string> {
 async function ensureWorkspace(): Promise<string> {
   const dir = await getWorkspaceDir();
   await ensureDir(dir);
-  const draft = await join(dir, DRAFT_DIR_NAME);
-  await ensureDir(draft);
+  const drafts = await join(dir, DRAFTS_DIR_NAME);
+  await ensureDir(drafts);
   const config = await join(dir, CONFIG_DIR_NAME);
   await ensureDir(config);
   return dir;
@@ -83,12 +83,12 @@ async function getFolders(): Promise<FileEntry[]> {
       });
     }
   }
-  // sort by name, but put Draft folder first
+  // sort by name, but put Drafts folder first
   const sorted = fileEntries.sort((a, b) => a.name.localeCompare(b.name));
-  const draftIndex = sorted.findIndex((d) => d.name === DRAFT_DIR_NAME);
-  if (draftIndex > 0) {
-    const [draft] = sorted.splice(draftIndex, 1);
-    sorted.unshift(draft);
+  const draftsFolderIndex = sorted.findIndex((d) => d.name === DRAFTS_DIR_NAME);
+  if (draftsFolderIndex > 0) {
+    const [drafts] = sorted.splice(draftsFolderIndex, 1);
+    sorted.unshift(drafts);
   }
   return sorted;
 }

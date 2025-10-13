@@ -165,7 +165,7 @@ export class AppContext {
       } else {
         // TODO: 1. Find the last opened file from recent files
         // TODO: 2. If not found, find the most recently modified file from workspace
-        // TODO: 3. If not found, just create a new file in 'Draft' folder
+        // TODO: 3. If not found, just create a new file in 'Drafts' folder
         console.log("No working file to restore");
       }
     } catch (err) {
