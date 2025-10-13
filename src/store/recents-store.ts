@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { workspaceStorage } from "./workspace-storage";
+import { workspaceStorage } from "../lib/workspace-storage";
 
 const MAX_RECENT_FILES = 20;
 
-export interface RecentFilesState {
+export interface RecentsState {
   files: string[];
   addToRecents(path: string): void;
 }
 
-export const useRecentFilesStore = create<RecentFilesState>()(
+export const useRecentsStore = create<RecentsState>()(
   persist(
     (set) => ({
       files: [],

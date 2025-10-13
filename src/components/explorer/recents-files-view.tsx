@@ -13,7 +13,7 @@ import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
-import { useRecentFilesStore } from "@/store/recents-store";
+import { useRecentsStore } from "@/store/recents-store";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
 
@@ -29,7 +29,7 @@ export function RecentFilesView({ ...others }: RecentFilesViewProps) {
     field: "mtime",
     direction: "desc",
   });
-  const recentFiles = useRecentFilesStore((state) => state.files);
+  const recentFiles = useRecentsStore((state) => state.files);
 
   const fetchAllFiles = async () => {
     const files: FileEntry[] = [];
