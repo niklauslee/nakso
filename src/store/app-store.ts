@@ -1,12 +1,6 @@
 import { create } from "zustand";
 
-type ViewType =
-  | "editor"
-  | "folder"
-  | "search"
-  | "recents"
-  | "favorites"
-  | "settings";
+type ViewType = "editor" | "search" | "recents" | "favorites" | "folder";
 
 export interface AppState {
   appReady: boolean;

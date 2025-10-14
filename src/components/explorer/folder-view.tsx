@@ -16,11 +16,11 @@ import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
 
-interface ExplorerViewProps extends React.HTMLAttributes<HTMLDivElement> {
+interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
 }
 
-export function ExplorerView({ path, ...others }: ExplorerViewProps) {
+export function FolderView({ path, ...others }: FolderViewProps) {
   if (!path) return;
 
   const [loading, setLoading] = useState(false);
@@ -55,8 +55,8 @@ export function ExplorerView({ path, ...others }: ExplorerViewProps) {
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
       >
         <InfiniteScrollArea
-          className="w-full h-full px-6 py-4"
-          innerClassName="flex flex-wrap justify-start gap-6 w-full"
+          className="w-full h-full"
+          innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
           loading={loading}

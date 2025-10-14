@@ -81,7 +81,11 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  isActive={view === "favorites"}
+                  asChild
+                  onClick={() => setView("favorites")}
+                >
                   <a href="#">
                     <StarIcon size={16} />
                     <span>Favorites</span>
@@ -112,7 +116,9 @@ export function AppSidebar() {
               {folders.map((folder) => (
                 <SidebarMenuItem key={folder.name}>
                   <SidebarMenuButton
-                    isActive={folder.fullPath === workingFolder}
+                    isActive={
+                      view === "folder" && folder.fullPath === workingFolder
+                    }
                     onClick={() => {
                       setWorkingFolder(folder.fullPath);
                       setView("folder");

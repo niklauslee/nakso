@@ -19,9 +19,9 @@ import { FileSort } from "./file-sort";
 
 const PAGE_SIZE = 20;
 
-interface RecentFilesViewProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface RecentsViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function RecentFilesView({ ...others }: RecentFilesViewProps) {
+export function RecentsView({ ...others }: RecentsViewProps) {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [loadedFiles, setLoadedFiles] = useState<FileEntry[]>([]);
@@ -77,8 +77,8 @@ export function RecentFilesView({ ...others }: RecentFilesViewProps) {
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
       >
         <InfiniteScrollArea
-          className="w-full h-full px-6 py-4"
-          innerClassName="flex flex-wrap justify-start gap-6 w-full"
+          className="w-full h-full"
+          innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
           loading={loading}

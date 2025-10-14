@@ -9,11 +9,12 @@ import { cn } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { EditorView } from "./editor/editor-view";
-import { ExplorerView } from "./explorer/explorer-view";
+import { FolderView } from "./explorer/folder-view";
 import { Toaster } from "@/components/ui/sonner";
 import { useWorkingStore } from "@/store/working-store";
-import { RecentFilesView } from "./explorer/recents-files-view";
+import { RecentsView } from "./explorer/recents-view";
 import { apiContext } from "@/api";
+import { FavoritesView } from "./explorer/favorites-view";
 
 declare global {
   interface Window {
@@ -65,8 +66,9 @@ function App() {
               onMount={handleAppReady}
               className={cn(view !== "editor" && "hidden")}
             />
-            <RecentFilesView className={cn(view !== "recents" && "hidden")} />
-            <ExplorerView
+            <RecentsView className={cn(view !== "recents" && "hidden")} />
+            <FavoritesView className={cn(view !== "favorites" && "hidden")} />
+            <FolderView
               path={workingFolder}
               className={cn(view !== "folder" && "hidden")}
             />
