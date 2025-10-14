@@ -18,9 +18,9 @@ import {
   FolderCheckIcon,
   FolderIcon,
   FolderPlusIcon,
+  HeartIcon,
   PlusIcon,
   SearchIcon,
-  StarIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -87,7 +87,7 @@ export function AppSidebar() {
                   asChild
                 >
                   <a href="#">
-                    <StarIcon size={16} />
+                    <HeartIcon size={16} />
                     <span>Favorites</span>
                   </a>
                 </SidebarMenuButton>

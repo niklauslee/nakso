@@ -1,8 +1,10 @@
 import { FileEntry, workspace } from "@/api/workspace";
 import { cn } from "@/lib/utils";
+import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
+import { HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -22,12 +24,16 @@ interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
   file: FileEntry;
 }
 
-// TODO: expose onDoubleClick prop
-// TODO: expose onFileError prop
 export function FileCard({ file, className }: FileCardProps) {
   const pageViewRef = useRef<DGMPageViewHandle>(null);
-  const darkMode = useSettingStore((state) => state.darkMode);
   const [page, setPage] = useState<Page | null>(null);
+  const darkMode = useSettingStore((state) => state.darkMode);
+  const favorites = useFavoritesStore((state) => state.files);
+  const addToFavorites = useFavoritesStore((state) => state.addToFavorites);
+  const removeFromFavorites = useFavoritesStore(
+    (state) => state.removeFromFavorites
+  );
+  const isFavorite = favorites.includes(file.fullPath);
 
   const fetchFile = async () => {
     try {
@@ -51,8 +57,16 @@ export function FileCard({ file, className }: FileCardProps) {
     }
   };
 
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      removeFromFavorites(file.fullPath);
+    } else {
+      addToFavorites(file.fullPath);
+    }
+  };
+
   return (
-    <div className="w-48 h-fit rounded-xl">
+    <div className="relative w-48 h-fit rounded-xl">
       <div
         className="w-48 h-40 flex items-center justify-center border rounded-xl"
         onDoubleClick={handleDoubleClick}
@@ -73,6 +87,18 @@ export function FileCard({ file, className }: FileCardProps) {
       </div>
       <div className="w-full h-8 flex items-center text-muted-foreground text-sm">
         {file.name}
+      </div>
+      <div className="absolute right-0 top-0 p-2">
+        <button
+          onClick={handleToggleFavorite}
+          title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+        >
+          <HeartIcon
+            size={16}
+            className={"text-muted-foreground cursor-pointer"}
+            fill={isFavorite ? "currentColor" : "transparent"}
+          />
+        </button>
       </div>
     </div>
   );

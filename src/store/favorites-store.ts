@@ -5,6 +5,7 @@ import { workspaceStorage } from "../lib/workspace-storage";
 export interface FavoritesState {
   files: string[];
   addToFavorites(path: string): void;
+  removeFromFavorites(path: string): void;
 }
 
 export const useFavoritesStore = create<FavoritesState>()(
@@ -17,6 +18,10 @@ export const useFavoritesStore = create<FavoritesState>()(
           files.unshift(path);
           return { files: [...files] };
         }),
+      removeFromFavorites: (path: string) =>
+        set((state) => ({
+          files: state.files.filter((p) => p !== path),
+        })),
     }),
     { name: "favorites", storage: workspaceStorage }
   )
