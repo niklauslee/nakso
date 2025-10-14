@@ -86,6 +86,7 @@ export function applyTextHorzAlign(shape: Text) {
     switch (shape.horzAlign) {
       case HorzAlign.CENTER:
         shape.text.content.forEach((paragraph: any) => {
+          console.log("paragraph", paragraph);
           if (paragraph.type === "paragraph" && paragraph.attrs) {
             paragraph.attrs.textAlign = "center";
           }

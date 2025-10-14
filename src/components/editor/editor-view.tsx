@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Editor as EditorType, Shape, ShapeProps } from "@dgmjs/core";
+import {
+  Box,
+  Editor as EditorType,
+  FileDropEvent,
+  Shape,
+  ShapeProps,
+} from "@dgmjs/core";
 import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
@@ -14,6 +20,7 @@ import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
+import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -22,6 +29,7 @@ interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 export function EditorView({ onMount, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorType | null>(null);
+  const [tiptapEditor, setTiptapEditor] = useState<any>(null);
 
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
@@ -139,6 +147,55 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     }
   };
 
+  const handleFileDrop = async ({ event, dataTransfer }: FileDropEvent) => {
+    try {
+      const app = window.app;
+      const p = app.editor.canvas.globalCoordTransformRev([event.x, event.y]);
+      const files = await getFilesFromDataTransferItems(dataTransfer.items);
+      if (files.length === 1) {
+        const file = files[0];
+        switch (file.type) {
+          case "image/png":
+          case "image/jpeg":
+          case "image/webp":
+          case "image/svg+xml": {
+            const image = await app.editor.factory.createImage(file, p);
+            app.editor.actions.insert(image);
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error handling file drop:", error);
+    }
+  };
+
+  const handleTextInplaceEditorMount = (tiptapEditor: any) => {
+    try {
+      setTiptapEditor(tiptapEditor);
+    } catch (error) {
+      console.error("Error handling text inplace editor mount:", error);
+    }
+  };
+
+  const handleTextInplaceEditorOpen = (shape: Shape) => {
+    try {
+      window.app.editor.selection.deselectAll();
+      // enforce the horz text align in tiptap editor
+      const editContent = tiptapEditor.getText() ?? "";
+      if (editContent.trim().length === 0) {
+        tiptapEditor.commands.focus("end");
+        tiptapEditor
+          .chain()
+          .focus()
+          .setTextAlign((shape as Box).horzAlign)
+          .run();
+      }
+    } catch (error) {
+      console.error("Error handling text inplace editor open:", error);
+    }
+  };
+
   return (
     <div className="absolute inset-0" {...others}>
       <Header
@@ -194,9 +251,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
               onActiveHandlerLockChange={handleActiveHandlerLockChange}
               onSelectionChange={handleSelectionChange}
               // onCurrentPageChange={handleCurrentPageChange}
-              // onTextInplaceEditorMount={handleTextInplaceEditorMount}
-              // onFileDrop={handleFileDrop}
-              // onTextInplaceEditorOpen={handleTextInplaceEditorOpen}
+              onFileDrop={handleFileDrop}
+              onTextInplaceEditorMount={handleTextInplaceEditorMount}
+              onTextInplaceEditorOpen={handleTextInplaceEditorOpen}
               // onFloatingToolbarMove={handleFloatingToolbarMove}
             />
           </div>
