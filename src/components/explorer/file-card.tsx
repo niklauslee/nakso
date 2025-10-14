@@ -66,7 +66,7 @@ export function FileCard({ file, className }: FileCardProps) {
   };
 
   return (
-    <div className="relative w-48 h-fit rounded-xl">
+    <div className="relative w-48 h-fit rounded-xl group">
       <div
         className="w-48 h-40 flex items-center justify-center border rounded-xl"
         onDoubleClick={handleDoubleClick}
@@ -90,8 +90,13 @@ export function FileCard({ file, className }: FileCardProps) {
       </div>
       <div className="absolute right-0 top-0 p-2">
         <button
+          type="button"
           onClick={handleToggleFavorite}
           title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+          className={cn(
+            !isFavorite &&
+              "opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100"
+          )}
         >
           <HeartIcon
             size={16}
