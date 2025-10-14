@@ -59,8 +59,8 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={view === "search"}
-                  asChild
                   onClick={() => setView("search")}
+                  asChild
                 >
                   <a href="#">
                     <SearchIcon size={16} />
@@ -71,8 +71,8 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={view === "recents"}
-                  asChild
                   onClick={() => setView("recents")}
+                  asChild
                 >
                   <a href="#">
                     <ClockIcon size={16} />
@@ -83,8 +83,8 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={view === "favorites"}
-                  asChild
                   onClick={() => setView("favorites")}
+                  asChild
                 >
                   <a href="#">
                     <StarIcon size={16} />
@@ -93,8 +93,12 @@ export function AppSidebar() {
                 </SidebarMenuButton>
                 <SidebarMenuBadge>22</SidebarMenuBadge>
               </SidebarMenuItem>
-              <SidebarMenuItem onClick={() => setView("editor")}>
-                <SidebarMenuButton asChild>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={view === "trash"}
+                  onClick={() => setView("trash")}
+                  asChild
+                >
                   <a href="#">
                     <Trash2Icon size={16} />
                     <span>Trash</span>

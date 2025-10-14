@@ -15,6 +15,8 @@ import { useWorkingStore } from "@/store/working-store";
 import { RecentsView } from "./explorer/recents-view";
 import { apiContext } from "@/api";
 import { FavoritesView } from "./explorer/favorites-view";
+import { SearchView } from "./explorer/search-view";
+import { TrashView } from "./explorer/trash-view";
 
 declare global {
   interface Window {
@@ -66,8 +68,10 @@ function App() {
               onMount={handleAppReady}
               className={cn(view !== "editor" && "hidden")}
             />
+            <SearchView className={cn(view !== "search" && "hidden")} />
             <RecentsView className={cn(view !== "recents" && "hidden")} />
             <FavoritesView className={cn(view !== "favorites" && "hidden")} />
+            <TrashView className={cn(view !== "trash" && "hidden")} />
             <FolderView
               path={workingFolder}
               className={cn(view !== "folder" && "hidden")}
