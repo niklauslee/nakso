@@ -52,7 +52,7 @@ import {
   LineEndTypeEnum,
   LineType,
 } from "@dgmjs/core";
-import { merge } from "@/lib/utils";
+import { cn, merge } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
 import { ColorIcon } from "./color-icon";
 import { Button } from "@/components/ui/button";
@@ -116,6 +116,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
   const tool = useEditorStore((state) => state.activeHandler);
   const hasMulti = selection.length > 1;
   const hasSelection = selection.length > 0;
+  const isVisible = hasSelection || isShapeTool(tool);
 
   const hasRectangle = hasShapeType(tool, selection, "Rectangle");
   const hasEllipse = hasShapeType(tool, selection, "Ellipse");
@@ -154,13 +155,14 @@ export function Palette({ selection, onChange }: PaletteProps) {
     };
   }, []);
 
-  // don't show palette when no selection and not shape tool
-  if (!hasSelection && !isShapeTool(tool)) {
-    return null;
-  }
-
   return (
-    <div ref={outerRef} className="absolute top-4 bottom-4 right-4 w-40 z-10">
+    <div
+      ref={outerRef}
+      className={cn(
+        "absolute top-4 bottom-4 right-4 w-40 z-10",
+        !isVisible && "hidden"
+      )}
+    >
       <ScrollArea
         ref={scrollRef}
         className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg"
