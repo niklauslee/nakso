@@ -23,13 +23,13 @@ import {
   SquareIcon,
   TypeIcon,
   EraserIcon,
+  FrameIcon,
 } from "lucide-react";
 import { ConnectorIcon, LineIcon } from "@/components/icons";
 import { useEditorStore } from "@/store/editor-store";
 import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 import { useKeymapStore } from "@/store/keymap-store";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ToolItemProps {
@@ -79,26 +79,22 @@ export function Toolbar({}) {
       )}
     >
       <div className="bg-background dark:bg-sidebar border shadow-lg/5 rounded-xl relative flex items-center gap-1 p-1 pointer-events-auto">
-        {activeHandler !== "Select" &&
-          activeHandler !== "Hand" &&
-          activeHandler !== "Eraser" &&
-          activeHandler !== "Image" && (
-            <Button
-              className="absolute -left-8 top-1.5 w-7 h-7"
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                window.app.editor.setActiveHandlerLock(!activeHandlerLock);
-              }}
-              title="Lock"
-            >
-              {activeHandlerLock ? (
-                <LockIcon size={14} />
-              ) : (
-                <UnlockIcon size={14} className="opacity-50" />
-              )}
-            </Button>
+        <Toggle
+          title={activeHandlerLock ? "Unlock Active Tool" : "Lock Active Tool"}
+          size="sm"
+          pressed={activeHandlerLock}
+          onPressedChange={() => {
+            window.app.editor.setActiveHandlerLock(!activeHandlerLock);
+          }}
+          className="w-8 h-8 p-0 rounded-lg hover:text-foreground hover:bg-accent dark:data-[state=on]:bg-accent"
+        >
+          {activeHandlerLock ? (
+            <LockIcon size={14} />
+          ) : (
+            <UnlockIcon size={14} />
           )}
+        </Toggle>
+        <Separator orientation="vertical" className="dark:bg-gray-700" />
         <ToolItem
           handlerId="Select"
           name="Select"
@@ -147,7 +143,6 @@ export function Toolbar({}) {
           pressed={activeHandler === "Rectangle"}
           onPressedChange={(pressed) => {
             if (pressed) window.app.editor.activateHandler("Rectangle");
-            if (!pressed) window.app.editor.setActiveHandlerLock(true);
             window.app.editor.focus();
           }}
         >
@@ -161,7 +156,6 @@ export function Toolbar({}) {
           pressed={activeHandler === "Ellipse"}
           onPressedChange={(pressed) => {
             if (pressed) window.app.editor.activateHandler("Ellipse");
-            if (!pressed) window.app.editor.setActiveHandlerLock(true);
             window.app.editor.focus();
           }}
         >
@@ -175,7 +169,6 @@ export function Toolbar({}) {
           pressed={activeHandler === "Text"}
           onPressedChange={(pressed) => {
             if (pressed) window.app.editor.activateHandler("Text");
-            if (!pressed) window.app.editor.setActiveHandlerLock(true);
             window.app.editor.focus();
           }}
         >
@@ -194,6 +187,19 @@ export function Toolbar({}) {
         >
           <ImageIcon size={16} />
         </ToolItem>
+        <ToolItem
+          handlerId="Frame"
+          name="Frame"
+          hint={`Frame ⎯ ${formattedKeys["tool:frame"]}`}
+          keymap={formattedKeys["tool:frame"]}
+          pressed={activeHandler === "Frame"}
+          onPressedChange={(pressed) => {
+            if (pressed) window.app.editor.activateHandler("Frame");
+            window.app.editor.focus();
+          }}
+        >
+          <FrameIcon size={16} />
+        </ToolItem>
         <Separator orientation="vertical" className="dark:bg-gray-700" />
         <ToolItem
           handlerId="Connector"
@@ -203,7 +209,6 @@ export function Toolbar({}) {
           pressed={activeHandler === "Connector"}
           onPressedChange={(pressed) => {
             if (pressed) window.app.editor.activateHandler("Connector");
-            if (!pressed) window.app.editor.setActiveHandlerLock(true);
             window.app.editor.focus();
           }}
         >
@@ -217,7 +222,6 @@ export function Toolbar({}) {
           pressed={activeHandler === "Line"}
           onPressedChange={(pressed) => {
             if (pressed) window.app.editor.activateHandler("Line");
-            if (!pressed) window.app.editor.setActiveHandlerLock(true);
             window.app.editor.focus();
           }}
         >
@@ -249,20 +253,6 @@ export function Toolbar({}) {
         >
           <HighlighterIcon size={16} />
         </ToolItem>
-        {/* <Separator orientation="vertical" className="dark:bg-gray-700" />
-        <ToolItem
-          handlerId="Frame"
-          name="Frame"
-          hint={`Frame ⎯ ${formattedKeys["tool:frame"]}`}
-          keymap={formattedKeys["tool:frame"]}
-          pressed={activeHandler === "Frame"}
-          onPressedChange={(pressed) => {
-            if (pressed) window.app.editor.activateHandler("Frame");
-            window.app.editor.focus();
-          }}
-        >
-          <FrameIcon size={16}  />
-        </ToolItem> */}
       </div>
     </div>
   );

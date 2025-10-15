@@ -21,6 +21,7 @@ import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
 import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
+import { set } from "zod";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -43,6 +44,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const setSelection = useEditorStore((state) => state.setSelection);
   const activeHandler = useEditorStore((state) => state.activeHandler);
   const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
+  const setActiveHandlerLock = useEditorStore(
+    (state) => state.setActiveHandlerLock
+  );
   const styleStore = useStyleStore();
 
   const isShapeTool =
@@ -105,9 +109,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleActiveHandlerChange = (handlerId: string) => {
     try {
-      if (!editor) return;
       setActiveHandler(handlerId);
-      editor.selection.deselectAll();
+      editor?.selection.deselectAll();
     } catch (error) {
       console.error("Error handling active handler change:", error);
     }
@@ -115,9 +118,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleActiveHandlerLockChange = (lock: boolean) => {
     try {
-      if (!editor) return;
-      useEditorStore.getState().setActiveHandlerLock(lock);
-      editor.focus();
+      console.log("Handler lock changed:", lock);
+      setActiveHandlerLock(lock);
+      editor?.focus();
     } catch (error) {
       console.error("Error handling active handler lock change:", error);
     }

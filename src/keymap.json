@@ -38,9 +38,10 @@
   "o": "tool:ellipse",
   "t": "tool:text",
   "i": "tool:image",
+  "f": "tool:frame",
   "c": "tool:connector",
   "l": "tool:line",
-  "f": "tool:freehand",
+  "p": "tool:freehand",
   "g": "tool:highlighter",
 
   "mod-b": "view:toggle-sidebar",

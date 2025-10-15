@@ -15,19 +15,9 @@
           "command": "file:open"
         },
         {
-          "label": "Open recent",
-          "id": "file.open-recent",
-          "submenu": []
-        },
-        {
           "label": "Save",
           "id": "file.save",
           "command": "file:save"
-        },
-        {
-          "label": "Save as...",
-          "id": "file.save-as",
-          "command": "file:save-as"
         },
         { "type": "separator" },
         {
@@ -147,18 +137,6 @@
       "id": "view",
       "submenu": [
         {
-          "label": "Start presentation",
-          "id": "view.presentation",
-          "command": "view:presentation",
-          "inset": true
-        },
-        {
-          "label": "Templates...",
-          "id": "view.templates",
-          "command": "view:show-template-dialog",
-          "inset": true
-        },
-        {
           "label": "Insert shapes...",
           "id": "view.insert-shapes",
           "command": "view:show-insert-shape-dialog",
@@ -190,25 +168,6 @@
           "inset": true
         },
         { "type": "separator" },
-        {
-          "label": "Show navigator",
-          "id": "view.toggle-navigator",
-          "type": "checkbox",
-          "command": "view:toggle-navigator"
-        },
-        {
-          "label": "Show inspector",
-          "id": "view.toggle-inspector",
-          "type": "checkbox",
-          "command": "view:toggle-inspector"
-        },
-        { "type": "separator" },
-        {
-          "label": "Show links",
-          "id": "view.show-links",
-          "type": "checkbox",
-          "command": "view:show-links"
-        },
         {
           "label": "Toggle grid",
           "id": "view.toggle-grid",
@@ -247,11 +206,6 @@
           "id": "help.about",
           "command": "help:about"
         },
-        {
-          "label": "License activation...",
-          "id": "help.license-activation",
-          "command": "help:license-activation"
-        },
         { "type": "separator" },
         {
           "label": "Homepage",
@@ -283,23 +237,6 @@
       "label": "Quit",
       "id": "file.quit",
       "command": "file:quit"
-    }
-  ],
-  "page": [
-    {
-      "label": "Add page",
-      "id": "page.add",
-      "command": "page:add"
-    },
-    {
-      "label": "Delete page",
-      "id": "page.delete",
-      "command": "page:delete"
-    },
-    {
-      "label": "Duplicate page",
-      "id": "page.duplicate",
-      "command": "page:duplicate"
     }
   ],
   "zoom": [
