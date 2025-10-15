@@ -4,7 +4,13 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
-import { EllipsisIcon, HeartIcon } from "lucide-react";
+import {
+  BanIcon,
+  EllipsisIcon,
+  FileXIcon,
+  HeartIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -27,6 +33,8 @@ interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function FileCard({ file, className }: FileCardProps) {
   const pageViewRef = useRef<DGMPageViewHandle>(null);
   const [page, setPage] = useState<Page | null>(null);
+  const [broken, setBroken] = useState(false);
+
   const darkMode = useSettingStore((state) => state.darkMode);
   const favorites = useFavoritesStore((state) => state.files);
   const addToFavorites = useFavoritesStore((state) => state.addToFavorites);
@@ -40,6 +48,7 @@ export function FileCard({ file, className }: FileCardProps) {
       const page = await load(file.fullPath);
       setPage(page);
     } catch (error) {
+      setBroken(true);
       console.error("Failed to load file:", error);
     }
   };
@@ -50,6 +59,7 @@ export function FileCard({ file, className }: FileCardProps) {
 
   const handleDoubleClick = () => {
     try {
+      if (broken) return;
       window.app.commands.execute("file:open", { filePath: file.fullPath });
     } catch (err) {
       toast.error("Failed to open file");
@@ -67,22 +77,26 @@ export function FileCard({ file, className }: FileCardProps) {
 
   return (
     <div className="relative w-52 h-fit border rounded-xl overflow-clip group">
-      <div
-        className="w-52 h-36 flex items-center justify-center p-2"
-        onDoubleClick={handleDoubleClick}
-      >
-        {page && (
-          <DGMPageView
-            ref={pageViewRef}
-            className={cn("w-full", className)}
-            darkMode={darkMode}
-            page={page}
-            scaleAdjust={page.size ? 1 : 0.9}
-            onClick={() => {
-              pageViewRef.current?.focus();
-            }}
-            tabIndex={0}
-          />
+      <div className="w-52 h-36" onDoubleClick={handleDoubleClick}>
+        {page && !broken && (
+          <div className="w-full h-full flex items-center justify-center p-2">
+            <DGMPageView
+              ref={pageViewRef}
+              className={cn("w-full", className)}
+              darkMode={darkMode}
+              page={page}
+              scaleAdjust={page.size ? 1 : 0.9}
+              onClick={() => {
+                pageViewRef.current?.focus();
+              }}
+              tabIndex={0}
+            />
+          </div>
+        )}
+        {broken && (
+          <div className="w-full h-full flex items-center justify-center bg-accent/50 text-accent-foreground/20">
+            <BanIcon size={32} strokeWidth={1} />
+          </div>
         )}
       </div>
       <div className="flex flex-col w-full text-sm py-2 bg-accent">
@@ -96,7 +110,7 @@ export function FileCard({ file, className }: FileCardProps) {
             </button>
           </div>
         </div>
-        <div className="flex items-center text-nowrap text-xs text-muted-foreground/50 px-2">
+        <div className="flex items-center text-nowrap text-xs text-muted-foreground px-2">
           {dateFromNow(new Date(file.mtime!))}
         </div>
       </div>
