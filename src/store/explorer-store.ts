@@ -15,6 +15,7 @@ export interface ExplorerState {
   fetchFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
   updateFile: (path: string) => void;
+  addNewFile: (path: string) => void;
 }
 
 export const useExplorerStore = create<ExplorerState>()((set, get) => ({
@@ -26,7 +27,8 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
   setFolders: (folders) => set({ folders }),
   setCurrentFolder: async (path) => {
     const sortBy = get().sortBy;
-    const files = workspace.sortFiles(await workspace.getFiles(path), sortBy);
+    const allFiles = await workspace.getFiles(path);
+    const files = workspace.sortFiles(allFiles, sortBy);
     set({ currentFolder: path, files, sortBy, loadedFiles: [] });
   },
   fetchFiles: async () => {
@@ -49,6 +51,18 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
       set((state) => {
         const files = workspace.sortFiles(
           state.files.map((f) => (f.fullPath === path ? updated : f)),
+          state.sortBy
+        );
+        return { files, loadedFiles: [] };
+      });
+    }
+  },
+  addNewFile: async (path) => {
+    const entry = await workspace.getFileEntry(path);
+    if (entry) {
+      set((state) => {
+        const files = workspace.sortFiles(
+          [entry, ...state.files],
           state.sortBy
         );
         return { files, loadedFiles: [] };

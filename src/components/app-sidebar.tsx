@@ -35,6 +35,10 @@ export function AppSidebar() {
   const workingFolder = useWorkingStore((state) => state.workingFolder);
   const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
 
+  const handleNewFile = () => {
+    window.app?.commands.execute("file:new");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader data-manual-window-drag-region className="w-full h-12">
@@ -44,8 +48,9 @@ export function AppSidebar() {
             <Button
               variant="ghost"
               size="icon"
-              className="size-7"
+              className="size-7 cursor-pointer"
               title="New File"
+              onClick={handleNewFile}
             >
               <PlusIcon size={16} />
             </Button>

@@ -7,7 +7,7 @@ import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "./sidebar";
+import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
 import { FolderView } from "./explorer/folder-view";
 import { Toaster } from "@/components/ui/sonner";

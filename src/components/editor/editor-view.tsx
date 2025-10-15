@@ -10,7 +10,7 @@ import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
 import { useMenuStore } from "@/store/menu-store";
-import { Header } from "../header";
+import { AppHeader } from "../app-header";
 import { Toolbar } from "./toolbar";
 import { Palette } from "./palette";
 import { ApplicationMenu } from "../menu/menu";
@@ -202,7 +202,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   return (
     <div className="absolute inset-0" {...others}>
-      <Header
+      <AppHeader
         rightArea={
           <ApplicationMenu menu={menus.main} className="w-36">
             <Button
@@ -224,7 +224,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
             </span>
           )}
         </div>
-      </Header>
+      </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
         ref={wrapperRef}

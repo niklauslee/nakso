@@ -12,7 +12,7 @@
  */
 
 import { useSettingStore } from "./store/setting-store";
-import { Shape } from "@dgmjs/core";
+import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
 import { z } from "zod";
 import { ZOOMS } from "./const";
 import { useEditorStore } from "./store/editor-store";
@@ -47,16 +47,43 @@ export function registerCommands() {
 
   // file commands -------------------------------------------------------------
 
-  app.commands.register("file:new", "Create a new file", {}, async () => {
-    const app = window.app;
-    try {
-      await app.ensureSave();
-      // ...
-    } catch (err) {
-      toast.error("Failed to create file: ");
-      console.error("Failed to create file: ", err);
+  app.commands.register(
+    "file:new",
+    "Create a new file",
+    {
+      basePath: z.string().optional(),
+    },
+    async ({ basePath }) => {
+      const app = window.app;
+      try {
+        await app.ensureSave();
+        // generate an unique file name
+        let dir = await app.getDraftsDir();
+        if (basePath) dir = basePath;
+        const filePath = await workspace.generateUniqueFileName(dir);
+        // create an empty file
+        const store = new Store(shapeInstantiator);
+        const doc = new Doc();
+        const page = new Page();
+        page.name = "Page";
+        doc.children.push(page);
+        page.parent = doc;
+        store.setRoot(doc);
+        const json = store.toJSON();
+        const data = JSON.stringify(json);
+        await workspace.writeFile(filePath, data);
+        // update the current folder view
+        useExplorerStore.getState().addNewFile(filePath);
+        // open the new file
+        setTimeout(() => {
+          app.commands.execute("file:open", { filePath });
+        }, 0);
+      } catch (err) {
+        toast.error("Failed to create file: ");
+        console.error("Failed to create file: ", err);
+      }
     }
-  });
+  );
 
   app.commands.register(
     "file:open",

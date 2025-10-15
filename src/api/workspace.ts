@@ -181,6 +181,27 @@ function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
   });
 }
 
+async function generateUniqueFileName(baseDir: string): Promise<string> {
+  const now = new Date();
+  const baseName = [
+    now.getFullYear().toString(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  let candidate = `${baseName}${EXT_NAME}`;
+  let candidatePath = await join(baseDir, candidate);
+  let suffix = 1;
+
+  while (await exists(candidatePath)) {
+    candidate = `${baseName} (${suffix})${EXT_NAME}`;
+    candidatePath = await join(baseDir, candidate);
+    suffix += 1;
+  }
+
+  return candidatePath;
+}
+
 export const workspace = {
   ensureWorkspace,
   getFolders,
@@ -193,4 +214,5 @@ export const workspace = {
   writeConfigFile,
   deleteConfigFile,
   sortFiles,
+  generateUniqueFileName,
 };

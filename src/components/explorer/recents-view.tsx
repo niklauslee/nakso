@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Header } from "../header";
+import { AppHeader } from "../app-header";
 import {
   Empty,
   EmptyContent,
@@ -59,7 +59,7 @@ export function RecentsView({ ...others }: RecentsViewProps) {
 
   return (
     <div className="absolute inset-0" {...others}>
-      <Header
+      <AppHeader
         rightArea={
           <div className="pointer-events-auto">
             <FileSort
@@ -72,7 +72,7 @@ export function RecentsView({ ...others }: RecentsViewProps) {
         }
       >
         <div className="text-sm">Recents</div>
-      </Header>
+      </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
       >

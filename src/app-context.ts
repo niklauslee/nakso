@@ -17,7 +17,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useExplorerStore } from "./store/explorer-store";
 import { workspace } from "@/api/workspace";
 import { join, documentDir } from "@tauri-apps/api/path";
-import { WORKSPACE_NAME } from "./const";
+import { DRAFTS_FOLDER_NAME, WORKSPACE_NAME } from "./const";
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
 
@@ -195,6 +195,14 @@ export class AppContext {
 
   async ensureSave() {
     await this.commands.execute("file:save");
+  }
+
+  getWorkspaceDir(): string {
+    return useSettingStore.getState().workspaceDir!;
+  }
+
+  async getDraftsDir() {
+    return await join(this.getWorkspaceDir(), DRAFTS_FOLDER_NAME);
   }
 
   updateUI() {

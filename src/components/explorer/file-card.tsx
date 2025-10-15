@@ -4,13 +4,7 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
-import {
-  BanIcon,
-  EllipsisIcon,
-  FileXIcon,
-  HeartIcon,
-  XIcon,
-} from "lucide-react";
+import { BanIcon, EllipsisIcon, HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 

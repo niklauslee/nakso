@@ -8,7 +8,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
 }
 
-export function Header({
+export function AppHeader({
   children,
   className,
   rightArea,
