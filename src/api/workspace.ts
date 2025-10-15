@@ -28,61 +28,47 @@ export type FileEntry = {
   readonly: boolean;
 };
 
-/*
-~/Documents/Nakso
-  /.nakso
-    /recents.json
-    /favorites.json
-    /workspace.json
-    /trash
-  /Drafts
-  /Folder1
-    /file1.nakso
-    /file2.nakso
-  /Folder2
-*/
-
 /**
- * Ensure a path exists, creating it if necessary.
- * Returns the path.
+ * Ensure a directory exists, creating it if necessary.
+ * Returns the directory path.
  */
-async function ensurePath(path: string): Promise<string> {
-  const existsPath = await exists(path);
-  if (!existsPath) {
-    await mkdir(path, { recursive: true });
+async function ensureDir(dirPath: string): Promise<string> {
+  const existsDir = await exists(dirPath);
+  if (!existsDir) {
+    await mkdir(dirPath, { recursive: true });
   }
-  return path;
+  return dirPath;
 }
 
 /**
  * Ensure the main workspace directory and subdirectories exist.
  * Returns the main workspace directory path.
  */
-async function ensureWorkspace(path: string): Promise<string> {
-  await ensurePath(path);
-  const drafts = await join(path, DRAFTS_FOLDER_NAME);
-  await ensurePath(drafts);
-  const config = await join(path, CONFIG_FOLDER_NAME);
-  await ensurePath(config);
-  return path;
+async function ensureWorkspace(dirPath: string): Promise<string> {
+  await ensureDir(dirPath);
+  const drafts = await join(dirPath, DRAFTS_FOLDER_NAME);
+  await ensureDir(drafts);
+  const config = await join(dirPath, CONFIG_FOLDER_NAME);
+  await ensureDir(config);
+  return dirPath;
 }
 
 /**
  * Read all folders in the workspace (only one level deep).
  */
-async function getFolders(workspacePath: string): Promise<FileEntry[]> {
-  const files = await readDir(workspacePath);
+async function getFolders(workspaceDir: string): Promise<FileEntry[]> {
+  const entries = await readDir(workspaceDir);
   // map to FileEntry
-  const fileEntries = [];
-  for (const f of files) {
+  const dirEntries = [];
+  for (const f of entries) {
     if (f.isDirectory && !f.name.startsWith(".")) {
-      const fullPath = await join(workspacePath, f.name);
+      const fullPath = await join(workspaceDir, f.name);
       const fileEntry = await getFileEntry(fullPath);
-      fileEntries.push(fileEntry);
+      dirEntries.push(fileEntry);
     }
   }
   // sort by name, but put Drafts folder first
-  const sorted = fileEntries.sort((a, b) => a.name.localeCompare(b.name));
+  const sorted = dirEntries.sort((a, b) => a.name.localeCompare(b.name));
   const draftsFolderIndex = sorted.findIndex(
     (d) => d.name === DRAFTS_FOLDER_NAME
   );
@@ -154,30 +140,30 @@ async function writeFile(path: string, data: string): Promise<void> {
 }
 
 async function readConfigFile(
-  workspacePath: string,
+  workspaceDir: string,
   fileName: string
 ): Promise<string> {
-  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
-  const fullPath = await join(configPath, fileName);
+  const configDir = await join(workspaceDir, CONFIG_FOLDER_NAME);
+  const fullPath = await join(configDir, fileName);
   return await readFile(fullPath);
 }
 
 async function writeConfigFile(
-  workspacePath: string,
+  workspaceDir: string,
   fileName: string,
   data: string
 ): Promise<void> {
-  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
-  const fullPath = await join(configPath, fileName);
+  const configDir = await join(workspaceDir, CONFIG_FOLDER_NAME);
+  const fullPath = await join(configDir, fileName);
   return await writeFile(fullPath, data);
 }
 
 async function deleteConfigFile(
-  workspacePath: string,
+  workspaceDir: string,
   fileName: string
 ): Promise<void> {
-  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
-  const fullPath = await join(configPath, fileName);
+  const configDir = await join(workspaceDir, CONFIG_FOLDER_NAME);
+  const fullPath = await join(configDir, fileName);
   return await remove(fullPath);
 }
 

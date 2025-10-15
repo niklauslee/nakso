@@ -3,13 +3,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface SettingState {
-  workspacePath: string | null;
+  workspaceDir: string | null;
   darkMode: boolean;
   showGrid: boolean;
   snapToGrid: boolean;
   snapToObjects: boolean;
   showSidebar: boolean;
-  setWorkspacePath: (path: string | null) => void;
+  setWorkspaceDir: (dirPath: string | null) => void;
   setDarkMode: (darkMode: boolean) => void;
   toggleGrid: () => void;
   toggleSnapToGrid: () => void;
@@ -20,13 +20,13 @@ export interface SettingState {
 export const useSettingStore = create<SettingState>()(
   persist(
     (set) => ({
-      workspacePath: null,
+      workspaceDir: null,
       darkMode: false,
       showGrid: false,
       snapToGrid: false,
       snapToObjects: false,
       showSidebar: true,
-      setWorkspacePath: (path) => set(() => ({ workspacePath: path })),
+      setWorkspaceDir: (dirPath) => set(() => ({ workspaceDir: dirPath })),
       setDarkMode: (darkMode) => set(() => ({ darkMode })),
       toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
       toggleSnapToGrid: () =>

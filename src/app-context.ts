@@ -18,6 +18,8 @@ import { useExplorerStore } from "./store/explorer-store";
 import { workspace } from "@/api/workspace";
 import { join, documentDir } from "@tauri-apps/api/path";
 import { WORKSPACE_NAME } from "./const";
+import { useRecentsStore } from "./store/recents-store";
+import { useFavoritesStore } from "./store/favorites-store";
 
 export class AppContext {
   productName: string;
@@ -154,14 +156,19 @@ export class AppContext {
 
   async setupWorkspace() {
     try {
-      let workspacePath = useSettingStore.getState().workspacePath;
-      if (!workspacePath) {
+      // ensure workspace folder
+      let workspaceDir = useSettingStore.getState().workspaceDir;
+      if (!workspaceDir) {
         const docPath = await documentDir();
-        workspacePath = await join(docPath, WORKSPACE_NAME);
-        useSettingStore.getState().setWorkspacePath(workspacePath);
+        workspaceDir = await join(docPath, WORKSPACE_NAME);
+        useSettingStore.getState().setWorkspaceDir(workspaceDir);
       }
-      await workspace.ensureWorkspace(workspacePath);
-      const folders = await workspace.getFolders(workspacePath);
+      await workspace.ensureWorkspace(workspaceDir);
+      // rehydrate stores
+      await useRecentsStore.persist.rehydrate();
+      await useFavoritesStore.persist.rehydrate();
+      // load workspace folders
+      const folders = await workspace.getFolders(workspaceDir);
       useExplorerStore.getState().setFolders(folders);
     } catch (err) {
       console.error("Failed to load workspace", err);

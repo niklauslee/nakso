@@ -10,12 +10,8 @@ import {
 } from "@/components/ui/empty";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "../ui/button";
 import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
@@ -35,7 +31,7 @@ export function FolderView({ path, ...others }: FolderViewProps) {
 
   const [loading, setLoading] = useState(false);
   const [relDir, setRelDir] = useState<string[]>([]);
-  const workspacePath = useSettingStore((state) => state.workspacePath);
+  const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
   const sortBy = useExplorerStore((state) => state.sortBy);
@@ -44,10 +40,9 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
   useEffect(() => {
-    const relPath = path.replace(workspacePath || "", "");
+    const relPath = path.replace(workspaceDir || "", "");
     const parts = relPath.split("/").filter((p) => p);
     setRelDir(parts);
-    console.log("Current folder:", relPath);
     if (path) setCurrentFolder(path);
   }, [path]);
 
@@ -104,34 +99,9 @@ export function FolderView({ path, ...others }: FolderViewProps) {
             </>
           )}
           {files.length === 0 && (
-            <Empty className="w-full h-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <FolderIcon />
-                </EmptyMedia>
-                <EmptyTitle>Empty Folder</EmptyTitle>
-                <EmptyDescription>
-                  You haven&apos;t created any files yet. Get started by
-                  creating your first file.
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <div className="flex gap-2">
-                  <Button>Create File</Button>
-                  <Button variant="outline">Import File</Button>
-                </div>
-              </EmptyContent>
-              <Button
-                variant="link"
-                asChild
-                className="text-muted-foreground"
-                size="sm"
-              >
-                <a href="#">
-                  Learn More <ArrowUpRightIcon />
-                </a>
-              </Button>
-            </Empty>
+            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
+              No files
+            </div>
           )}
         </InfiniteScrollArea>
         <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
