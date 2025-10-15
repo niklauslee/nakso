@@ -4,7 +4,7 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
-import { HeartIcon } from "lucide-react";
+import { EllipsisIcon, HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -66,9 +66,9 @@ export function FileCard({ file, className }: FileCardProps) {
   };
 
   return (
-    <div className="relative w-48 h-fit rounded-xl group">
+    <div className="relative w-52 h-fit border rounded-xl overflow-clip group">
       <div
-        className="w-48 h-40 flex items-center justify-center border rounded-xl"
+        className="w-52 h-36 flex items-center justify-center p-2"
         onDoubleClick={handleDoubleClick}
       >
         {page && (
@@ -85,11 +85,18 @@ export function FileCard({ file, className }: FileCardProps) {
           />
         )}
       </div>
-      <div className="flex flex-col gap-0.5 w-full text-sm pt-1">
-        <div className="flex items-center justify-center text-nowrap text-sm text-muted-foreground">
-          {file.name}
+      <div className="flex flex-col w-full text-sm py-2 bg-accent">
+        <div className="flex items-center justify-between px-2">
+          <div className="text-sm text-accent-foreground truncate">
+            {file.name}
+          </div>
+          <div>
+            <button className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 cursor-pointer">
+              <EllipsisIcon size={16} />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center justify-center text-nowrap text-xs text-muted-foreground/50">
+        <div className="flex items-center text-nowrap text-xs text-muted-foreground/50 px-2">
           {dateFromNow(new Date(file.mtime!))}
         </div>
       </div>

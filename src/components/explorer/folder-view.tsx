@@ -1,20 +1,10 @@
 import { cn } from "@/lib/utils";
 import { Header } from "../header";
 import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
-import { Button } from "../ui/button";
-import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { useExplorerStore } from "@/store/explorer-store";
