@@ -41,16 +41,12 @@ function App() {
 
   const handleAppReady = async (editor: EditorType) => {
     try {
-      window.app = new AppContext(editor);
-      window.api = apiContext;
-      await window.app.initialize();
-
+      await window.app.appReady(editor);
       editor.newDoc();
       editor.fitToScreen();
       window.addEventListener("resize", () => {
         editor.fit();
       });
-
       window.app.updateUI();
       setAppReady(true, editor.platform);
     } catch (error) {

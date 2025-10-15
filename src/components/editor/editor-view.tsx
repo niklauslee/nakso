@@ -66,7 +66,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     const observer = new ResizeObserver((entries) => {
       for (const _ of entries) {
         setTimeout(() => {
-          window.app?.editor.fit();
+          editor?.fit();
         }, 0);
       }
     });
@@ -105,9 +105,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleActiveHandlerChange = (handlerId: string) => {
     try {
-      const app = window.app;
+      if (!editor) return;
       setActiveHandler(handlerId);
-      app?.editor.selection.deselectAll();
+      editor.selection.deselectAll();
     } catch (error) {
       console.error("Error handling active handler change:", error);
     }
@@ -115,9 +115,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleActiveHandlerLockChange = (lock: boolean) => {
     try {
-      const app = window.app;
+      if (!editor) return;
       useEditorStore.getState().setActiveHandlerLock(lock);
-      app?.editor.focus();
+      editor.focus();
     } catch (error) {
       console.error("Error handling active handler lock change:", error);
     }
@@ -132,13 +132,13 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handlePropsChange = (props: ShapeProps) => {
     try {
-      const app = window.app;
+      if (!editor) return;
       if (isShapeTool) {
         styleStore.setStyleProps(activeHandler!, props);
       } else {
-        const shapes = app.editor.selection.getShapes();
+        const shapes = editor.selection.getShapes();
         const shapeType = merge(shapes.map((shape) => shape.type));
-        app.editor.actions.update(props);
+        editor.actions.update(props);
         styleStore.setStyleProps(shapeType!, props);
         setSelection([...shapes]);
       }
@@ -149,8 +149,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleFileDrop = async ({ event, dataTransfer }: FileDropEvent) => {
     try {
-      const app = window.app;
-      const p = app.editor.canvas.globalCoordTransformRev([event.x, event.y]);
+      if (!editor) return;
+      const p = editor.canvas.globalCoordTransformRev([event.x, event.y]);
       const files = await getFilesFromDataTransferItems(dataTransfer.items);
       if (files.length === 1) {
         const file = files[0];
@@ -159,8 +159,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
           case "image/jpeg":
           case "image/webp":
           case "image/svg+xml": {
-            const image = await app.editor.factory.createImage(file, p);
-            app.editor.actions.insert(image);
+            const image = await editor.factory.createImage(file, p);
+            editor.actions.insert(image);
             break;
           }
         }
@@ -180,7 +180,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleTextInplaceEditorOpen = (shape: Shape) => {
     try {
-      window.app.editor.selection.deselectAll();
+      if (!editor || !tiptapEditor) return;
+      editor.selection.deselectAll();
       // enforce the horz text align in tiptap editor
       const editContent = tiptapEditor.getText() ?? "";
       if (editContent.trim().length === 0) {

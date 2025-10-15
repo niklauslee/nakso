@@ -22,17 +22,16 @@ export class AppContext {
   productId: string;
   version: string;
   platform: string;
-  editor: Editor;
+  editor: Editor = undefined as any; // to be set in appReady
   commands: CommandManager;
   keymaps: KeymapManager;
   autoSaver: AutoSaver;
 
-  constructor(editor: Editor) {
+  constructor(platform: string) {
+    this.platform = platform;
     this.productName = packageJson.productName;
     this.productId = packageJson.productId;
     this.version = packageJson.version;
-    this.editor = editor;
-    this.platform = editor.platform;
     this.commands = new CommandManager();
     this.keymaps = new KeymapManager({
       platform: this.platform,
@@ -43,15 +42,19 @@ export class AppContext {
     });
   }
 
-  async initialize() {
-    await this.setupNativeUI();
+  async setup() {
     await this.wiring();
-    await this.loadFonts();
-    this.loadKeymap();
-    this.loadMenus();
-    this.loadWorkspace();
+    await this.setupNative();
+    await this.setupFonts();
+    this.setupKeymap();
+    this.setupMenus();
+    this.setupWorkspace();
     registerCommands();
     await this.loadWorkingState();
+  }
+
+  async appReady(editor: Editor) {
+    this.editor = editor;
   }
 
   async wiring() {
@@ -73,7 +76,7 @@ export class AppContext {
     });
   }
 
-  async setupNativeUI() {
+  async setupNative() {
     const appWindow = getCurrentWindow();
 
     // set initial theme
@@ -113,7 +116,7 @@ export class AppContext {
     });
   }
 
-  async loadFonts() {
+  async setupFonts() {
     try {
       insertFontsToDocument(fontJson as Font[]);
       await useFontStore.getState().fetchFonts(fontJson as Font[]);
@@ -122,7 +125,7 @@ export class AppContext {
     }
   }
 
-  loadKeymap() {
+  setupKeymap() {
     try {
       this.keymaps.add(keymapJson);
       this.keymaps.htmlReady();
@@ -134,7 +137,7 @@ export class AppContext {
     }
   }
 
-  loadMenus() {
+  setupMenus() {
     try {
       useMenuStore
         .getState()
@@ -147,7 +150,7 @@ export class AppContext {
     }
   }
 
-  loadWorkspace() {
+  setupWorkspace() {
     try {
       useExplorerStore.getState().initialize();
     } catch (err) {
