@@ -25,8 +25,8 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useWorkingStore } from "@/store/working-store";
-import { DRAFTS_FOLDER_NAME } from "@/api/workspace";
 import { useExplorerStore } from "@/store/explorer-store";
+import { DRAFTS_FOLDER_NAME } from "@/const";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);

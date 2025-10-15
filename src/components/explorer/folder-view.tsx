@@ -8,6 +8,15 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "../ui/button";
 import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,6 +24,7 @@ import { FileCard } from "./file-card";
 import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
+import { useSettingStore } from "@/store/setting-store";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
@@ -24,6 +34,8 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   if (!path) return;
 
   const [loading, setLoading] = useState(false);
+  const [relDir, setRelDir] = useState<string[]>([]);
+  const workspacePath = useSettingStore((state) => state.workspacePath);
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
   const sortBy = useExplorerStore((state) => state.sortBy);
@@ -32,6 +44,10 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
   useEffect(() => {
+    const relPath = path.replace(workspacePath || "", "");
+    const parts = relPath.split("/").filter((p) => p);
+    setRelDir(parts);
+    console.log("Current folder:", relPath);
     if (path) setCurrentFolder(path);
   }, [path]);
 
@@ -49,7 +65,15 @@ export function FolderView({ path, ...others }: FolderViewProps) {
           </div>
         }
       >
-        <div className="text-sm">{path}</div>
+        <div className="text-sm">
+          <Breadcrumb>
+            <BreadcrumbList>
+              {relDir.map((part, index) => (
+                <BreadcrumbItem key={index}>{part}</BreadcrumbItem>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </Header>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

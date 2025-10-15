@@ -7,12 +7,8 @@ import {
   writeTextFile,
   remove,
 } from "@tauri-apps/plugin-fs";
-import { join, documentDir, basename } from "@tauri-apps/api/path";
-
-export const WORKSPACE_NAME = "Nakso";
-export const CONFIG_FOLDER_NAME = ".nakso";
-export const DRAFTS_FOLDER_NAME = "Drafts";
-export const EXT_NAME = ".nakso";
+import { join, basename } from "@tauri-apps/api/path";
+import { CONFIG_FOLDER_NAME, DRAFTS_FOLDER_NAME, EXT_NAME } from "@/const";
 
 export type FileSortType = {
   field: "name" | "mtime" | "birthtime";
@@ -22,6 +18,7 @@ export type FileSortType = {
 export type FileEntry = {
   isDirectory: boolean;
   fullPath: string;
+  basename: string;
   name: string;
   size: number;
   mode: number;
@@ -58,29 +55,10 @@ async function ensurePath(path: string): Promise<string> {
 }
 
 /**
- * Get the main workspace path, e.g., ~/Documents/Nakso
- */
-async function getPath(): Promise<string> {
-  const docPath = await documentDir();
-  const path = await join(docPath, WORKSPACE_NAME);
-  return path;
-}
-
-/**
- * Get the configuration path, e.g., ~/Documents/Nakso/.nakso
- */
-async function getConfigPath(): Promise<string> {
-  const path = await getPath();
-  const configPath = await join(path, CONFIG_FOLDER_NAME);
-  return configPath;
-}
-
-/**
  * Ensure the main workspace directory and subdirectories exist.
  * Returns the main workspace directory path.
  */
-async function ensureWorkspace(): Promise<string> {
-  const path = await getPath();
+async function ensureWorkspace(path: string): Promise<string> {
   await ensurePath(path);
   const drafts = await join(path, DRAFTS_FOLDER_NAME);
   await ensurePath(drafts);
@@ -92,30 +70,15 @@ async function ensureWorkspace(): Promise<string> {
 /**
  * Read all folders in the workspace (only one level deep).
  */
-async function getFolders(): Promise<FileEntry[]> {
-  const dir = await ensureWorkspace();
-  const files = await readDir(dir);
+async function getFolders(workspacePath: string): Promise<FileEntry[]> {
+  const files = await readDir(workspacePath);
   // map to FileEntry
   const fileEntries = [];
   for (const f of files) {
     if (f.isDirectory && !f.name.startsWith(".")) {
-      const fullPath = await join(dir, f.name);
-      const info = await stat(fullPath);
-      fileEntries.push({
-        isDirectory: true,
-        fullPath,
-        name: f.name,
-        // relPath
-        // basebase
-        // name
-        // extname
-        mode: info.mode ?? 0,
-        size: info.size,
-        atime: info.atime,
-        mtime: info.mtime,
-        birthtime: info.birthtime,
-        readonly: info.readonly,
-      });
+      const fullPath = await join(workspacePath, f.name);
+      const fileEntry = await getFileEntry(fullPath);
+      fileEntries.push(fileEntry);
     }
   }
   // sort by name, but put Drafts folder first
@@ -139,18 +102,8 @@ async function getFiles(path: string): Promise<FileEntry[]> {
   for (const f of files) {
     if (!f.isDirectory && f.name.endsWith(EXT_NAME)) {
       const fullPath = await join(path, f.name);
-      const info = await stat(fullPath);
-      fileEntries.push({
-        isDirectory: f.isDirectory,
-        fullPath,
-        name: f.name,
-        mode: info.mode ?? 0,
-        size: info.size,
-        atime: info.atime,
-        mtime: info.mtime,
-        birthtime: info.birthtime,
-        readonly: info.readonly,
-      });
+      const fileEntry = await getFileEntry(fullPath);
+      fileEntries.push(fileEntry);
     }
   }
   return fileEntries;
@@ -161,10 +114,12 @@ async function getFiles(path: string): Promise<FileEntry[]> {
  */
 async function getFileEntry(path: string): Promise<FileEntry> {
   const info = await stat(path);
-  const name = await basename(path);
+  const base = await basename(path);
+  const name = base.endsWith(EXT_NAME) ? base.slice(0, -EXT_NAME.length) : base;
   const fileEntry: FileEntry = {
     isDirectory: info.isDirectory,
     fullPath: path,
+    basename: base,
     name,
     mode: info.mode ?? 0,
     size: info.size,
@@ -198,20 +153,30 @@ async function writeFile(path: string, data: string): Promise<void> {
   await writeTextFile(path, data);
 }
 
-async function readConfigFile(fileName: string): Promise<string> {
-  const configPath = await getConfigPath();
+async function readConfigFile(
+  workspacePath: string,
+  fileName: string
+): Promise<string> {
+  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
   const fullPath = await join(configPath, fileName);
   return await readFile(fullPath);
 }
 
-async function writeConfigFile(fileName: string, data: string): Promise<void> {
-  const configPath = await getConfigPath();
+async function writeConfigFile(
+  workspacePath: string,
+  fileName: string,
+  data: string
+): Promise<void> {
+  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
   const fullPath = await join(configPath, fileName);
   return await writeFile(fullPath, data);
 }
 
-async function deleteConfigFile(fileName: string): Promise<void> {
-  const configPath = await getConfigPath();
+async function deleteConfigFile(
+  workspacePath: string,
+  fileName: string
+): Promise<void> {
+  const configPath = await join(workspacePath, CONFIG_FOLDER_NAME);
   const fullPath = await join(configPath, fileName);
   return await remove(fullPath);
 }
@@ -231,8 +196,6 @@ function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
 }
 
 export const workspace = {
-  getPath,
-  getConfigPath,
   ensureWorkspace,
   getFolders,
   getFiles,

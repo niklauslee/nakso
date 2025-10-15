@@ -10,7 +10,7 @@ export interface ExplorerState {
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
-  initialize(): Promise<void>;
+  setFolders: (folders: FileEntry[]) => void;
   setCurrentFolder: (path: string) => Promise<void>;
   fetchFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
@@ -23,11 +23,7 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
   files: [],
   loadedFiles: [],
   sortBy: { field: "mtime", direction: "desc" },
-  initialize: async () => {
-    await workspace.ensureWorkspace();
-    const folders = await workspace.getFolders();
-    set({ folders });
-  },
+  setFolders: (folders) => set({ folders }),
   setCurrentFolder: async (path) => {
     const sortBy = get().sortBy;
     const files = workspace.sortFiles(await workspace.getFiles(path), sortBy);

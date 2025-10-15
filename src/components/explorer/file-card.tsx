@@ -1,5 +1,5 @@
 import { FileEntry, workspace } from "@/api/workspace";
-import { cn } from "@/lib/utils";
+import { cn, dateFromNow } from "@/lib/utils";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
@@ -85,9 +85,15 @@ export function FileCard({ file, className }: FileCardProps) {
           />
         )}
       </div>
-      <div className="w-full h-8 flex items-center text-muted-foreground text-sm">
-        {file.name}
+      <div className="flex flex-col gap-0.5 w-full text-sm pt-1">
+        <div className="flex items-center justify-center text-nowrap text-sm text-muted-foreground">
+          {file.name}
+        </div>
+        <div className="flex items-center justify-center text-nowrap text-xs text-muted-foreground/50">
+          {dateFromNow(new Date(file.mtime!))}
+        </div>
       </div>
+
       <div className="absolute right-0 top-0 p-2">
         <button
           type="button"

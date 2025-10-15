@@ -1,3 +1,8 @@
+export const WORKSPACE_NAME = "Nakso";
+export const CONFIG_FOLDER_NAME = ".nakso";
+export const DRAFTS_FOLDER_NAME = "Drafts";
+export const EXT_NAME = ".nakso";
+
 export const DEFAULT_SANS_FONT = "Inter";
 export const DEFAULT_SERIF_FONT = "Source Serif Pro";
 export const DEFAULT_MONO_FONT = "IBM Plex Mono";

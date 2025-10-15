@@ -16,6 +16,8 @@ import { AutoSaver } from "./engine/auto-saver";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useExplorerStore } from "./store/explorer-store";
 import { workspace } from "@/api/workspace";
+import { join, documentDir } from "@tauri-apps/api/path";
+import { WORKSPACE_NAME } from "./const";
 
 export class AppContext {
   productName: string;
@@ -150,9 +152,17 @@ export class AppContext {
     }
   }
 
-  setupWorkspace() {
+  async setupWorkspace() {
     try {
-      useExplorerStore.getState().initialize();
+      let workspacePath = useSettingStore.getState().workspacePath;
+      if (!workspacePath) {
+        const docPath = await documentDir();
+        workspacePath = await join(docPath, WORKSPACE_NAME);
+        useSettingStore.getState().setWorkspacePath(workspacePath);
+      }
+      await workspace.ensureWorkspace(workspacePath);
+      const folders = await workspace.getFolders(workspacePath);
+      useExplorerStore.getState().setFolders(folders);
     } catch (err) {
       console.error("Failed to load workspace", err);
     }
