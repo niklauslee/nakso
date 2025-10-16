@@ -1,16 +1,19 @@
 import { themeColors } from "@dgmjs/core";
 import { cn } from "@/lib/utils";
+import { EllipsisIcon } from "lucide-react";
 
 interface ColorIconProps extends React.HTMLAttributes<HTMLDivElement> {
   darkMode?: boolean;
   value: string;
   border?: boolean;
+  ellipsis?: boolean;
 }
 
 export function ColorIcon({
   darkMode,
   value,
   border,
+  ellipsis,
   className,
 }: ColorIconProps) {
   const c = value.startsWith("$")
@@ -20,11 +23,19 @@ export function ColorIcon({
     : value;
   return (
     <div
-      className={cn("rounded-sm w-4 h-4", border && "border-2", className)}
+      className={cn(
+        "rounded-full w-4 h-4 flex items-center justify-center",
+        border && "border-3",
+        className
+      )}
       style={{
         ...(!border && { backgroundColor: c }),
         ...(border && { borderColor: c }),
       }}
-    ></div>
+    >
+      {ellipsis && (
+        <EllipsisIcon className="max-w-3.5 max-h-3.5 text-muted-foreground" />
+      )}
+    </div>
   );
 }

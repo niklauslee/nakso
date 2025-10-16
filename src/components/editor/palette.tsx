@@ -19,7 +19,6 @@ import {
   LineCurveIcon,
 } from "@/components/icons";
 import {
-  EllipsisVerticalIcon,
   PaintBucketIcon,
   PenLineIcon,
   TypeIcon,
@@ -36,7 +35,6 @@ import {
   AlignCenterHorizontalIcon,
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
-  ChevronRightIcon,
   Settings2Icon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -253,6 +251,14 @@ function FillColorTool({ selection, onChange }: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
+        <Button size="icon-sm" variant="ghost" title="Fill color">
+          <ColorIcon
+            className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
+            value={fillColor ?? "$background"}
+            darkMode={darkMode}
+            ellipsis={false}
+          />
+        </Button>
         <Toggle
           size="sm"
           title="Fill color ⎯ Background"
@@ -293,6 +299,8 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$red4" darkMode={darkMode} />
         </Toggle>
+      </div>
+      <div className="flex items-center gap-1">
         <Toggle
           size="sm"
           title="Fill color ⎯ Light Blue"
@@ -305,8 +313,6 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$blue4" darkMode={darkMode} />
         </Toggle>
-      </div>
-      <div className="flex items-center gap-1">
         <Toggle
           size="sm"
           title="Fill color ⎯ Light Green"
@@ -343,21 +349,6 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$purple4" darkMode={darkMode} />
         </Toggle>
-        <Toggle
-          size="sm"
-          title="Fill color ⎯ Light Orange"
-          pressed={fillColor === "$orange4"}
-          onPressedChange={(pressed) => {
-            if (pressed) {
-              onChange?.({ fillColor: "$orange4" });
-            }
-          }}
-        >
-          <ColorIcon value="$orange4" darkMode={darkMode} />
-        </Toggle>
-        {/* <Button size="icon-sm" variant="ghost" title="More colors">
-          <EllipsisVerticalIcon size={16} />
-        </Button> */}
       </div>
     </>
   );
@@ -420,32 +411,21 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function OpacityTool({ selection, onChange }: ToolProps) {
-  const opacity = merge(selection.map((s) => s.opacity));
-
-  return (
-    <div className="flex items-center gap-1 py-2 px-1">
-      <Slider
-        title={`Opacity`}
-        value={[opacity || 1]}
-        min={0}
-        max={1}
-        step={0.1}
-        className={"w-full"}
-        onValueChange={(value) => {
-          onChange?.({ opacity: value.length > 0 ? value[0] : 1 });
-        }}
-      />
-    </div>
-  );
-}
-
 function StrokeColorTool({ selection, onChange }: ToolProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
   const strokeColor = merge(selection.map((s) => s.strokeColor));
   return (
     <>
       <div className="flex items-center gap-1">
+        <Button size="icon-sm" variant="ghost" title="Stroke color">
+          <ColorIcon
+            className="size-6 rounded-sm"
+            value={strokeColor ?? "$foreground"}
+            darkMode={darkMode}
+            border={true}
+            ellipsis={false}
+          />
+        </Button>
         <Toggle
           size="sm"
           title="Stroke color ⎯ Foreground"
@@ -485,6 +465,8 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$red9" darkMode={darkMode} border={true} />
         </Toggle>
+      </div>
+      <div className="flex items-center gap-1">
         <Toggle
           size="sm"
           title="Stroke color ⎯ Blue"
@@ -497,8 +479,6 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$blue9" darkMode={darkMode} border={true} />
         </Toggle>
-      </div>
-      <div className="flex items-center gap-1">
         <Toggle
           size="sm"
           title="Stroke color ⎯ Green"
@@ -535,9 +515,6 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         >
           <ColorIcon value="$purple9" darkMode={darkMode} border={true} />
         </Toggle>
-        <Button size="icon-sm" variant="ghost" title="More colors">
-          <EllipsisVerticalIcon size={16} />
-        </Button>
       </div>
     </>
   );
@@ -859,6 +836,26 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           </div>
         </PopoverContent>
       </Popover>
+    </div>
+  );
+}
+
+function OpacityTool({ selection, onChange }: ToolProps) {
+  const opacity = merge(selection.map((s) => s.opacity));
+
+  return (
+    <div className="flex items-center gap-1 py-2 px-1">
+      <Slider
+        title={`Opacity`}
+        value={[opacity || 1]}
+        min={0}
+        max={1}
+        step={0.1}
+        className={"w-full"}
+        onValueChange={(value) => {
+          onChange?.({ opacity: value.length > 0 ? value[0] : 1 });
+        }}
+      />
     </div>
   );
 }
