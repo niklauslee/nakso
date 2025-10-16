@@ -157,13 +157,13 @@ export function Palette({ selection, onChange }: PaletteProps) {
     <div
       ref={outerRef}
       className={cn(
-        "absolute top-4 bottom-4 right-4 w-40 z-10",
+        "absolute top-4 bottom-4 right-4 w-40 z-10 pointer-events-none",
         !isVisible && "hidden"
       )}
     >
       <ScrollArea
         ref={scrollRef}
-        className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg"
+        className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg pointer-events-auto"
       >
         <div ref={innerRef} className="flex flex-col gap-2 w-full h-fit p-2">
           {(hasRectangle || hasEllipse || hasFrame || hasClosedLine) && (
