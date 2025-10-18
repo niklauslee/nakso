@@ -9,6 +9,7 @@ import {
 import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
 import { Button } from "@/components/ui/button";
+import { EditableText } from "@/components/common/editable-text";
 import { useMenuStore } from "@/store/menu-store";
 import { AppHeader } from "../app-header";
 import { Toolbar } from "./toolbar";
@@ -49,7 +50,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   );
   const styleStore = useStyleStore();
 
-  const fileName = filePath ? parse(filePath).name : "Untitled";
+  const fileName = filePath ? parse(filePath).name : "";
 
   const isShapeTool =
     activeHandler &&
@@ -217,8 +218,11 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
           </ApplicationMenu>
         }
       >
-        <div className="text-sm">
-          <span>{fileName}</span>
+        <div className="text-sm pointer-events-auto">
+          <EditableText
+            value={fileName}
+            onValueChange={(value) => console.log("text edited:", value)}
+          />
           {modified && <span> •</span>}
           {readonly && (
             <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">

@@ -7,6 +7,7 @@ import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
 import { BanIcon, EllipsisIcon, HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { EditableText } from "@/components/common/editable-text";
 
 async function load(path: string): Promise<Page | null> {
   const data = await workspace.readFile(path);
@@ -95,8 +96,14 @@ export function FileCard({ file, className }: FileCardProps) {
       </div>
       <div className="flex flex-col w-full text-sm py-2 bg-accent">
         <div className="flex items-center justify-between px-2">
-          <div className="text-sm text-accent-foreground truncate">
-            {file.name}
+          <div className="flex items-center">
+            <EditableText
+              className="text-sm text-accent-foreground truncate max-w-full"
+              value={file.name}
+              onValueChange={(value) => {
+                console.log("file name changed", value);
+              }}
+            />
           </div>
           <div>
             <button className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 cursor-pointer">

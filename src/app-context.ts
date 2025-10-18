@@ -111,11 +111,12 @@ export class AppContext {
     dragRegions.forEach((region) => {
       region.addEventListener("mousedown", (e) => {
         const mouseEvent = e as MouseEvent;
-        if (mouseEvent.buttons === 1) {
-          mouseEvent.detail === 2
-            ? appWindow.toggleMaximize() // maximize on double click
-            : appWindow.startDragging(); // else start dragging
+        if (mouseEvent.buttons === 1 && mouseEvent.detail !== 2) {
+          appWindow.startDragging();
         }
+      });
+      region.addEventListener("dblclick", () => {
+        appWindow.toggleMaximize();
       });
     });
   }
