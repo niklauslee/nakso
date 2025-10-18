@@ -23,6 +23,8 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
 import { useRecentsStore } from "./store/recents-store";
+import { join, parse } from "path-browserify";
+import { useFavoritesStore } from "./store/favorites-store";
 
 /**
  * Find the shapes by the given id array.
@@ -132,6 +134,56 @@ export function registerCommands() {
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:rename",
+    "Rename a file.",
+    {
+      oldPath: z.string(),
+      newPath: z.string(),
+    },
+    async ({ oldPath, newPath }) => {
+      try {
+        // check new name already exists
+        if (await workspace.existsFile(newPath)) {
+          toast.error("File already exists.");
+          return;
+        }
+        // rename file in workspace
+        await workspace.renameFile(oldPath, newPath);
+        useExplorerStore.getState().renameFile(oldPath, newPath);
+        useRecentsStore.getState().replaceRecentItem(oldPath, newPath);
+        useFavoritesStore.getState().updateFavoriteItem(oldPath, newPath);
+      } catch (err) {
+        toast.error("Failed to rename file.");
+        console.error("Failed to rename file:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:duplicate",
+    "Duplicate a file.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      try {
+        const parsed = parse(filePath);
+        const baseDir = parsed.dir;
+        const currentName = parsed.name;
+        const newPath = await workspace.generateUniqueFileName(
+          baseDir,
+          `Copy of ${currentName}`
+        );
+        const data = await workspace.readFile(filePath);
+        await workspace.writeFile(newPath, data);
+        return newPath;
+      } catch (err) {
+        console.error("Failed to duplicate file:", err);
       }
     }
   );

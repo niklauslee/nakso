@@ -50,7 +50,6 @@ export function FileCard({ file, className }: FileCardProps) {
   const removeFromFavorites = useFavoritesStore(
     (state) => state.removeFromFavorites
   );
-  const renameFile = useExplorerStore((state) => state.renameFile);
   const isFavorite = favorites.includes(file.fullPath);
 
   const fetchFile = async () => {
@@ -59,7 +58,7 @@ export function FileCard({ file, className }: FileCardProps) {
       setPage(page);
     } catch (error) {
       setBroken(true);
-      console.error("Failed to load file:", error);
+      console.error("Failed to load file:", file.fullPath, error);
     }
   };
 
@@ -79,27 +78,23 @@ export function FileCard({ file, className }: FileCardProps) {
     try {
       if (newName === file.name) return;
       const oldPath = file.fullPath;
-      const baseDir = parse(file.fullPath).dir;
+      const baseDir = parse(oldPath).dir;
       const newPath = join(baseDir, newName + EXT_NAME);
-      // check new name already exists
-      if (await workspace.existsFile(newPath)) {
-        toast.error("File already exists.");
-        return;
-      }
-      // rename file in workspace
-      await workspace.renameFile(oldPath, newPath);
-      renameFile(oldPath, newPath);
-      // TODO: Fix in recents and favorites
+      await window.app.commands.execute("file:rename", {
+        oldPath,
+        newPath,
+      });
     } catch (err) {
-      toast.error("Failed to rename file.");
       console.error("Failed to rename file:", err);
     }
   };
 
-  const handleOpenClick = () => {
+  const handleOpenClick = async () => {
     try {
       if (broken) return;
-      window.app.commands.execute("file:open", { filePath: file.fullPath });
+      await window.app.commands.execute("file:open", {
+        filePath: file.fullPath,
+      });
     } catch (err) {
       toast.error("Failed to open file");
       console.error("Failed to open file:", err);
@@ -110,6 +105,17 @@ export function FileCard({ file, className }: FileCardProps) {
     setTimeout(() => {
       editableTextRef.current?.startEdit();
     }, 200);
+  };
+
+  const handleDuplicateClick = async () => {
+    try {
+      const newPath = await window.app.commands.execute("file:duplicate", {
+        filePath: file.fullPath,
+      });
+      useExplorerStore.getState().addFile(newPath);
+    } catch (err) {
+      console.error("Failed to duplicate file:", err);
+    }
   };
 
   return (
@@ -154,21 +160,15 @@ export function FileCard({ file, className }: FileCardProps) {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-fit" align="end">
-                <DropdownMenuItem
-                  onSelect={(e) => {
-                    handleOpenClick();
-                  }}
-                >
+                <DropdownMenuItem onSelect={handleOpenClick}>
                   Open
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={(e) => {
-                    handleRenameClick();
-                  }}
-                >
+                <DropdownMenuItem onSelect={handleRenameClick}>
                   Rename
                 </DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleDuplicateClick}>
+                  Duplicate
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={(e) => {
