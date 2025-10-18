@@ -3,49 +3,29 @@ import { AppHeader } from "../app-header";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
-import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
-import { useFavoritesStore } from "@/store/favorites-store";
-
-const PAGE_SIZE = 20;
+import { useSettingStore } from "@/store/setting-store";
+import { useExplorerStore } from "@/store/explorer-store";
+import { join } from "path-browserify";
+import { TRASH_FOLDER_NAME } from "@/const";
 
 interface TrashViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function TrashView({ ...others }: TrashViewProps) {
   const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState<FileEntry[]>([]);
-  const [loadedFiles, setLoadedFiles] = useState<FileEntry[]>([]);
-  const [sortBy, setSortBy] = useState<FileSortType>({
-    field: "mtime",
-    direction: "desc",
-  });
-  const favoriteFiles = useFavoritesStore((state) => state.files);
+  const workspaceDir = useSettingStore((state) => state.workspaceDir);
+  const files = useExplorerStore((state) => state.files);
+  const loadedFiles = useExplorerStore((state) => state.loadedFiles);
+  const sortBy = useExplorerStore((state) => state.sortBy);
+  const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
+  const fetchFiles = useExplorerStore((state) => state.fetchFiles);
+  const setSortBy = useExplorerStore((state) => state.setSortBy);
 
-  const fetchAllFiles = async () => {
-    const files: FileEntry[] = [];
-    if (favoriteFiles) {
-      for (const path of favoriteFiles) {
-        try {
-          const file = await workspace.getFileEntry(path);
-          if (file) {
-            files.push(file);
-          }
-        } catch (e) {
-          console.error("Failed to fetch recent file:", path, e);
-        }
-      }
-    }
-    setFiles(workspace.sortFiles(files, sortBy));
-    setLoadedFiles([]);
-  };
-
-  const fetchFiles = () => {
-    setLoadedFiles(files.slice(0, loadedFiles.length + PAGE_SIZE));
-  };
+  const trashPath = workspaceDir ? join(workspaceDir, TRASH_FOLDER_NAME) : null;
 
   useEffect(() => {
-    fetchAllFiles();
-  }, [favoriteFiles, sortBy]);
+    if (trashPath) setCurrentFolder(trashPath);
+  }, [trashPath]);
 
   return (
     <div className="absolute inset-0" {...others}>
@@ -72,7 +52,7 @@ export function TrashView({ ...others }: TrashViewProps) {
           count={loadedFiles.length}
           totalCount={files.length}
           loading={loading}
-          fetchFirstDeps={[files]}
+          fetchFirstDeps={[trashPath]}
           fetchFirst={async () => {
             setLoading(true);
             await fetchFiles();

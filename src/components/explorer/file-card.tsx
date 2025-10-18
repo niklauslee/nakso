@@ -18,9 +18,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { join, parse } from "path-browserify";
+import { parse } from "path-browserify";
 import { EXT_NAME } from "@/const";
 import { useExplorerStore } from "@/store/explorer-store";
+import { join } from "@tauri-apps/api/path";
 
 async function load(path: string): Promise<Page | null> {
   const data = await workspace.readFile(path);
@@ -79,7 +80,7 @@ export function FileCard({ file, className }: FileCardProps) {
       if (newName === file.name) return;
       const oldPath = file.fullPath;
       const baseDir = parse(oldPath).dir;
-      const newPath = join(baseDir, newName + EXT_NAME);
+      const newPath = await join(baseDir, newName + EXT_NAME);
       await window.app.commands.execute("file:rename", {
         oldPath,
         newPath,
@@ -115,6 +116,16 @@ export function FileCard({ file, className }: FileCardProps) {
       useExplorerStore.getState().addFile(newPath);
     } catch (err) {
       console.error("Failed to duplicate file:", err);
+    }
+  };
+
+  const handleMoveToTrashClick = async () => {
+    try {
+      await window.app.commands.execute("file:move-to-trash", {
+        filePath: file.fullPath,
+      });
+    } catch (err) {
+      console.error("Failed to move file to trash:", err);
     }
   };
 
@@ -170,14 +181,12 @@ export function FileCard({ file, className }: FileCardProps) {
                   Duplicate
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={(e) => {
-                    handleToggleFavorite();
-                  }}
-                >
+                <DropdownMenuItem onSelect={handleToggleFavorite}>
                   {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
                 </DropdownMenuItem>
-                <DropdownMenuItem>Move to Trash</DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleMoveToTrashClick}>
+                  Move to Trash
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

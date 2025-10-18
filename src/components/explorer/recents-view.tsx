@@ -1,15 +1,5 @@
 import { cn } from "@/lib/utils";
 import { AppHeader } from "../app-header";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { Button } from "../ui/button";
-import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
@@ -30,6 +20,7 @@ export function RecentsView({ ...others }: RecentsViewProps) {
     direction: "desc",
   });
   const recentFiles = useRecentsStore((state) => state.files);
+  const removeFromRecents = useRecentsStore((state) => state.removeFromRecents);
 
   const fetchAllFiles = async () => {
     const files: FileEntry[] = [];
@@ -41,6 +32,7 @@ export function RecentsView({ ...others }: RecentsViewProps) {
             files.push(file);
           }
         } catch (e) {
+          removeFromRecents(path);
           console.error("Failed to fetch recent file:", path, e);
         }
       }

@@ -1,15 +1,5 @@
 import { cn } from "@/lib/utils";
 import { AppHeader } from "../app-header";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { Button } from "../ui/button";
-import { ArrowUpRightIcon, FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
@@ -30,6 +20,9 @@ export function FavoritesView({ ...others }: FavoritesViewProps) {
     direction: "desc",
   });
   const favoriteFiles = useFavoritesStore((state) => state.files);
+  const removeFromFavorites = useFavoritesStore(
+    (state) => state.removeFromFavorites
+  );
 
   const fetchAllFiles = async () => {
     const files: FileEntry[] = [];
@@ -41,7 +34,8 @@ export function FavoritesView({ ...others }: FavoritesViewProps) {
             files.push(file);
           }
         } catch (e) {
-          console.error("Failed to fetch recent file:", path, e);
+          removeFromFavorites(path);
+          console.error("Failed to fetch favorite file:", path, e);
         }
       }
     }

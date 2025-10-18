@@ -23,7 +23,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
 import { useRecentsStore } from "./store/recents-store";
-import { join, parse } from "path-browserify";
+import { parse } from "path-browserify";
 import { useFavoritesStore } from "./store/favorites-store";
 
 /**
@@ -183,7 +183,28 @@ export function registerCommands() {
         await workspace.writeFile(newPath, data);
         return newPath;
       } catch (err) {
+        toast.error("Failed to duplicate file.");
         console.error("Failed to duplicate file:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:move-to-trash",
+    "Move a file to trash.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      try {
+        let workspaceDir = app.getWorkspaceDir();
+        await workspace.moveToTrash(workspaceDir, filePath);
+        useRecentsStore.getState().removeFromRecents(filePath);
+        useFavoritesStore.getState().removeFromFavorites(filePath);
+        useExplorerStore.getState().removeFile(filePath);
+      } catch (err) {
+        toast.error("Failed to move file to trash.");
+        console.error("Failed to move file to trash:", err);
       }
     }
   );

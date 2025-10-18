@@ -9,7 +9,13 @@ import {
   rename,
 } from "@tauri-apps/plugin-fs";
 import { join, basename } from "@tauri-apps/api/path";
-import { CONFIG_FOLDER_NAME, DRAFTS_FOLDER_NAME, EXT_NAME } from "@/const";
+import {
+  CONFIG_FOLDER_NAME,
+  DRAFTS_FOLDER_NAME,
+  EXT_NAME,
+  TRASH_FOLDER_NAME,
+} from "@/const";
+import { parse } from "path-browserify";
 
 export type FileSortType = {
   field: "name" | "mtime" | "birthtime";
@@ -51,6 +57,8 @@ async function ensureWorkspace(dirPath: string): Promise<string> {
   await ensureDir(drafts);
   const config = await join(dirPath, CONFIG_FOLDER_NAME);
   await ensureDir(config);
+  const trash = await join(dirPath, TRASH_FOLDER_NAME);
+  await ensureDir(trash);
   return dirPath;
 }
 
@@ -125,6 +133,9 @@ async function existsFile(path: string): Promise<boolean> {
   return await exists(path);
 }
 
+/**
+ * Rename a file from oldPath to newPath
+ */
 async function renameFile(oldPath: string, newPath: string): Promise<void> {
   await rename(oldPath, newPath);
 }
@@ -144,6 +155,23 @@ async function writeFile(path: string, data: string): Promise<void> {
   await writeTextFile(path, data);
 }
 
+/**
+ * Move a file to the trash folder within the workspace
+ */
+async function moveToTrash(
+  workspaceDir: string,
+  filePath: string
+): Promise<void> {
+  const trashDir = await join(workspaceDir, TRASH_FOLDER_NAME);
+  const parsed = parse(filePath);
+  const name = parsed.name;
+  const newPath = await generateUniqueFileName(trashDir, name);
+  await rename(filePath, newPath);
+}
+
+/**
+ * Read a config file from the workspace's config directory
+ */
 async function readConfigFile(
   workspaceDir: string,
   fileName: string
@@ -153,6 +181,9 @@ async function readConfigFile(
   return await readFile(fullPath);
 }
 
+/**
+ * Write a config file to the workspace's config directory
+ */
 async function writeConfigFile(
   workspaceDir: string,
   fileName: string,
@@ -163,6 +194,9 @@ async function writeConfigFile(
   return await writeFile(fullPath, data);
 }
 
+/**
+ * Delete a config file from the workspace's config directory
+ */
 async function deleteConfigFile(
   workspaceDir: string,
   fileName: string
@@ -172,6 +206,9 @@ async function deleteConfigFile(
   return await remove(fullPath);
 }
 
+/**
+ * Sort files based on the specified sort type
+ */
 function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
   return files.sort((a, b) => {
     let compare = 0;
@@ -186,27 +223,10 @@ function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
   });
 }
 
-async function generateUniqueFileName0(baseDir: string): Promise<string> {
-  const now = new Date();
-  const baseName = [
-    now.getFullYear().toString(),
-    String(now.getMonth() + 1).padStart(2, "0"),
-    String(now.getDate()).padStart(2, "0"),
-  ].join("-");
-
-  let candidate = `${baseName}${EXT_NAME}`;
-  let candidatePath = await join(baseDir, candidate);
-  let suffix = 1;
-
-  while (await exists(candidatePath)) {
-    candidate = `${baseName} (${suffix})${EXT_NAME}`;
-    candidatePath = await join(baseDir, candidate);
-    suffix += 1;
-  }
-
-  return candidatePath;
-}
-
+/**
+ * Generate a unique file name in the specified directory.
+ * If baseName is provided, use it as the base; otherwise, use the current date.
+ */
 async function generateUniqueFileName(
   baseDir: string,
   baseName?: string
@@ -239,6 +259,7 @@ export const workspace = {
   renameFile,
   readFile,
   writeFile,
+  moveToTrash,
   readConfigFile,
   writeConfigFile,
   deleteConfigFile,

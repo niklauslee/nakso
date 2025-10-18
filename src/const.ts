@@ -1,6 +1,7 @@
 export const WORKSPACE_NAME = "Nakso";
 export const CONFIG_FOLDER_NAME = ".nakso";
 export const DRAFTS_FOLDER_NAME = "Drafts";
+export const TRASH_FOLDER_NAME = ".trash";
 export const EXT_NAME = ".nakso";
 
 export const DEFAULT_SANS_FONT = "Inter";
