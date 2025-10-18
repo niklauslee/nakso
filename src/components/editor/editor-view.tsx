@@ -51,8 +51,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   );
   const styleStore = useStyleStore();
 
-  // const fileName = filePath ? parse(filePath).name : "";
-
   const isShapeTool =
     activeHandler &&
     [
@@ -92,7 +90,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const fetchFileName = async () => {
     if (filePath) {
       const parsed = await workspace.parsePath(filePath);
-      console.log("parsed path:", parsed);
       setFileName(parsed.name);
     } else {
       setFileName("");

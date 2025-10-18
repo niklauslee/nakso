@@ -18,7 +18,6 @@ import { ZOOMS } from "./const";
 import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
-import { useAppStore } from "./store/app-store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
@@ -93,23 +92,22 @@ export function registerCommands() {
       filePath: z.string(),
     },
     async ({ filePath }) => {
-      const app = window.app;
       try {
-        await app.ensureSave();
+        await window.app.ensureSave();
         const data = await workspace.readFile(filePath);
         const fileEntry = await workspace.getFileEntry(filePath);
         const json = JSON.parse(data);
-        app.editor.loadFromJSON(json);
-        const doc = app.editor.getDoc();
+        window.app.editor.loadFromJSON(json);
+        const doc = window.app.editor.getDoc();
         useEditorStore
           .getState()
           .setFilePath(filePath, doc, fileEntry.readonly);
         useWorkingStore.getState().setWorkingFile(filePath);
         useExplorerStore.getState().updateFile(filePath);
-        useAppStore.getState().setView("editor");
+        useExplorerStore.getState().setView("editor");
       } catch (err) {
         toast.error("Failed to open file: " + filePath);
-        console.error("Failed to open file: " + filePath, err);
+        console.error("[] Failed to open file: " + filePath, err);
       }
     }
   );

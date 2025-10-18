@@ -17,6 +17,7 @@ import { FavoritesView } from "./explorer/favorites-view";
 import { SearchView } from "./explorer/search-view";
 import { TrashView } from "./explorer/trash-view";
 import { SettingsView } from "./settings/settings-view";
+import { useExplorerStore } from "@/store/explorer-store";
 
 declare global {
   interface Window {
@@ -27,7 +28,7 @@ declare global {
 
 function App() {
   const setAppReady = useAppStore((state) => state.setAppReady);
-  const view = useAppStore((state) => state.view);
+  const view = useExplorerStore((state) => state.view);
   const showSidebar = useSettingStore((state) => state.showSidebar);
   const darkMode = useSettingStore((state) => state.darkMode);
   const workingFolder = useWorkingStore((state) => state.workingFolder);

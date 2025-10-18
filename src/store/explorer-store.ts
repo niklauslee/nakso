@@ -4,12 +4,23 @@ import { FileSortType, workspace } from "@/api/workspace";
 
 const PAGE_SIZE = 10; // FIXME: set to 30, 50, or 100?
 
+type ViewType =
+  | "editor"
+  | "search"
+  | "recents"
+  | "favorites"
+  | "trash"
+  | "settings"
+  | "folder";
+
 export interface ExplorerState {
+  view: ViewType;
   folders: FileEntry[];
   currentFolder: string | null;
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
+  setView(view: ViewType): void;
   setFolders: (folders: FileEntry[]) => void;
   setCurrentFolder: (path: string) => Promise<void>;
   fetchFiles: () => Promise<void>;
@@ -21,11 +32,15 @@ export interface ExplorerState {
 }
 
 export const useExplorerStore = create<ExplorerState>()((set, get) => ({
+  view: "editor",
   currentFolder: null,
   folders: [],
   files: [],
   loadedFiles: [],
   sortBy: { field: "mtime", direction: "desc" },
+  setView: (view) => {
+    set({ view });
+  },
   setFolders: (folders) => set({ folders }),
   setCurrentFolder: async (path) => {
     const sortBy = get().sortBy;

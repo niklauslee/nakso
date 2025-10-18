@@ -12,7 +12,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useAppStore } from "@/store/app-store";
 import {
   ClockIcon,
   FolderCheckIcon,
@@ -31,8 +30,8 @@ import { DRAFTS_FOLDER_NAME } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
 
 export function AppSidebar() {
-  const view = useAppStore((state) => state.view);
-  const setView = useAppStore((state) => state.setView);
+  const view = useExplorerStore((state) => state.view);
+  const setView = useExplorerStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);
   const favoriteFiles = useFavoritesStore((state) => state.files);
   const workingFolder = useWorkingStore((state) => state.workingFolder);
