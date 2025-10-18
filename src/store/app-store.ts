@@ -6,6 +6,7 @@ type ViewType =
   | "recents"
   | "favorites"
   | "trash"
+  | "settings"
   | "folder";
 
 export interface AppState {

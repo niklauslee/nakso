@@ -21,6 +21,7 @@ import {
   HeartIcon,
   PlusIcon,
   SearchIcon,
+  SettingsIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -49,7 +50,7 @@ export function AppSidebar() {
               variant="ghost"
               size="icon"
               className="size-7 cursor-pointer"
-              title="New File"
+              label="New File"
               onClick={handleNewFile}
             >
               <PlusIcon size={16} />
@@ -111,12 +112,24 @@ export function AppSidebar() {
                 </SidebarMenuButton>
                 <SidebarMenuBadge>0</SidebarMenuBadge>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={view === "settings"}
+                  onClick={() => setView("settings")}
+                  asChild
+                >
+                  <a href="#">
+                    <SettingsIcon size={16} />
+                    <span>Settings</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Folders</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Folder">
+          <SidebarGroupAction label="Add Folder">
             <FolderPlusIcon size={16} />{" "}
             <span className="sr-only">Add Folder</span>
           </SidebarGroupAction>

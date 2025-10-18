@@ -251,7 +251,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Fill color">
+        <Button size="icon-sm" variant="ghost" label="Fill color">
           <ColorIcon
             className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
             value={fillColor ?? "$background"}
@@ -261,7 +261,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Button>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Background"
+          label="Fill color ⎯ Background"
           pressed={fillColor === "$background"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -277,7 +277,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Gray"
+          label="Fill color ⎯ Light Gray"
           pressed={fillColor === "$gray4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -289,7 +289,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Red"
+          label="Fill color ⎯ Light Red"
           pressed={fillColor === "$red4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -303,7 +303,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
       <div className="flex items-center gap-1">
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Blue"
+          label="Fill color ⎯ Light Blue"
           pressed={fillColor === "$blue4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -315,7 +315,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Green"
+          label="Fill color ⎯ Light Green"
           pressed={fillColor === "$green4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -327,7 +327,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Yellow"
+          label="Fill color ⎯ Light Yellow"
           pressed={fillColor === "$yellow4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -339,7 +339,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Fill color ⎯ Light Purple"
+          label="Fill color ⎯ Light Purple"
           pressed={fillColor === "$purple4"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -361,7 +361,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="No fill"
+        label="No fill"
         pressed={fillStyle === FillStyle.NONE}
         onPressedChange={(pressed) => {
           if (pressed) {
@@ -373,7 +373,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Fill style ⎯ Hachure"
+        label="Fill style ⎯ Hachure"
         pressed={fillStyle === FillStyle.HACHURE}
         onPressedChange={(pressed) => {
           if (pressed) {
@@ -385,7 +385,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Fill style ⎯ Cross Hatch"
+        label="Fill style ⎯ Cross Hatch"
         pressed={fillStyle === FillStyle.CROSS_HATCH}
         onPressedChange={(pressed) => {
           if (pressed) {
@@ -397,7 +397,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Fill style ⎯ Solid"
+        label="Fill style ⎯ Solid"
         pressed={fillStyle === FillStyle.SOLID}
         onPressedChange={(pressed) => {
           if (pressed) {
@@ -417,7 +417,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Stroke color">
+        <Button size="icon-sm" variant="ghost" label="Stroke color">
           <ColorIcon
             className="size-6 rounded-sm"
             value={strokeColor ?? "$foreground"}
@@ -428,7 +428,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Button>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Foreground"
+          label="Stroke color ⎯ Foreground"
           pressed={strokeColor === "$foreground"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -443,7 +443,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Gray"
+          label="Stroke color ⎯ Gray"
           pressed={strokeColor === "$gray9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -455,7 +455,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Red"
+          label="Stroke color ⎯ Red"
           pressed={strokeColor === "$red9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -469,7 +469,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
       <div className="flex items-center gap-1">
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Blue"
+          label="Stroke color ⎯ Blue"
           pressed={strokeColor === "$blue9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -481,7 +481,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Green"
+          label="Stroke color ⎯ Green"
           pressed={strokeColor === "$green9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -493,7 +493,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Yellow"
+          label="Stroke color ⎯ Yellow"
           pressed={strokeColor === "$yellow9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -505,7 +505,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         </Toggle>
         <Toggle
           size="sm"
-          title="Stroke color ⎯ Purple"
+          label="Stroke color ⎯ Purple"
           pressed={strokeColor === "$purple9"}
           onPressedChange={(pressed) => {
             if (pressed) {
@@ -526,7 +526,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="No stroke"
+        label="No stroke"
         pressed={strokeWidth === 0}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 0 });
@@ -536,7 +536,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Thin stroke"
+        label="Thin stroke"
         pressed={strokeWidth === 2}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 2 });
@@ -546,7 +546,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Medium stroke"
+        label="Medium stroke"
         pressed={strokeWidth === 4}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 4 });
@@ -556,7 +556,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Thick stroke"
+        label="Thick stroke"
         pressed={strokeWidth === 6}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 6 });
@@ -592,7 +592,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="Solid stroke"
+        label="Solid stroke"
         pressed={stringifiedPattern === "0"}
         onPressedChange={() => {
           onChange?.({ strokePattern: [] });
@@ -602,7 +602,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Dotted stroke"
+        label="Dotted stroke"
         pressed={stringifiedPattern === "0.5,2"}
         onPressedChange={() => {
           onChange?.({ strokePattern: [0.5, 2] });
@@ -612,7 +612,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Dashed stroke"
+        label="Dashed stroke"
         pressed={stringifiedPattern === "3,4"}
         onPressedChange={() => {
           onChange?.({ strokePattern: [3, 4] });
@@ -623,7 +623,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
       {(hasRectangle || hasFrame) && (
         <Toggle
           size="sm"
-          title="Rounded corners"
+          label="Rounded corners"
           pressed={stringifiedCorners === "-10,-10,-10,-10"}
           onPressedChange={(pressed) => {
             onChange?.({
@@ -651,7 +651,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="Handwriting"
+        label="Handwriting"
         className="font-medium font-hand"
         pressed={fontFamily === defaultFonts.hand}
         onPressedChange={() => {
@@ -662,7 +662,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Sans Serif"
+        label="Sans Serif"
         className="font-medium font-sans"
         pressed={fontFamily === defaultFonts.sans}
         onPressedChange={() => {
@@ -673,7 +673,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Serif"
+        label="Serif"
         className="font-medium font-serif"
         pressed={fontFamily === defaultFonts.serif}
         onPressedChange={() => {
@@ -684,7 +684,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Monospace"
+        label="Monospace"
         className="font-medium font-mono"
         pressed={fontFamily === defaultFonts.mono}
         onPressedChange={() => {
@@ -703,7 +703,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="Small"
+        label="Small"
         className="font-medium"
         pressed={fontSize === 16}
         onPressedChange={() => {
@@ -714,7 +714,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Medium"
+        label="Medium"
         className="font-medium"
         pressed={fontSize === 20}
         onPressedChange={() => {
@@ -725,7 +725,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Large"
+        label="Large"
         className="font-medium"
         pressed={fontSize === 28}
         onPressedChange={() => {
@@ -736,7 +736,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Extra Large"
+        label="Extra Large"
         className="font-medium"
         pressed={fontSize === 40}
         onPressedChange={() => {
@@ -758,7 +758,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="Align text left"
+        label="Align text left"
         pressed={horzAlign === HorzAlign.LEFT}
         onPressedChange={() => {
           onChange?.({ horzAlign: HorzAlign.LEFT });
@@ -768,7 +768,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Align text center"
+        label="Align text center"
         pressed={horzAlign === HorzAlign.CENTER}
         onPressedChange={() => {
           onChange?.({ horzAlign: HorzAlign.CENTER });
@@ -778,7 +778,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Align text right"
+        label="Align text right"
         pressed={horzAlign === HorzAlign.RIGHT}
         onPressedChange={() => {
           onChange?.({ horzAlign: HorzAlign.RIGHT });
@@ -791,7 +791,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           <Button
             size={"icon-sm"}
             variant={"ghost"}
-            title="Align text vertically"
+            label="Align text vertically"
           >
             {vertAlign === VertAlign.TOP && <VerticalTopIcon size={16} />}
             {vertAlign === VertAlign.MIDDLE && <VerticalMiddleIcon size={16} />}
@@ -802,7 +802,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           <div className="flex items-center gap-1 p-1">
             <Toggle
               size="sm"
-              title="Align text top"
+              label="Align text top"
               pressed={vertAlign === VertAlign.TOP}
               onPressedChange={() => {
                 onChange?.({ vertAlign: VertAlign.TOP });
@@ -813,7 +813,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
             </Toggle>
             <Toggle
               size="sm"
-              title="Align text middle"
+              label="Align text middle"
               pressed={vertAlign === VertAlign.MIDDLE}
               onPressedChange={() => {
                 onChange?.({ vertAlign: VertAlign.MIDDLE });
@@ -824,7 +824,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
             </Toggle>
             <Toggle
               size="sm"
-              title="Align text bottom"
+              label="Align text bottom"
               pressed={vertAlign === VertAlign.BOTTOM}
               onPressedChange={() => {
                 onChange?.({ vertAlign: VertAlign.BOTTOM });
@@ -846,7 +846,7 @@ function OpacityTool({ selection, onChange }: ToolProps) {
   return (
     <div className="flex items-center gap-1 py-2 px-1">
       <Slider
-        title={`Opacity`}
+        label={`Opacity`}
         value={[opacity || 1]}
         min={0}
         max={1}
@@ -869,7 +869,7 @@ function LineTool({ selection, onChange }: ToolProps) {
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="Straight line"
+        label="Straight line"
         pressed={lineType === LineType.STRAIGHT}
         onPressedChange={() => {
           onChange?.({ lineType: LineType.STRAIGHT });
@@ -879,7 +879,7 @@ function LineTool({ selection, onChange }: ToolProps) {
       </Toggle>
       <Toggle
         size="sm"
-        title="Curved line"
+        label="Curved line"
         pressed={lineType === LineType.CURVE}
         onPressedChange={() => {
           onChange?.({ lineType: LineType.CURVE });
@@ -913,7 +913,7 @@ function LayerTool({}: ToolProps) {
       <Button
         size="icon-sm"
         variant="ghost"
-        title={`Bring to front ⎯ ${formattedKeys["align:bring-to-front"]}`}
+        label={`Bring to front ⎯ ${formattedKeys["align:bring-to-front"]}`}
         onClick={() => {
           window.app.commands.execute("align:bring-to-front");
         }}
@@ -923,7 +923,7 @@ function LayerTool({}: ToolProps) {
       <Button
         size="icon-sm"
         variant="ghost"
-        title={`Bring forward ⎯ ${formattedKeys["align:bring-forward"]}`}
+        label={`Bring forward ⎯ ${formattedKeys["align:bring-forward"]}`}
         onClick={() => {
           window.app.commands.execute("align:bring-forward");
         }}
@@ -933,7 +933,7 @@ function LayerTool({}: ToolProps) {
       <Button
         size="icon-sm"
         variant="ghost"
-        title={`Send backward ⎯ ${formattedKeys["align:send-backward"]}`}
+        label={`Send backward ⎯ ${formattedKeys["align:send-backward"]}`}
         onClick={() => {
           window.app.commands.execute("align:send-backward");
         }}
@@ -943,7 +943,7 @@ function LayerTool({}: ToolProps) {
       <Button
         size="icon-sm"
         variant="ghost"
-        title={`Send to back ⎯ ${formattedKeys["align:send-to-back"]}`}
+        label={`Send to back ⎯ ${formattedKeys["align:send-to-back"]}`}
         onClick={() => {
           window.app.commands.execute("align:send-to-back");
         }}
@@ -961,7 +961,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align left"
+          label="Align left"
           onClick={() => {
             window.app.commands.execute("align:align-left");
           }}
@@ -971,7 +971,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align center"
+          label="Align center"
           onClick={() => {
             window.app.commands.execute("align:align-center");
           }}
@@ -981,7 +981,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align right"
+          label="Align right"
           onClick={() => {
             window.app.commands.execute("align:align-right");
           }}
@@ -991,7 +991,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Distribute horizontally"
+          label="Distribute horizontally"
           onClick={() => {
             window.app.commands.execute("align:distribute-horizontally");
           }}
@@ -1003,7 +1003,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align top"
+          label="Align top"
           onClick={() => {
             window.app.commands.execute("align:align-top");
           }}
@@ -1013,7 +1013,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align middle"
+          label="Align middle"
           onClick={() => {
             window.app.commands.execute("align:align-middle");
           }}
@@ -1023,7 +1023,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align bottom"
+          label="Align bottom"
           onClick={() => {
             window.app.commands.execute("align:align-bottom");
           }}
@@ -1033,7 +1033,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Distribute vertically"
+          label="Distribute vertically"
           onClick={() => {
             window.app.commands.execute("align:distribute-vertically");
           }}

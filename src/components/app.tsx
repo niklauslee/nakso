@@ -17,6 +17,7 @@ import { apiContext } from "@/api";
 import { FavoritesView } from "./explorer/favorites-view";
 import { SearchView } from "./explorer/search-view";
 import { TrashView } from "./explorer/trash-view";
+import { SettingsView } from "./settings/settings-view";
 
 declare global {
   interface Window {
@@ -68,6 +69,7 @@ function App() {
             <RecentsView className={cn(view !== "recents" && "hidden")} />
             <FavoritesView className={cn(view !== "favorites" && "hidden")} />
             <TrashView className={cn(view !== "trash" && "hidden")} />
+            <SettingsView className={cn(view !== "settings" && "hidden")} />
             <FolderView
               path={workingFolder}
               className={cn(view !== "folder" && "hidden")}
