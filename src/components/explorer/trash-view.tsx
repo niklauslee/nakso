@@ -10,9 +10,7 @@ import { useExplorerStore } from "@/store/explorer-store";
 interface TrashViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function TrashView({ ...others }: TrashViewProps) {
-  const [loading, setLoading] = useState(false);
   const [trashPath, setTrashPath] = useState<string | null>(null);
-
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
@@ -58,17 +56,12 @@ export function TrashView({ ...others }: TrashViewProps) {
           innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
-          loading={loading}
           fetchFirstDeps={[trashPath]}
           fetchFirst={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
           fetchMore={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
         >
           {loadedFiles.length > 0 && (

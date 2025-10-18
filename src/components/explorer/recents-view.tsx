@@ -12,7 +12,6 @@ const PAGE_SIZE = 20;
 interface RecentsViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function RecentsView({ ...others }: RecentsViewProps) {
-  const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [loadedFiles, setLoadedFiles] = useState<FileEntry[]>([]);
   const [sortBy, setSortBy] = useState<FileSortType>({
@@ -73,17 +72,12 @@ export function RecentsView({ ...others }: RecentsViewProps) {
           innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
-          loading={loading}
           fetchFirstDeps={[files]}
           fetchFirst={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
           fetchMore={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
         >
           {loadedFiles.length > 0 && (

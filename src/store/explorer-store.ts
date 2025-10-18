@@ -2,7 +2,7 @@ import { FileEntry } from "@/api/workspace";
 import { create } from "zustand";
 import { FileSortType, workspace } from "@/api/workspace";
 
-const PAGE_SIZE = 30; // FIXME: set to 30, 50, or 100?
+const PAGE_SIZE = 10; // FIXME: set to 30, 50, or 100?
 
 export interface ExplorerState {
   folders: FileEntry[];

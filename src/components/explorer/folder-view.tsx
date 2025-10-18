@@ -19,7 +19,6 @@ interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
 export function FolderView({ path, ...others }: FolderViewProps) {
   if (!path) return;
 
-  const [loading, setLoading] = useState(false);
   const [relDir, setRelDir] = useState<string[]>([]);
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const files = useExplorerStore((state) => state.files);
@@ -68,17 +67,12 @@ export function FolderView({ path, ...others }: FolderViewProps) {
           innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
-          loading={loading}
           fetchFirstDeps={[path]}
           fetchFirst={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
           fetchMore={async () => {
-            setLoading(true);
             await fetchFiles();
-            setLoading(false);
           }}
         >
           {loadedFiles.length > 0 && (
