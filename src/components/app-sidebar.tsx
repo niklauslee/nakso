@@ -28,11 +28,13 @@ import { Button } from "./ui/button";
 import { useWorkingStore } from "@/store/working-store";
 import { useExplorerStore } from "@/store/explorer-store";
 import { DRAFTS_FOLDER_NAME } from "@/const";
+import { useFavoritesStore } from "@/store/favorites-store";
 
 export function AppSidebar() {
   const view = useAppStore((state) => state.view);
   const setView = useAppStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);
+  const favoriteFiles = useFavoritesStore((state) => state.files);
   const workingFolder = useWorkingStore((state) => state.workingFolder);
   const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
 
@@ -97,7 +99,9 @@ export function AppSidebar() {
                     <span>Favorites</span>
                   </a>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>22</SidebarMenuBadge>
+                <SidebarMenuBadge className="text-muted-foreground">
+                  {favoriteFiles.length}
+                </SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -110,7 +114,6 @@ export function AppSidebar() {
                     <span>Trash</span>
                   </a>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>0</SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -156,7 +159,6 @@ export function AppSidebar() {
                       <span>{folder.name}</span>
                     </a>
                   </SidebarMenuButton>
-                  <SidebarMenuBadge>0</SidebarMenuBadge>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
