@@ -4,8 +4,7 @@ import { AppContext } from "@/app-context";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
-import { useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { Activity, useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
@@ -61,19 +60,27 @@ function App() {
         <SidebarProvider open={showSidebar}>
           <AppSidebar />
           <SidebarInset>
-            <EditorView
-              onMount={handleAppReady}
-              className={cn(view !== "editor" && "hidden")}
-            />
-            <SearchView className={cn(view !== "search" && "hidden")} />
-            <RecentsView className={cn(view !== "recents" && "hidden")} />
-            <FavoritesView className={cn(view !== "favorites" && "hidden")} />
-            <TrashView className={cn(view !== "trash" && "hidden")} />
-            <SettingsView className={cn(view !== "settings" && "hidden")} />
-            <FolderView
-              path={workingFolder}
-              className={cn(view !== "folder" && "hidden")}
-            />
+            <Activity mode={view === "editor" ? "visible" : "hidden"}>
+              <EditorView onMount={handleAppReady} />
+            </Activity>
+            <Activity mode={view === "search" ? "visible" : "hidden"}>
+              <SearchView />
+            </Activity>
+            <Activity mode={view === "recents" ? "visible" : "hidden"}>
+              <RecentsView />
+            </Activity>
+            <Activity mode={view === "favorites" ? "visible" : "hidden"}>
+              <FavoritesView />
+            </Activity>
+            <Activity mode={view === "trash" ? "visible" : "hidden"}>
+              <TrashView />
+            </Activity>
+            <Activity mode={view === "settings" ? "visible" : "hidden"}>
+              <SettingsView />
+            </Activity>
+            <Activity mode={view === "folder" ? "visible" : "hidden"}>
+              <FolderView path={workingFolder} />
+            </Activity>
           </SidebarInset>
         </SidebarProvider>
       </div>
