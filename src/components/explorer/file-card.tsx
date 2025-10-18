@@ -7,11 +7,15 @@ import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
 import { BanIcon, EllipsisIcon, HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { EditableText } from "@/components/common/editable-text";
+import {
+  EditableText,
+  EditableTextHandle,
+} from "@/components/common/editable-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { join, parse } from "path-browserify";
@@ -36,6 +40,7 @@ interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function FileCard({ file, className }: FileCardProps) {
   const pageViewRef = useRef<DGMPageViewHandle>(null);
+  const editableTextRef = useRef<EditableTextHandle>(null);
   const [page, setPage] = useState<Page | null>(null);
   const [broken, setBroken] = useState(false);
 
@@ -62,16 +67,6 @@ export function FileCard({ file, className }: FileCardProps) {
     fetchFile();
   }, [file.fullPath, file.mtime, file.size]);
 
-  const handleDoubleClick = () => {
-    try {
-      if (broken) return;
-      window.app.commands.execute("file:open", { filePath: file.fullPath });
-    } catch (err) {
-      toast.error("Failed to open file");
-      console.error("Failed to open file:", err);
-    }
-  };
-
   const handleToggleFavorite = () => {
     if (isFavorite) {
       removeFromFavorites(file.fullPath);
@@ -94,15 +89,32 @@ export function FileCard({ file, className }: FileCardProps) {
       // rename file in workspace
       await workspace.renameFile(oldPath, newPath);
       renameFile(oldPath, newPath);
+      // TODO: Fix in recents and favorites
     } catch (err) {
       toast.error("Failed to rename file.");
       console.error("Failed to rename file:", err);
     }
   };
 
+  const handleOpenClick = () => {
+    try {
+      if (broken) return;
+      window.app.commands.execute("file:open", { filePath: file.fullPath });
+    } catch (err) {
+      toast.error("Failed to open file");
+      console.error("Failed to open file:", err);
+    }
+  };
+
+  const handleRenameClick = () => {
+    setTimeout(() => {
+      editableTextRef.current?.startEdit();
+    }, 200);
+  };
+
   return (
     <div className="relative w-52 h-fit border rounded-xl overflow-clip group">
-      <div className="w-52 h-36" onDoubleClick={handleDoubleClick}>
+      <div className="w-52 h-36" onDoubleClick={handleOpenClick}>
         {page && !broken && (
           <div className="w-full h-full flex items-center justify-center p-2">
             <DGMPageView
@@ -128,6 +140,7 @@ export function FileCard({ file, className }: FileCardProps) {
         <div className="relative flex items-center justify-between px-2 w-full max-w-full">
           <div className="flex items-center min-h-6 w-full max-w-full">
             <EditableText
+              ref={editableTextRef}
               className="text-sm text-accent-foreground truncate max-w-full"
               value={file.name}
               onValueChange={handleFileRename}
@@ -136,14 +149,34 @@ export function FileCard({ file, className }: FileCardProps) {
           <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex bg-accent/90 items-center justify-center text-muted-foreground w-4 h-4 cursor-pointer">
+                <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer">
                   <EllipsisIcon size={16} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-32" align="end">
-                <DropdownMenuItem>Open</DropdownMenuItem>
-                <DropdownMenuItem>Rename</DropdownMenuItem>
+              <DropdownMenuContent className="w-fit" align="end">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    handleOpenClick();
+                  }}
+                >
+                  Open
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    handleRenameClick();
+                  }}
+                >
+                  Rename
+                </DropdownMenuItem>
                 <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    handleToggleFavorite();
+                  }}
+                >
+                  {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                </DropdownMenuItem>
                 <DropdownMenuItem>Move to Trash</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
