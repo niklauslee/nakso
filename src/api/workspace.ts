@@ -6,6 +6,7 @@ import {
   stat,
   writeTextFile,
   remove,
+  rename,
 } from "@tauri-apps/plugin-fs";
 import { join, basename } from "@tauri-apps/api/path";
 import { CONFIG_FOLDER_NAME, DRAFTS_FOLDER_NAME, EXT_NAME } from "@/const";
@@ -124,6 +125,10 @@ async function existsFile(path: string): Promise<boolean> {
   return await exists(path);
 }
 
+async function renameFile(oldPath: string, newPath: string): Promise<void> {
+  await rename(oldPath, newPath);
+}
+
 /**
  * Read file content as text
  */
@@ -208,6 +213,7 @@ export const workspace = {
   getFiles,
   getFileEntry,
   existsFile,
+  renameFile,
   readFile,
   writeFile,
   readConfigFile,

@@ -14,8 +14,10 @@ export interface ExplorerState {
   setCurrentFolder: (path: string) => Promise<void>;
   fetchFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
-  updateFile: (path: string) => void;
-  addNewFile: (path: string) => void;
+  addFile: (filePath: string) => void;
+  updateFile: (filePath: string) => void;
+  renameFile: (oldPath: string, newPath: string) => void;
+  removeFile: (filePath: string) => void;
 }
 
 export const useExplorerStore = create<ExplorerState>()((set, get) => ({
@@ -44,29 +46,50 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
     const files = workspace.sortFiles(get().files, sortBy);
     set({ sortBy: { ...sortBy }, files: [...files], loadedFiles: [] });
   },
-  updateFile: async (path) => {
-    const file = get().files.find((f) => f.fullPath === path);
-    if (file) {
-      const updated = await workspace.getFileEntry(path);
+  addFile: async (filePath) => {
+    const entry = await workspace.getFileEntry(filePath);
+    if (entry) {
       set((state) => {
-        const files = workspace.sortFiles(
-          state.files.map((f) => (f.fullPath === path ? updated : f)),
-          state.sortBy
-        );
-        return { files, loadedFiles: [] };
+        return {
+          files: [entry, ...state.files],
+          loadedFiles: [entry, ...state.loadedFiles],
+        };
       });
     }
   },
-  addNewFile: async (path) => {
-    const entry = await workspace.getFileEntry(path);
-    if (entry) {
+  updateFile: async (filePath) => {
+    const file = get().files.find((f) => f.fullPath === filePath);
+    if (file) {
+      const updated = await workspace.getFileEntry(filePath);
       set((state) => {
-        const files = workspace.sortFiles(
-          [entry, ...state.files],
-          state.sortBy
-        );
-        return { files, loadedFiles: [] };
+        return {
+          files: state.files.map((f) =>
+            f.fullPath === filePath ? updated : f
+          ),
+          loadedFiles: state.loadedFiles.map((f) =>
+            f.fullPath === filePath ? updated : f
+          ),
+        };
       });
     }
+  },
+  renameFile: async (oldPath, newPath) => {
+    const newEntry = await workspace.getFileEntry(newPath);
+    set((state) => {
+      return {
+        files: state.files.map((f) => (f.fullPath === oldPath ? newEntry : f)),
+        loadedFiles: state.loadedFiles.map((f) =>
+          f.fullPath === oldPath ? newEntry : f
+        ),
+      };
+    });
+  },
+  removeFile: (filePath) => {
+    set((state) => {
+      return {
+        files: state.files.filter((f) => f.fullPath !== filePath),
+        loadedFiles: state.loadedFiles.filter((f) => f.fullPath !== filePath),
+      };
+    });
   },
 }));

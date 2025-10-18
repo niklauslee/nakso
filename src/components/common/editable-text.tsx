@@ -79,7 +79,7 @@ export function EditableText({
         onDoubleClickCapture={handleDoubleClickCapture}
         {...props}
       >
-        {currentValue}
+        {value}
       </span>
     </>
   );

@@ -73,7 +73,7 @@ export function registerCommands() {
         const data = JSON.stringify(json);
         await workspace.writeFile(filePath, data);
         // update the current folder view
-        useExplorerStore.getState().addNewFile(filePath);
+        useExplorerStore.getState().addFile(filePath);
         // open the new file
         setTimeout(() => {
           app.commands.execute("file:open", { filePath });

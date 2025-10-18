@@ -8,6 +8,15 @@ import { BanIcon, EllipsisIcon, HeartIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { EditableText } from "@/components/common/editable-text";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { join, parse } from "path-browserify";
+import { EXT_NAME } from "@/const";
+import { useExplorerStore } from "@/store/explorer-store";
 
 async function load(path: string): Promise<Page | null> {
   const data = await workspace.readFile(path);
@@ -36,6 +45,7 @@ export function FileCard({ file, className }: FileCardProps) {
   const removeFromFavorites = useFavoritesStore(
     (state) => state.removeFromFavorites
   );
+  const renameFile = useExplorerStore((state) => state.renameFile);
   const isFavorite = favorites.includes(file.fullPath);
 
   const fetchFile = async () => {
@@ -70,6 +80,26 @@ export function FileCard({ file, className }: FileCardProps) {
     }
   };
 
+  const handleFileRename = async (newName: string) => {
+    try {
+      if (newName === file.name) return;
+      const oldPath = file.fullPath;
+      const baseDir = parse(file.fullPath).dir;
+      const newPath = join(baseDir, newName + EXT_NAME);
+      // check new name already exists
+      if (await workspace.existsFile(newPath)) {
+        toast.error("File already exists.");
+        return;
+      }
+      // rename file in workspace
+      await workspace.renameFile(oldPath, newPath);
+      renameFile(oldPath, newPath);
+    } catch (err) {
+      toast.error("Failed to rename file.");
+      console.error("Failed to rename file:", err);
+    }
+  };
+
   return (
     <div className="relative w-52 h-fit border rounded-xl overflow-clip group">
       <div className="w-52 h-36" onDoubleClick={handleDoubleClick}>
@@ -94,21 +124,29 @@ export function FileCard({ file, className }: FileCardProps) {
           </div>
         )}
       </div>
-      <div className="flex flex-col w-full text-sm py-2 bg-accent">
-        <div className="flex items-center justify-between px-2">
-          <div className="flex items-center">
+      <div className="flex flex-col w-full max-w-full text-sm py-2 bg-accent">
+        <div className="relative flex items-center justify-between px-2 w-full max-w-full">
+          <div className="flex items-center min-h-6 w-full max-w-full">
             <EditableText
               className="text-sm text-accent-foreground truncate max-w-full"
               value={file.name}
-              onValueChange={(value) => {
-                console.log("file name changed", value);
-              }}
+              onValueChange={handleFileRename}
             />
           </div>
-          <div>
-            <button className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 cursor-pointer">
-              <EllipsisIcon size={16} />
-            </button>
+          <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex bg-accent/90 items-center justify-center text-muted-foreground w-4 h-4 cursor-pointer">
+                  <EllipsisIcon size={16} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-32" align="end">
+                <DropdownMenuItem>Open</DropdownMenuItem>
+                <DropdownMenuItem>Rename</DropdownMenuItem>
+                <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                <DropdownMenuItem>Move to Trash</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="flex items-center text-nowrap text-xs text-muted-foreground px-2">
@@ -117,21 +155,23 @@ export function FileCard({ file, className }: FileCardProps) {
       </div>
 
       <div className="absolute right-0 top-0 p-2">
-        <button
-          type="button"
-          onClick={handleToggleFavorite}
-          title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-          className={cn(
-            !isFavorite &&
-              "opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100"
-          )}
-        >
-          <HeartIcon
-            size={16}
-            className={"text-muted-foreground cursor-pointer"}
-            fill={isFavorite ? "currentColor" : "transparent"}
-          />
-        </button>
+        {!broken && (
+          <button
+            type="button"
+            onClick={handleToggleFavorite}
+            title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            className={cn(
+              !isFavorite &&
+                "opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100"
+            )}
+          >
+            <HeartIcon
+              size={16}
+              className={"text-muted-foreground cursor-pointer"}
+              fill={isFavorite ? "currentColor" : "transparent"}
+            />
+          </button>
+        )}
       </div>
     </div>
   );
