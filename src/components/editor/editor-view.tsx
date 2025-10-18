@@ -21,7 +21,7 @@ import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
 import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
-import { set } from "zod";
+import { parse } from "path-browserify";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -48,6 +48,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     (state) => state.setActiveHandlerLock
   );
   const styleStore = useStyleStore();
+
+  const fileName = filePath ? parse(filePath).name : "Untitled";
 
   const isShapeTool =
     activeHandler &&
@@ -216,7 +218,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
         }
       >
         <div className="text-sm">
-          <span>{filePath}</span>
+          <span>{fileName}</span>
           {modified && <span> •</span>}
           {readonly && (
             <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">
