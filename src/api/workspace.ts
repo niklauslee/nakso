@@ -8,14 +8,13 @@ import {
   remove,
   rename,
 } from "@tauri-apps/plugin-fs";
-import { join, basename } from "@tauri-apps/api/path";
+import { join, basename, dirname, extname } from "@tauri-apps/api/path";
 import {
   CONFIG_FOLDER_NAME,
   DRAFTS_FOLDER_NAME,
   EXT_NAME,
   TRASH_FOLDER_NAME,
 } from "@/const";
-import { parse } from "path-browserify";
 
 export type FileSortType = {
   field: "name" | "mtime" | "birthtime";
@@ -163,7 +162,7 @@ async function moveToTrash(
   filePath: string
 ): Promise<void> {
   const trashDir = await join(workspaceDir, TRASH_FOLDER_NAME);
-  const parsed = parse(filePath);
+  const parsed = await parsePath(filePath);
   const name = parsed.name;
   const newPath = await generateUniqueFileName(trashDir, name);
   await rename(filePath, newPath);
@@ -224,6 +223,19 @@ function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
 }
 
 /**
+ * Parse a file path into its components
+ */
+async function parsePath(
+  path: string
+): Promise<{ dir: string; base: string; name: string; ext: string }> {
+  const dir = await dirname(path);
+  const ext = "." + (await extname(path));
+  const base = await basename(path);
+  const name = base.endsWith(ext) ? base.slice(0, -ext.length) : base;
+  return { dir, base, name, ext };
+}
+
+/**
  * Generate a unique file name in the specified directory.
  * If baseName is provided, use it as the base; otherwise, use the current date.
  */
@@ -264,5 +276,6 @@ export const workspace = {
   writeConfigFile,
   deleteConfigFile,
   sortFiles,
+  parsePath,
   generateUniqueFileName,
 };

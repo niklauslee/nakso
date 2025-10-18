@@ -22,7 +22,7 @@ import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
 import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
-import { parse } from "path-browserify";
+import { workspace } from "@/api/workspace";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -32,6 +32,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorType | null>(null);
   const [tiptapEditor, setTiptapEditor] = useState<any>(null);
+  const [fileName, setFileName] = useState<string>("");
 
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
@@ -50,7 +51,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   );
   const styleStore = useStyleStore();
 
-  const fileName = filePath ? parse(filePath).name : "";
+  // const fileName = filePath ? parse(filePath).name : "";
 
   const isShapeTool =
     activeHandler &&
@@ -84,8 +85,19 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   useEffect(() => {
     if (filePath && editor) {
       editor.setEnabled(readonly === false);
+      fetchFileName();
     }
   }, [filePath, readonly]);
+
+  const fetchFileName = async () => {
+    if (filePath) {
+      const parsed = await workspace.parsePath(filePath);
+      console.log("parsed path:", parsed);
+      setFileName(parsed.name);
+    } else {
+      setFileName("");
+    }
+  };
 
   const handleMount = (editor: EditorType) => {
     setEditor(editor);

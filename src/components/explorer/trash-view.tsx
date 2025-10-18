@@ -6,13 +6,15 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
 import { useExplorerStore } from "@/store/explorer-store";
-import { join } from "path-browserify";
 import { TRASH_FOLDER_NAME } from "@/const";
+import { join } from "@tauri-apps/api/path";
 
 interface TrashViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function TrashView({ ...others }: TrashViewProps) {
   const [loading, setLoading] = useState(false);
+  const [trashPath, setTrashPath] = useState<string | null>(null);
+
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
@@ -21,11 +23,18 @@ export function TrashView({ ...others }: TrashViewProps) {
   const fetchFiles = useExplorerStore((state) => state.fetchFiles);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
-  const trashPath = workspaceDir ? join(workspaceDir, TRASH_FOLDER_NAME) : null;
-
   useEffect(() => {
-    if (trashPath) setCurrentFolder(trashPath);
-  }, [trashPath]);
+    fetchTrashDir();
+  }, [workspaceDir]);
+
+  const fetchTrashDir = async () => {
+    if (!workspaceDir) return;
+    const trashDir = await join(workspaceDir, TRASH_FOLDER_NAME);
+    if (trashDir) {
+      setTrashPath(trashDir);
+      setCurrentFolder(trashDir);
+    }
+  };
 
   return (
     <div className="absolute inset-0" {...others}>

@@ -23,7 +23,6 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
 import { useRecentsStore } from "./store/recents-store";
-import { parse } from "path-browserify";
 import { useFavoritesStore } from "./store/favorites-store";
 
 /**
@@ -172,7 +171,7 @@ export function registerCommands() {
     },
     async ({ filePath }) => {
       try {
-        const parsed = parse(filePath);
+        const parsed = await workspace.parsePath(filePath);
         const baseDir = parsed.dir;
         const currentName = parsed.name;
         const newPath = await workspace.generateUniqueFileName(

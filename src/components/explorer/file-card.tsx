@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { parse } from "path-browserify";
 import { EXT_NAME } from "@/const";
 import { useExplorerStore } from "@/store/explorer-store";
 import { join } from "@tauri-apps/api/path";
@@ -79,7 +78,7 @@ export function FileCard({ file, className }: FileCardProps) {
     try {
       if (newName === file.name) return;
       const oldPath = file.fullPath;
-      const baseDir = parse(oldPath).dir;
+      const { dir: baseDir } = await workspace.parsePath(oldPath);
       const newPath = await join(baseDir, newName + EXT_NAME);
       await window.app.commands.execute("file:rename", {
         oldPath,
