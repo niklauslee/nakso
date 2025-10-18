@@ -50,7 +50,7 @@ export function AppSidebar() {
               variant="ghost"
               size="icon"
               className="size-7 cursor-pointer"
-              label="New File"
+              title="New File"
               onClick={handleNewFile}
             >
               <PlusIcon size={16} />
@@ -129,7 +129,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Folders</SidebarGroupLabel>
-          <SidebarGroupAction label="Add Folder">
+          <SidebarGroupAction title="Add Folder">
             <FolderPlusIcon size={16} />{" "}
             <span className="sr-only">Add Folder</span>
           </SidebarGroupAction>

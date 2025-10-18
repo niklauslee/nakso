@@ -52,7 +52,7 @@ function ToolItem({
   return (
     <div className="relative flex items-center justify-center">
       <Toggle
-        label={hint}
+        title={hint}
         size="sm"
         pressed={pressed}
         onPressedChange={onPressedChange}
@@ -80,7 +80,7 @@ export function Toolbar({}) {
     >
       <div className="bg-background dark:bg-sidebar border shadow-lg/5 rounded-xl relative flex items-center gap-1 p-1 pointer-events-auto">
         <Toggle
-          label={activeHandlerLock ? "Unlock Active Tool" : "Lock Active Tool"}
+          title={activeHandlerLock ? "Unlock Active Tool" : "Lock Active Tool"}
           size="sm"
           pressed={activeHandlerLock}
           onPressedChange={() => {

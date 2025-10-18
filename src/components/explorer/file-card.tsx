@@ -113,7 +113,7 @@ export function FileCard({ file, className }: FileCardProps) {
         <button
           type="button"
           onClick={handleToggleFavorite}
-          label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+          title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
           className={cn(
             !isFavorite &&
               "opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100"

@@ -217,7 +217,7 @@ export const SelectArrowhead: React.FC<SelectArrowheadProps> = ({
         <Button
           variant="ghost"
           size="icon-sm"
-          label={title}
+          title={title}
           className={cn(className)}
         >
           <ArrowheadIcon
@@ -233,7 +233,7 @@ export const SelectArrowhead: React.FC<SelectArrowheadProps> = ({
               key={value}
               variant="ghost"
               size="icon"
-              label={toPascalCaseWithSpace(value)}
+              title={toPascalCaseWithSpace(value)}
               className={cn("h-7 w-7")}
               onClick={() => {
                 setOpen(false);

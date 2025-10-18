@@ -23,7 +23,7 @@ export function HelpButton() {
       <ApplicationMenu menu={helpMenu} align="end">
         <Button
           variant="outline"
-          label="Help"
+          title="Help"
           className="text-sm h-8 w-8 rounded-full shadow-lg/5"
         >
           ?

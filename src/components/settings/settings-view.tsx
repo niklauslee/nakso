@@ -86,16 +86,12 @@ export function SettingsView({ ...others }: SettingsViewProps) {
             <SettingsSection label="Workspace" className="">
               <SettingItem
                 label="Workspace Folder"
-                description={
-                  <span className="font-mono">
-                    {workspaceDir || "No workspace selected"}
-                  </span>
-                }
+                description={workspaceDir || "No workspace selected"}
               >
                 <Button
                   size="sm"
                   variant="outline"
-                  aria-label="Browse Workspace Folder"
+                  title="Select Folder"
                   onClick={handleWorkspaceBrowse}
                 >
                   <FolderOpenIcon size={16} />
