@@ -222,14 +222,5 @@
     "weight": 700,
     "src": "./fonts/Loranthus-BoldItalic.ttf",
     "builtin": true
-  },
-  {
-    "category": "hand",
-    "family": "Jojoba",
-    "style": "normal",
-    "weight": 400,
-    "src": "./fonts/Jojoba.ttf",
-    "builtin": true,
-    "deprecated": true
   }
 ]
