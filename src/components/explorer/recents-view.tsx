@@ -5,6 +5,7 @@ import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { useRecentsStore } from "@/store/recents-store";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
+import { ClockIcon } from "lucide-react";
 
 const PAGE_SIZE = 20;
 
@@ -50,7 +51,10 @@ export function RecentsView({ ...others }: RecentsViewProps) {
   return (
     <div className="absolute inset-0" {...others}>
       <AppHeader>
-        <div className="text-sm">Recents</div>
+        <div className="flex items-center gap-2 text-sm pl-2">
+          <ClockIcon size={16} />
+          Recents
+        </div>
       </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { useSettingStore } from "@/store/setting-store";
-import { FolderOpenIcon } from "lucide-react";
+import { FolderOpenIcon, SettingsIcon } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 
 interface SettingsSectionProps
@@ -80,7 +80,10 @@ export function SettingsView({ ...others }: SettingsViewProps) {
           <div className="flex items-center gap-1 pointer-events-auto"></div>
         }
       >
-        <div className="text-sm">Settings</div>
+        <div className="flex items-center gap-2 text-sm pl-2">
+          <SettingsIcon size={16} />
+          Settings
+        </div>
       </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

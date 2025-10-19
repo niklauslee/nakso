@@ -6,6 +6,7 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
 import { useFavoritesStore } from "@/store/favorites-store";
+import { SearchIcon } from "lucide-react";
 
 const PAGE_SIZE = 20;
 
@@ -60,7 +61,10 @@ export function SearchView({ ...others }: SearchViewProps) {
           </div>
         }
       >
-        <div className="text-sm">Search</div>
+        <div className="flex items-center gap-2 text-sm pl-2">
+          <SearchIcon size={16} />
+          Search
+        </div>
       </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

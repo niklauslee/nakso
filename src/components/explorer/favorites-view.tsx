@@ -6,6 +6,7 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
 import { FileSort } from "./file-sort";
 import { useFavoritesStore } from "@/store/favorites-store";
+import { HeartIcon } from "lucide-react";
 
 const PAGE_SIZE = 20;
 
@@ -64,7 +65,10 @@ export function FavoritesView({ ...others }: FavoritesViewProps) {
           </div>
         }
       >
-        <div className="text-sm">Favorites</div>
+        <div className="flex items-center gap-2 text-sm pl-2">
+          <HeartIcon size={16} />
+          Favorites
+        </div>
       </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

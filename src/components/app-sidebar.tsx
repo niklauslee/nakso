@@ -18,6 +18,7 @@ import {
   FolderIcon,
   FolderPlusIcon,
   HeartIcon,
+  PanelLeftCloseIcon,
   PlusIcon,
   SearchIcon,
   SettingsIcon,
@@ -46,15 +47,37 @@ export function AppSidebar() {
       <SidebarHeader data-manual-window-drag-region className="w-full h-12">
         <div className="w-full h-full flex items-center justify-between">
           <div className="flex items-center"></div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-0">
             <Button
               variant="ghost"
-              size="icon"
-              className="size-7 cursor-pointer"
+              size="icon-sm"
+              className="cursor-pointer"
               title="New File"
               onClick={handleNewFile}
             >
               <PlusIcon size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="cursor-pointer"
+              title="New Folder"
+              onClick={() => {
+                console.log("New Folder");
+              }}
+            >
+              <FolderPlusIcon size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="cursor-pointer"
+              title="New File"
+              onClick={() =>
+                window.app?.commands.execute("view:toggle-sidebar")
+              }
+            >
+              <PanelLeftCloseIcon size={16} />
             </Button>
           </div>
         </div>
@@ -131,10 +154,10 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Folders</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Folder">
+          {/* <SidebarGroupAction title="Add Folder">
             <FolderPlusIcon size={16} />{" "}
             <span className="sr-only">Add Folder</span>
-          </SidebarGroupAction>
+          </SidebarGroupAction> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {folders.map((folder) => (

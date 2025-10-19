@@ -6,6 +6,7 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
 import { useExplorerStore } from "@/store/explorer-store";
+import { Trash2Icon } from "lucide-react";
 
 interface TrashViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -46,7 +47,10 @@ export function TrashView({ ...others }: TrashViewProps) {
           </div>
         }
       >
-        <div className="text-sm">Trash</div>
+        <div className="flex items-center gap-2 text-sm pl-2">
+          <Trash2Icon size={16} />
+          Trash
+        </div>
       </AppHeader>
       <article
         className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}

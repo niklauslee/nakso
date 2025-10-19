@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/app-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
-import { PanelLeftIcon } from "lucide-react";
+import { PanelLeftIcon, PanelLeftOpenIcon } from "lucide-react";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
@@ -32,14 +32,16 @@ export function AppHeader({
           !showSidebar && platform === "darwin" && "pl-18"
         )}
       >
-        <Button
-          className="size-7 pointer-events-auto"
-          variant="ghost"
-          size="icon"
-          onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
-        >
-          <PanelLeftIcon size={16} />
-        </Button>
+        {!showSidebar && (
+          <Button
+            className="pointer-events-auto"
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
+          >
+            <PanelLeftIcon size={16} />
+          </Button>
+        )}
         {children}
       </div>
       <div className="">{rightArea}</div>

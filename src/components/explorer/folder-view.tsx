@@ -12,7 +12,8 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "../ui/button";
-import { PlusIcon } from "lucide-react";
+import { FolderCheckIcon, FolderIcon, PlusIcon } from "lucide-react";
+import { DRAFTS_FOLDER_NAME } from "@/const";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
@@ -29,6 +30,8 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
   const fetchFiles = useExplorerStore((state) => state.fetchFiles);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
+
+  console.log("relDir:", relDir);
 
   useEffect(() => {
     const relPath = path.replace(workspaceDir || "", "");
@@ -63,7 +66,12 @@ export function FolderView({ path, ...others }: FolderViewProps) {
           </div>
         }
       >
-        <div className="text-sm">
+        <div className="flex items-center gap-2 text-sm pl-2">
+          {relDir.join("") === DRAFTS_FOLDER_NAME ? (
+            <FolderCheckIcon size={16} />
+          ) : (
+            <FolderIcon size={16} />
+          )}
           <Breadcrumb>
             <BreadcrumbList>
               {relDir.map((part, index) => (
