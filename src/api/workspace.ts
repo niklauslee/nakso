@@ -24,8 +24,10 @@ export type FileSortType = {
 export type FileEntry = {
   isDirectory: boolean;
   fullPath: string;
+  dirname: string;
   basename: string;
   name: string;
+  extname: string;
   size: number;
   mode: number;
   atime: Date | null;
@@ -108,13 +110,14 @@ async function getFiles(path: string): Promise<FileEntry[]> {
  */
 async function getFileEntry(path: string): Promise<FileEntry> {
   const info = await stat(path);
-  const base = await basename(path);
-  const name = base.endsWith(EXT_NAME) ? base.slice(0, -EXT_NAME.length) : base;
+  const parsed = await parsePath(path, info.isDirectory);
   const fileEntry: FileEntry = {
     isDirectory: info.isDirectory,
     fullPath: path,
-    basename: base,
-    name,
+    dirname: parsed.dir,
+    basename: parsed.base,
+    name: parsed.name,
+    extname: parsed.ext,
     mode: info.mode ?? 0,
     size: info.size,
     atime: info.atime,
@@ -226,12 +229,14 @@ function sortFiles(files: FileEntry[], sortBy: FileSortType): FileEntry[] {
  * Parse a file path into its components
  */
 async function parsePath(
-  path: string
+  path: string,
+  isDirectory = false
 ): Promise<{ dir: string; base: string; name: string; ext: string }> {
   const dir = await dirname(path);
-  const ext = "." + (await extname(path));
+  const ext = isDirectory ? "" : "." + (await extname(path));
   const base = await basename(path);
-  const name = base.endsWith(ext) ? base.slice(0, -ext.length) : base;
+  const name =
+    !isDirectory && base.endsWith(ext) ? base.slice(0, -ext.length) : base;
   return { dir, base, name, ext };
 }
 

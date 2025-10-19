@@ -14,13 +14,14 @@ import { useSettingStore } from "@/store/setting-store";
 import { Button } from "../ui/button";
 import { FolderCheckIcon, FolderIcon, PlusIcon } from "lucide-react";
 import { DRAFTS_FOLDER_NAME } from "@/const";
+import { FileEntry } from "@/api/workspace";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
-  path: string | null;
+  folder: FileEntry | null;
 }
 
-export function FolderView({ path, ...others }: FolderViewProps) {
-  if (!path) return;
+export function FolderView({ folder, ...others }: FolderViewProps) {
+  if (!folder) return;
 
   const [relDir, setRelDir] = useState<string[]>([]);
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
@@ -31,15 +32,16 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   const fetchMoreFiles = useExplorerStore((state) => state.fetchMoreFiles);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
-  useEffect(() => {
-    const relPath = path.replace(workspaceDir || "", "");
-    const parts = relPath.split("/").filter((p) => p);
-    setRelDir(parts);
-    if (path) setCurrentFolder(path);
-  }, [path]);
+  // useEffect(() => {
+  //   const relPath = path.replace(workspaceDir || "", "");
+  //   const parts = relPath.split("/").filter((p) => p);
+  //   setRelDir(parts);
+  //   if (path) setCurrentFolder(path);
+  // }, [path]);
 
   const handleNewFile = () => {
-    window.app?.commands.execute("file:new", { basePath: path });
+    if (!folder) return;
+    window.app?.commands.execute("file:new", { basePath: folder?.fullPath });
   };
 
   return (
@@ -87,7 +89,7 @@ export function FolderView({ path, ...others }: FolderViewProps) {
           innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
-          fetchFirstDeps={[path]}
+          fetchFirstDeps={[folder]}
           fetchFirst={async () => {
             await fetchMoreFiles();
           }}

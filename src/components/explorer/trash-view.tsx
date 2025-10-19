@@ -7,11 +7,12 @@ import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
 import { useExplorerStore } from "@/store/explorer-store";
 import { Trash2Icon } from "lucide-react";
+import { FileEntry, workspace } from "@/api/workspace";
 
 interface TrashViewProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function TrashView({ ...others }: TrashViewProps) {
-  const [trashPath, setTrashPath] = useState<string | null>(null);
+  const [trashFolder, setTrashFolder] = useState<FileEntry | null>(null);
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
@@ -21,15 +22,16 @@ export function TrashView({ ...others }: TrashViewProps) {
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
   useEffect(() => {
-    fetchTrashDir();
+    fetchTrashFolder();
   }, [workspaceDir]);
 
-  const fetchTrashDir = async () => {
+  const fetchTrashFolder = async () => {
     if (!workspaceDir) return;
     const trashDir = await window.app.getTrashDir();
     if (trashDir) {
-      setTrashPath(trashDir);
-      setCurrentFolder(trashDir);
+      const trashFolder = await workspace.getFileEntry(trashDir);
+      setTrashFolder(trashFolder);
+      setCurrentFolder(trashFolder);
     }
   };
 
@@ -60,7 +62,7 @@ export function TrashView({ ...others }: TrashViewProps) {
           innerClassName="flex flex-wrap justify-start gap-6 w-full px-6 py-2"
           count={loadedFiles.length}
           totalCount={files.length}
-          fetchFirstDeps={[trashPath]}
+          fetchFirstDeps={[trashFolder]}
           fetchFirst={async () => {
             await fetchMoreFiles();
           }}

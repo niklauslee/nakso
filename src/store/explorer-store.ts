@@ -16,14 +16,14 @@ type ViewType =
 export interface ExplorerState {
   view: ViewType;
   folders: FileEntry[];
-  currentFolder: string | null;
+  currentFolder: FileEntry | null;
   currentFile: string | null;
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
   setView(view: ViewType): void;
   setFolders: (folders: FileEntry[]) => void;
-  setCurrentFolder: (path: string) => Promise<void>;
+  setCurrentFolder: (folder: FileEntry | null) => Promise<void>;
   setCurrentFile: (file: string | null) => void;
   fetchMoreFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
@@ -45,11 +45,20 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
     set({ view });
   },
   setFolders: (folders) => set({ folders }),
-  setCurrentFolder: async (path) => {
-    const sortBy = get().sortBy;
-    const allFiles = await workspace.getFiles(path);
-    const files = workspace.sortFiles(allFiles, sortBy);
-    set({ currentFolder: path, files, sortBy, loadedFiles: [] });
+  setCurrentFolder: async (folder) => {
+    if (folder) {
+      const sortBy = get().sortBy;
+      const allFiles = await workspace.getFiles(folder?.fullPath || "/");
+      const files = workspace.sortFiles(allFiles, sortBy);
+      set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+    } else {
+      set({
+        currentFolder: null,
+        files: [],
+        sortBy: { field: "mtime", direction: "desc" },
+        loadedFiles: [],
+      });
+    }
   },
   setCurrentFile: (file) => {
     set({ currentFile: file });

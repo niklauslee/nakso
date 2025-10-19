@@ -163,10 +163,11 @@ export function AppSidebar() {
                 <SidebarMenuItem key={folder.name}>
                   <SidebarMenuButton
                     isActive={
-                      view === "folder" && folder.fullPath === currentFolder
+                      view === "folder" &&
+                      folder.fullPath === currentFolder?.fullPath
                     }
                     onClick={() => {
-                      setCurrentFolder(folder.fullPath);
+                      setCurrentFolder(folder);
                       setView("folder");
                     }}
                     asChild

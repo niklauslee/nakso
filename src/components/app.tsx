@@ -78,7 +78,7 @@ function App() {
               <SettingsView />
             </Activity>
             <Activity mode={view === "folder" ? "visible" : "hidden"}>
-              <FolderView path={currentFolder} />
+              <FolderView folder={currentFolder} />
             </Activity>
           </SidebarInset>
         </SidebarProvider>
