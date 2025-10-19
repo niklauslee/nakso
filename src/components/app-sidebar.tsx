@@ -25,7 +25,6 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { useWorkingStore } from "@/store/working-store";
 import { useExplorerStore } from "@/store/explorer-store";
 import { DRAFTS_FOLDER_NAME } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
@@ -35,8 +34,8 @@ export function AppSidebar() {
   const setView = useExplorerStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);
   const favoriteFiles = useFavoritesStore((state) => state.files);
-  const workingFolder = useWorkingStore((state) => state.workingFolder);
-  const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
+  const currentFolder = useExplorerStore((state) => state.currentFolder);
+  const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
 
   const handleNewFile = () => {
     window.app?.commands.execute("file:new");
@@ -164,10 +163,10 @@ export function AppSidebar() {
                 <SidebarMenuItem key={folder.name}>
                   <SidebarMenuButton
                     isActive={
-                      view === "folder" && folder.fullPath === workingFolder
+                      view === "folder" && folder.fullPath === currentFolder
                     }
                     onClick={() => {
-                      setWorkingFolder(folder.fullPath);
+                      setCurrentFolder(folder.fullPath);
                       setView("folder");
                     }}
                     asChild

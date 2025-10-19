@@ -17,13 +17,15 @@ export interface ExplorerState {
   view: ViewType;
   folders: FileEntry[];
   currentFolder: string | null;
+  currentFile: string | null;
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
   setView(view: ViewType): void;
   setFolders: (folders: FileEntry[]) => void;
   setCurrentFolder: (path: string) => Promise<void>;
-  fetchFiles: () => Promise<void>;
+  setCurrentFile: (file: string | null) => void;
+  fetchMoreFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
   addFile: (filePath: string) => void;
   updateFile: (filePath: string) => void;
@@ -34,6 +36,7 @@ export interface ExplorerState {
 export const useExplorerStore = create<ExplorerState>()((set, get) => ({
   view: "editor",
   currentFolder: null,
+  currentFile: null,
   folders: [],
   files: [],
   loadedFiles: [],
@@ -48,7 +51,10 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
     const files = workspace.sortFiles(allFiles, sortBy);
     set({ currentFolder: path, files, sortBy, loadedFiles: [] });
   },
-  fetchFiles: async () => {
+  setCurrentFile: (file) => {
+    set({ currentFile: file });
+  },
+  fetchMoreFiles: async () => {
     set((state) => {
       const nextFiles = get().files.slice(
         0,

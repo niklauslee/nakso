@@ -17,7 +17,7 @@ export function TrashView({ ...others }: TrashViewProps) {
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
   const sortBy = useExplorerStore((state) => state.sortBy);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
-  const fetchFiles = useExplorerStore((state) => state.fetchFiles);
+  const fetchMoreFiles = useExplorerStore((state) => state.fetchMoreFiles);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
 
   useEffect(() => {
@@ -62,10 +62,10 @@ export function TrashView({ ...others }: TrashViewProps) {
           totalCount={files.length}
           fetchFirstDeps={[trashPath]}
           fetchFirst={async () => {
-            await fetchFiles();
+            await fetchMoreFiles();
           }}
           fetchMore={async () => {
-            await fetchFiles();
+            await fetchMoreFiles();
           }}
         >
           {loadedFiles.length > 0 && (

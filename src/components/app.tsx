@@ -10,7 +10,6 @@ import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
 import { FolderView } from "./explorer/folder-view";
 import { Toaster } from "@/components/ui/sonner";
-import { useWorkingStore } from "@/store/working-store";
 import { RecentsView } from "./explorer/recents-view";
 import { apiContext } from "@/api";
 import { FavoritesView } from "./explorer/favorites-view";
@@ -31,8 +30,7 @@ function App() {
   const view = useExplorerStore((state) => state.view);
   const showSidebar = useSettingStore((state) => state.showSidebar);
   const darkMode = useSettingStore((state) => state.darkMode);
-  const workingFolder = useWorkingStore((state) => state.workingFolder);
-  const setWorkingFolder = useWorkingStore((state) => state.setWorkingFolder);
+  const currentFolder = useExplorerStore((state) => state.currentFolder);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -80,7 +78,7 @@ function App() {
               <SettingsView />
             </Activity>
             <Activity mode={view === "folder" ? "visible" : "hidden"}>
-              <FolderView path={workingFolder} />
+              <FolderView path={currentFolder} />
             </Activity>
           </SidebarInset>
         </SidebarProvider>

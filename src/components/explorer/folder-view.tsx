@@ -28,10 +28,8 @@ export function FolderView({ path, ...others }: FolderViewProps) {
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
   const sortBy = useExplorerStore((state) => state.sortBy);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
-  const fetchFiles = useExplorerStore((state) => state.fetchFiles);
+  const fetchMoreFiles = useExplorerStore((state) => state.fetchMoreFiles);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
-
-  console.log("relDir:", relDir);
 
   useEffect(() => {
     const relPath = path.replace(workspaceDir || "", "");
@@ -91,10 +89,10 @@ export function FolderView({ path, ...others }: FolderViewProps) {
           totalCount={files.length}
           fetchFirstDeps={[path]}
           fetchFirst={async () => {
-            await fetchFiles();
+            await fetchMoreFiles();
           }}
           fetchMore={async () => {
-            await fetchFiles();
+            await fetchMoreFiles();
           }}
         >
           {loadedFiles.length > 0 && (

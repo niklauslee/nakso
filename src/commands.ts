@@ -19,7 +19,6 @@ import { useEditorStore } from "./store/editor-store";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useWorkingStore } from "./store/working-store";
 import { useExplorerStore } from "./store/explorer-store";
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
@@ -102,7 +101,7 @@ export function registerCommands() {
         useEditorStore
           .getState()
           .setFilePath(filePath, doc, fileEntry.readonly);
-        useWorkingStore.getState().setWorkingFile(filePath);
+        useExplorerStore.getState().setCurrentFile(filePath);
         useExplorerStore.getState().updateFile(filePath);
         useExplorerStore.getState().setView("editor");
       } catch (err) {

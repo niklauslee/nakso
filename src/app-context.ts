@@ -7,7 +7,6 @@ import { registerCommands } from "./commands";
 import { useSettingStore } from "@/store/setting-store";
 import { useKeymapStore } from "@/store/keymap-store";
 import { MenuItemState, useMenuStore } from "@/store/menu-store";
-import { useWorkingStore } from "@/store/working-store";
 import packageJson from "../package.json";
 import fontJson from "./fonts.json";
 import menuJson from "./menu.json";
@@ -178,10 +177,10 @@ export class AppContext {
 
   async loadWorkingState() {
     try {
-      const workingFile = useWorkingStore.getState().workingFile;
-      if (workingFile && (await workspace.existsFile(workingFile))) {
+      const currentFile = useExplorerStore.getState().currentFile;
+      if (currentFile && (await workspace.existsFile(currentFile))) {
         setTimeout(async () => {
-          await this.commands.execute("file:open", { filePath: workingFile });
+          await this.commands.execute("file:open", { filePath: currentFile });
         }, 0);
       } else {
         // TODO: 1. Find the last opened file from recent files
