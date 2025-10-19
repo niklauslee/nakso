@@ -3,7 +3,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -26,8 +25,15 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useExplorerStore } from "@/store/explorer-store";
-import { DRAFTS_FOLDER_NAME } from "@/const";
+import {
+  DRAFTS_TAG,
+  FAVORITES_TAG,
+  RECENTS_TAG,
+  SEARCH_TAG,
+  TRASH_TAG,
+} from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
+import { workspace } from "@/api/workspace";
 
 export function AppSidebar() {
   const view = useExplorerStore((state) => state.view);
@@ -36,6 +42,7 @@ export function AppSidebar() {
   const favoriteFiles = useFavoritesStore((state) => state.files);
   const currentFolder = useExplorerStore((state) => state.currentFolder);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
+  const folderTag = currentFolder?.tag;
 
   const handleNewFile = () => {
     window.app?.commands.execute("file:new");
@@ -87,8 +94,15 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "search"}
-                  onClick={() => setView("search")}
+                  isActive={folderTag === SEARCH_TAG}
+                  onClick={() => {
+                    const folder = workspace.createFileEntry({
+                      isDirectory: true,
+                      tag: SEARCH_TAG,
+                    });
+                    setCurrentFolder(folder);
+                    setView("folder");
+                  }}
                   asChild
                 >
                   <a href="#">
@@ -99,8 +113,16 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "recents"}
-                  onClick={() => setView("recents")}
+                  isActive={folderTag === RECENTS_TAG}
+                  onClick={() => {
+                    const folder = workspace.createFileEntry({
+                      fullPath: window.app.getRecentsPath(),
+                      isDirectory: true,
+                      tag: RECENTS_TAG,
+                    });
+                    setCurrentFolder(folder);
+                    setView("folder");
+                  }}
                   asChild
                 >
                   <a href="#">
@@ -111,8 +133,16 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "favorites"}
-                  onClick={() => setView("favorites")}
+                  isActive={folderTag === FAVORITES_TAG}
+                  onClick={() => {
+                    const folder = workspace.createFileEntry({
+                      fullPath: window.app.getFavoritesPath(),
+                      isDirectory: true,
+                      tag: FAVORITES_TAG,
+                    });
+                    setCurrentFolder(folder);
+                    setView("folder");
+                  }}
                   asChild
                 >
                   <a href="#">
@@ -126,8 +156,16 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "trash"}
-                  onClick={() => setView("trash")}
+                  isActive={folderTag === TRASH_TAG}
+                  onClick={() => {
+                    const folder = workspace.createFileEntry({
+                      fullPath: window.app.getTrashDir(),
+                      isDirectory: true,
+                      tag: TRASH_TAG,
+                    });
+                    setCurrentFolder(folder);
+                    setView("folder");
+                  }}
                   asChild
                 >
                   <a href="#">
@@ -161,7 +199,7 @@ export function AppSidebar() {
                     asChild
                   >
                     <a href="#">
-                      {folder.name === DRAFTS_FOLDER_NAME ? (
+                      {folder.tag === DRAFTS_TAG ? (
                         <FolderCheckIcon size={16} />
                       ) : (
                         <FolderIcon size={16} />

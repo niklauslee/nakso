@@ -8,11 +8,15 @@ import {
   remove,
   rename,
 } from "@tauri-apps/plugin-fs";
-import { join, basename, dirname, extname } from "@tauri-apps/api/path";
+import { join, basename, dirname, extname, sep } from "@tauri-apps/api/path";
 import {
   CONFIG_FOLDER_NAME,
   DRAFTS_FOLDER_NAME,
+  DRAFTS_TAG,
   EXT_NAME,
+  FAVORITES_FILE_NAME,
+  RECENTS_FILE_NAME,
+  SEARCH_PATH_NAME,
   TRASH_FOLDER_NAME,
 } from "@/const";
 
@@ -20,6 +24,15 @@ export type FileSortType = {
   field: "name" | "mtime" | "birthtime";
   direction: "asc" | "desc";
 };
+
+export type FolderType =
+  | "unknown"
+  | "normal"
+  | "drafts"
+  | "trash"
+  | "search"
+  | "recents"
+  | "favorites";
 
 export type FileEntry = {
   isDirectory: boolean;
@@ -34,6 +47,7 @@ export type FileEntry = {
   mtime: Date | null;
   birthtime: Date | null;
   readonly: boolean;
+  tag?: string;
 };
 
 /**
@@ -84,7 +98,7 @@ async function getFolders(workspaceDir: string): Promise<FileEntry[]> {
   );
   if (draftsFolderIndex > 0) {
     const [drafts] = sorted.splice(draftsFolderIndex, 1);
-    sorted.unshift(drafts);
+    sorted.unshift({ ...drafts, tag: DRAFTS_TAG });
   }
   return sorted;
 }
@@ -126,6 +140,43 @@ async function getFileEntry(path: string): Promise<FileEntry> {
     readonly: info.readonly,
   };
   return fileEntry;
+}
+
+/**
+ * Get multiple file entries by their paths
+ */
+async function getFileEntries(paths: string[]): Promise<FileEntry[]> {
+  const entries: FileEntry[] = [];
+  for (const path of paths) {
+    try {
+      const entry = await getFileEntry(path);
+      entries.push(entry);
+    } catch (e) {
+      console.error("Failed to get file entry for path:", path, e);
+    }
+  }
+  return entries;
+}
+
+/**
+ * Create a FileEntry with default values, overridden by provided partial values
+ */
+function createFileEntry(fileEntry: Partial<FileEntry>): FileEntry {
+  return {
+    isDirectory: false,
+    fullPath: "",
+    dirname: "",
+    basename: "",
+    name: "",
+    extname: "",
+    mode: 0,
+    size: 0,
+    atime: new Date(0),
+    mtime: new Date(0),
+    birthtime: new Date(0),
+    readonly: false,
+    ...fileEntry,
+  };
 }
 
 /**
@@ -267,11 +318,34 @@ async function generateUniqueFileName(
   return candidatePath;
 }
 
+/**
+ * Get the platform-specific path separator
+ */
+function getSeparator(): string {
+  return sep();
+}
+
+/**
+ * Get the relative path from basePath to fullPath
+ */
+function getRelPath(basePath: string, fullPath: string): string {
+  if (fullPath.startsWith(basePath)) {
+    const separator = sep();
+    const relPath = fullPath.slice(basePath.length);
+    // remove leading path separators (cross-platform)
+    const sepRegex = new RegExp(`^[${separator.replace(/\\/g, "\\\\")}]+`);
+    return relPath.replace(sepRegex, "");
+  }
+  return fullPath;
+}
+
 export const workspace = {
   ensureWorkspace,
   getFolders,
   getFiles,
   getFileEntry,
+  getFileEntries,
+  createFileEntry,
   existsFile,
   renameFile,
   readFile,
@@ -283,4 +357,6 @@ export const workspace = {
   sortFiles,
   parsePath,
   generateUniqueFileName,
+  getSeparator,
+  getRelPath,
 };

@@ -16,7 +16,13 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useExplorerStore } from "./store/explorer-store";
 import { workspace } from "@/api/workspace";
 import { join, documentDir } from "@tauri-apps/api/path";
-import { DRAFTS_FOLDER_NAME, TRASH_FOLDER_NAME, WORKSPACE_NAME } from "./const";
+import {
+  CONFIG_FOLDER_NAME,
+  DRAFTS_FOLDER_NAME,
+  RECENTS_FILE_NAME,
+  TRASH_FOLDER_NAME,
+  WORKSPACE_NAME,
+} from "./const";
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
 
@@ -201,12 +207,28 @@ export class AppContext {
     return useSettingStore.getState().workspaceDir!;
   }
 
-  async getDraftsDir() {
-    return join(this.getWorkspaceDir(), DRAFTS_FOLDER_NAME);
+  getDraftsDir() {
+    const sep = workspace.getSeparator();
+    return [this.getWorkspaceDir(), DRAFTS_FOLDER_NAME].join(sep);
   }
 
-  async getTrashDir() {
-    return join(this.getWorkspaceDir(), TRASH_FOLDER_NAME);
+  getTrashDir() {
+    const sep = workspace.getSeparator();
+    return [this.getWorkspaceDir(), TRASH_FOLDER_NAME].join(sep);
+  }
+
+  getRecentsPath() {
+    const sep = workspace.getSeparator();
+    return [this.getWorkspaceDir(), CONFIG_FOLDER_NAME, RECENTS_FILE_NAME].join(
+      sep
+    );
+  }
+
+  getFavoritesPath() {
+    const sep = workspace.getSeparator();
+    return [this.getWorkspaceDir(), CONFIG_FOLDER_NAME, "favorites.json"].join(
+      sep
+    );
   }
 
   updateUI() {

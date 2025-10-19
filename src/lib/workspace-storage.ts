@@ -7,9 +7,9 @@ const fileStorage: StateStorage = {
     try {
       const workspaceDir = useSettingStore.getState().workspaceDir;
       if (!workspaceDir) await workspace.ensureWorkspace(workspaceDir!);
-      return await workspace.readConfigFile(workspaceDir!, `${name}.json`);
+      return await workspace.readConfigFile(workspaceDir!, name);
     } catch (e) {
-      console.warn(`Failed to read state from file: ${name}.json`, e);
+      console.warn(`Failed to read state from file: ${name}`, e);
     }
     return null;
   },
@@ -18,9 +18,9 @@ const fileStorage: StateStorage = {
     try {
       const workspaceDir = useSettingStore.getState().workspaceDir;
       if (!workspaceDir) await workspace.ensureWorkspace(workspaceDir!);
-      await workspace.writeConfigFile(workspaceDir!, `${name}.json`, value);
+      await workspace.writeConfigFile(workspaceDir!, name, value);
     } catch (e) {
-      console.warn(`Failed to write state to file: ${name}.json`, e);
+      console.warn(`Failed to write state to file: ${name}`, e);
     }
   },
 
@@ -28,9 +28,9 @@ const fileStorage: StateStorage = {
     try {
       const workspaceDir = useSettingStore.getState().workspaceDir;
       if (!workspaceDir) await workspace.ensureWorkspace(workspaceDir!);
-      await workspace.deleteConfigFile(workspaceDir!, `${name}.json`);
+      await workspace.deleteConfigFile(workspaceDir!, name);
     } catch (e) {
-      console.warn(`Failed to remove state file: ${name}.json`, e);
+      console.warn(`Failed to remove state file: ${name}`, e);
     }
   },
 };

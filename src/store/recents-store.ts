@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { workspaceStorage } from "../lib/workspace-storage";
+import { RECENTS_FILE_NAME } from "@/const";
 
 const MAX_RECENT_FILES = 20;
 
@@ -31,6 +32,6 @@ export const useRecentsStore = create<RecentsState>()(
           return { files };
         }),
     }),
-    { name: "recents", storage: workspaceStorage }
+    { name: RECENTS_FILE_NAME, storage: workspaceStorage }
   )
 );

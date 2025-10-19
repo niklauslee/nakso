@@ -10,11 +10,7 @@ import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
 import { FolderView } from "./explorer/folder-view";
 import { Toaster } from "@/components/ui/sonner";
-import { RecentsView } from "./explorer/recents-view";
 import { apiContext } from "@/api";
-import { FavoritesView } from "./explorer/favorites-view";
-import { SearchView } from "./explorer/search-view";
-import { TrashView } from "./explorer/trash-view";
 import { useExplorerStore } from "@/store/explorer-store";
 import { SettingsDialog } from "./settings/settings-dialog";
 
@@ -61,18 +57,6 @@ function App() {
           <SidebarInset>
             <Activity mode={view === "editor" ? "visible" : "hidden"}>
               <EditorView onMount={handleAppReady} />
-            </Activity>
-            <Activity mode={view === "search" ? "visible" : "hidden"}>
-              <SearchView />
-            </Activity>
-            <Activity mode={view === "recents" ? "visible" : "hidden"}>
-              <RecentsView />
-            </Activity>
-            <Activity mode={view === "favorites" ? "visible" : "hidden"}>
-              <FavoritesView />
-            </Activity>
-            <Activity mode={view === "trash" ? "visible" : "hidden"}>
-              <TrashView />
             </Activity>
             <Activity mode={view === "folder" ? "visible" : "hidden"}>
               <FolderView folder={currentFolder} />

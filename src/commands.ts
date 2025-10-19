@@ -58,7 +58,7 @@ export function registerCommands() {
       try {
         await app.ensureSave();
         // generate an unique file name
-        let dir = await app.getDraftsDir();
+        let dir = app.getDraftsDir();
         if (basePath) dir = basePath;
         const filePath = await workspace.generateUniqueFileName(dir);
         // create an empty file

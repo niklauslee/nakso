@@ -1,3 +1,4 @@
+import { SETTINGS_FILE_NAME } from "@/const";
 import { appDataStorage } from "@/lib/appdata-storage";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -35,6 +36,6 @@ export const useSettingStore = create<SettingState>()(
         set((state) => ({ snapToObjects: !state.snapToObjects })),
       setShowSidebar: (show) => set({ showSidebar: show }),
     }),
-    { name: "settings", storage: appDataStorage }
+    { name: SETTINGS_FILE_NAME, storage: appDataStorage }
   )
 );

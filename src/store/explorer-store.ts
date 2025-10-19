@@ -1,16 +1,12 @@
 import { FileEntry } from "@/api/workspace";
 import { create } from "zustand";
 import { FileSortType, workspace } from "@/api/workspace";
+import { useFavoritesStore } from "./favorites-store";
+import { useRecentsStore } from "./recents-store";
 
 const PAGE_SIZE = 10; // FIXME: set to 30, 50, or 100?
 
-type ViewType =
-  | "editor"
-  | "search"
-  | "recents"
-  | "favorites"
-  | "trash"
-  | "folder";
+type ViewType = "editor" | "folder";
 
 export interface ExplorerState {
   view: ViewType;
@@ -47,9 +43,21 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
   setCurrentFolder: async (folder) => {
     if (folder) {
       const sortBy = get().sortBy;
-      const allFiles = await workspace.getFiles(folder?.fullPath || "/");
-      const files = workspace.sortFiles(allFiles, sortBy);
-      set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+      if (folder.tag === "favorites") {
+        const favorites = useFavoritesStore.getState().files;
+        const allFiles = await workspace.getFileEntries(favorites);
+        const files = workspace.sortFiles(allFiles, sortBy);
+        set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+      } else if (folder.tag === "recents") {
+        const recents = useRecentsStore.getState().files;
+        const allFiles = await workspace.getFileEntries(recents);
+        const files = workspace.sortFiles(allFiles, sortBy);
+        set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+      } else {
+        const allFiles = await workspace.getFiles(folder?.fullPath || "/");
+        const files = workspace.sortFiles(allFiles, sortBy);
+        set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+      }
     } else {
       set({
         currentFolder: null,

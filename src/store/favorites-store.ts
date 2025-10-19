@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { workspaceStorage } from "../lib/workspace-storage";
+import { FAVORITES_FILE_NAME } from "@/const";
 
 export interface FavoritesState {
   files: string[];
@@ -29,6 +30,6 @@ export const useFavoritesStore = create<FavoritesState>()(
           return { files };
         }),
     }),
-    { name: "favorites", storage: workspaceStorage }
+    { name: FAVORITES_FILE_NAME, storage: workspaceStorage }
   )
 );
