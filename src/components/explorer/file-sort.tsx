@@ -36,10 +36,10 @@ export function FileSort({ value, onValueChange }: FileSortProps) {
           Alphabetical <MoveDownIcon />
         </SelectItem>
         <SelectItem value="mtime-asc">
-          Updated <MoveUpIcon />
+          Modified <MoveUpIcon />
         </SelectItem>
         <SelectItem value="mtime-desc">
-          Updated <MoveDownIcon />
+          Modified <MoveDownIcon />
         </SelectItem>
         <SelectItem value="birthtime-asc">
           Created <MoveUpIcon />

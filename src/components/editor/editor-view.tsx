@@ -15,7 +15,7 @@ import { AppHeader } from "../app-header";
 import { Toolbar } from "./toolbar";
 import { Palette } from "./palette";
 import { ApplicationMenu } from "../menu/menu";
-import { EllipsisVerticalIcon } from "lucide-react";
+import { EllipsisVerticalIcon, PlusIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
@@ -130,7 +130,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const handleActiveHandlerLockChange = (lock: boolean) => {
     try {
-      console.log("Handler lock changed:", lock);
       setActiveHandlerLock(lock);
       editor?.focus();
     } catch (error) {
@@ -212,19 +211,34 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     }
   };
 
+  const handleNewFile = () => {
+    window.app?.commands.execute("file:new");
+  };
+
   return (
     <div className="absolute inset-0" {...others}>
       <AppHeader
         rightArea={
-          <ApplicationMenu menu={menus.main} className="w-36">
+          <div className="flex items-center gap-1 pointer-events-auto">
             <Button
-              className="size-7 pointer-events-auto"
+              size="icon-sm"
               variant="ghost"
-              size="icon"
+              onClick={handleNewFile}
+              title="New File"
             >
-              <EllipsisVerticalIcon size={16} />
+              <PlusIcon size={16} />
             </Button>
-          </ApplicationMenu>
+            <ApplicationMenu menu={menus.main} className="w-36">
+              <Button
+                className="size-7"
+                variant="ghost"
+                size="icon"
+                title="Menu"
+              >
+                <EllipsisVerticalIcon size={16} />
+              </Button>
+            </ApplicationMenu>
+          </div>
         }
       >
         <div className="text-sm pointer-events-auto">

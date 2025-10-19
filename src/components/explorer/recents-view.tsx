@@ -5,7 +5,6 @@ import { FileCard } from "./file-card";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { useRecentsStore } from "@/store/recents-store";
 import { FileEntry, FileSortType, workspace } from "@/api/workspace";
-import { FileSort } from "./file-sort";
 
 const PAGE_SIZE = 20;
 
@@ -50,18 +49,7 @@ export function RecentsView({ ...others }: RecentsViewProps) {
 
   return (
     <div className="absolute inset-0" {...others}>
-      <AppHeader
-        rightArea={
-          <div className="pointer-events-auto">
-            <FileSort
-              value={sortBy}
-              onValueChange={(value) => {
-                setSortBy(value);
-              }}
-            />
-          </div>
-        }
-      >
+      <AppHeader>
         <div className="text-sm">Recents</div>
       </AppHeader>
       <article

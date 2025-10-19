@@ -75,7 +75,11 @@ export function SettingsView({ ...others }: SettingsViewProps) {
 
   return (
     <div className="absolute inset-0" {...others}>
-      <AppHeader rightArea={<div className="pointer-events-auto">...</div>}>
+      <AppHeader
+        rightArea={
+          <div className="flex items-center gap-1 pointer-events-auto"></div>
+        }
+      >
         <div className="text-sm">Settings</div>
       </AppHeader>
       <article

@@ -11,6 +11,8 @@ import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
+import { Button } from "../ui/button";
+import { PlusIcon } from "lucide-react";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   path: string | null;
@@ -35,11 +37,23 @@ export function FolderView({ path, ...others }: FolderViewProps) {
     if (path) setCurrentFolder(path);
   }, [path]);
 
+  const handleNewFile = () => {
+    window.app?.commands.execute("file:new", { basePath: path });
+  };
+
   return (
     <div className="absolute inset-0" {...others}>
       <AppHeader
         rightArea={
-          <div className="pointer-events-auto">
+          <div className="flex items-center gap-1 pointer-events-auto">
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              title="New File"
+              onClick={handleNewFile}
+            >
+              <PlusIcon size={16} />
+            </Button>
             <FileSort
               value={sortBy}
               onValueChange={(value) => {

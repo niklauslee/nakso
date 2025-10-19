@@ -31,10 +31,7 @@ export function InfiniteScrollArea({
   };
 
   useEffect(() => {
-    const fetch = async () => {
-      if (fetchFirst) await fetchFirst();
-    };
-    fetch();
+    if (fetchFirst) fetchFirst();
   }, fetchFirstDeps);
 
   useEffect(() => {
