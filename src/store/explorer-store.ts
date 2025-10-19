@@ -10,7 +10,6 @@ type ViewType =
   | "recents"
   | "favorites"
   | "trash"
-  | "settings"
   | "folder";
 
 export interface ExplorerState {

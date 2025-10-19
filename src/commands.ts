@@ -22,6 +22,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useExplorerStore } from "./store/explorer-store";
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
+import { useAppStore } from "./store/app-store";
 
 /**
  * Find the shapes by the given id array.
@@ -828,6 +829,16 @@ export function registerCommands() {
     async () => {
       const show = useSettingStore.getState().showSidebar;
       useSettingStore.getState().setShowSidebar(!show);
+    }
+  );
+
+  app.commands.register(
+    "view:show-settings",
+    "Show settings dialog",
+    {},
+    async () => {
+      const setShowSettings = useAppStore.getState().setShowSettings;
+      setShowSettings(true);
     }
   );
 }

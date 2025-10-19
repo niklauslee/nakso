@@ -15,8 +15,8 @@ import { apiContext } from "@/api";
 import { FavoritesView } from "./explorer/favorites-view";
 import { SearchView } from "./explorer/search-view";
 import { TrashView } from "./explorer/trash-view";
-import { SettingsView } from "./settings/settings-view";
 import { useExplorerStore } from "@/store/explorer-store";
+import { SettingsDialog } from "./settings/settings-dialog";
 
 declare global {
   interface Window {
@@ -74,15 +74,13 @@ function App() {
             <Activity mode={view === "trash" ? "visible" : "hidden"}>
               <TrashView />
             </Activity>
-            <Activity mode={view === "settings" ? "visible" : "hidden"}>
-              <SettingsView />
-            </Activity>
             <Activity mode={view === "folder" ? "visible" : "hidden"}>
               <FolderView folder={currentFolder} />
             </Activity>
           </SidebarInset>
         </SidebarProvider>
       </div>
+      <SettingsDialog />
       <Toaster position="top-center" />
     </>
   );

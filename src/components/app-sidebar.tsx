@@ -136,18 +136,6 @@ export function AppSidebar() {
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={view === "settings"}
-                  onClick={() => setView("settings")}
-                  asChild
-                >
-                  <a href="#">
-                    <SettingsIcon size={16} />
-                    <span>Settings</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -187,7 +175,20 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <div className="flex items-center justify-between">
+          <div></div>
+          <div>
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={() => window.app.commands.execute("view:show-settings")}
+            >
+              <SettingsIcon size={16} />
+            </Button>
+          </div>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
