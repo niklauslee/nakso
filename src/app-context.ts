@@ -25,6 +25,7 @@ import {
 } from "./const";
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
+import { useEditorStore } from "./store/editor-store";
 
 export class AppContext {
   productName: string;
@@ -183,10 +184,12 @@ export class AppContext {
 
   async loadWorkingState() {
     try {
-      const currentFile = useExplorerStore.getState().currentFile;
-      if (currentFile && (await workspace.existsFile(currentFile))) {
+      const workingFile = useEditorStore.getState().workingFile;
+      if (workingFile && (await workspace.existsFile(workingFile.fullPath))) {
         setTimeout(async () => {
-          await this.commands.execute("file:open", { filePath: currentFile });
+          await this.commands.execute("file:open", {
+            filePath: workingFile.fullPath,
+          });
         }, 0);
       } else {
         // TODO: 1. Find the last opened file from recent files

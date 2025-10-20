@@ -15,7 +15,7 @@ import { AppHeader } from "../app-header";
 import { Toolbar } from "./toolbar";
 import { Palette } from "./palette";
 import { ApplicationMenu } from "../menu/menu";
-import { EllipsisVerticalIcon, PlusIcon } from "lucide-react";
+import { EllipsisVerticalIcon, LockIcon, PlusIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
@@ -38,8 +38,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const darkMode = useSettingStore((state) => state.darkMode);
   const showGrid = useSettingStore((state) => state.showGrid);
 
-  const filePath = useEditorStore((state) => state.filePath);
-  const readonly = useEditorStore((state) => state.readonly);
+  const workingFile = useEditorStore((state) => state.workingFile);
+  const readonly = workingFile?.readonly ?? true;
   const modified = useEditorStore((state) => state.modified);
   const setModified = useEditorStore((state) => state.setModified);
   const selection = useEditorStore((state) => state.selection);
@@ -81,15 +81,15 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   }, []);
 
   useEffect(() => {
-    if (filePath && editor) {
+    if (workingFile && editor) {
       editor.setEnabled(readonly === false);
       fetchFileName();
     }
-  }, [filePath, readonly]);
+  }, [workingFile, readonly]);
 
   const fetchFileName = async () => {
-    if (filePath) {
-      const parsed = await workspace.parsePath(filePath);
+    if (workingFile) {
+      const parsed = await workspace.parsePath(workingFile.fullPath);
       setFileName(parsed.name);
     } else {
       setFileName("");
@@ -215,6 +215,13 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     window.app?.commands.execute("file:new");
   };
 
+  const handleRenameFile = async (newName: string) => {
+    await window.app.commands.execute("file:rename", {
+      filePath: workingFile!.fullPath,
+      newName,
+    });
+  };
+
   return (
     <div className="absolute inset-0" {...others}>
       <AppHeader
@@ -241,17 +248,15 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
           </div>
         }
       >
-        <div className="text-sm pointer-events-auto">
-          <EditableText
-            value={fileName}
-            onValueChange={(value) => console.log("text edited:", value)}
-          />
-          {modified && <span> •</span>}
-          {readonly && (
-            <span className="text-muted-foreground px-2 bg-muted rounded ml-2 text-xs">
-              Readonly
-            </span>
+        <div
+          className={cn(
+            "flex items-center gap-2 text-sm pointer-events-auto",
+            readonly && "opacity-50"
           )}
+        >
+          {readonly && <LockIcon size={16} />}
+          <EditableText value={fileName} onValueChange={handleRenameFile} />
+          {modified && <span> •</span>}
         </div>
       </AppHeader>
       <article

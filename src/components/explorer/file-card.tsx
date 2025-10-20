@@ -4,7 +4,7 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
-import { BanIcon, EllipsisIcon, HeartIcon } from "lucide-react";
+import { BanIcon, EllipsisIcon, HeartIcon, LockIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -18,9 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EXT_NAME } from "@/const";
 import { useExplorerStore } from "@/store/explorer-store";
-import { join } from "@tauri-apps/api/path";
 
 async function load(path: string): Promise<Page | null> {
   const data = await workspace.readFile(path);
@@ -75,18 +73,10 @@ export function FileCard({ file, className }: FileCardProps) {
   };
 
   const handleFileRename = async (newName: string) => {
-    try {
-      if (newName === file.name) return;
-      const oldPath = file.fullPath;
-      const { dir: baseDir } = await workspace.parsePath(oldPath);
-      const newPath = await join(baseDir, newName + EXT_NAME);
-      await window.app.commands.execute("file:rename", {
-        oldPath,
-        newPath,
-      });
-    } catch (err) {
-      console.error("Failed to rename file:", err);
-    }
+    await window.app.commands.execute("file:rename", {
+      filePath: file.fullPath,
+      newName,
+    });
   };
 
   const handleOpenClick = async () => {
@@ -154,7 +144,13 @@ export function FileCard({ file, className }: FileCardProps) {
       </div>
       <div className="flex flex-col w-full max-w-full text-sm py-2 bg-accent">
         <div className="relative flex items-center justify-between px-2 w-full max-w-full">
-          <div className="flex items-center min-h-6 w-full max-w-full">
+          <div
+            className={cn(
+              "flex items-center gap-1 min-h-6 w-full max-w-full",
+              file.readonly && "opacity-50"
+            )}
+          >
+            {file.readonly && <LockIcon size={16} />}
             <EditableText
               ref={editableTextRef}
               className="text-sm text-accent-foreground truncate max-w-full"

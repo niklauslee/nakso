@@ -11,18 +11,19 @@
  * from MKLabs (niklaus.lee@gmail.com).
  */
 
-import { useSettingStore } from "./store/setting-store";
+import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
 import { z } from "zod";
-import { ZOOMS } from "./const";
-import { useEditorStore } from "./store/editor-store";
+import { EXT_NAME, ZOOMS } from "./const";
+import { useEditorStore } from "@/store/editor-store";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useExplorerStore } from "./store/explorer-store";
-import { useRecentsStore } from "./store/recents-store";
-import { useFavoritesStore } from "./store/favorites-store";
-import { useAppStore } from "./store/app-store";
+import { useExplorerStore } from "@/store/explorer-store";
+import { useRecentsStore } from "@/store/recents-store";
+import { useFavoritesStore } from "@/store/favorites-store";
+import { useAppStore } from "@/store/app-store";
+import { join } from "@tauri-apps/api/path";
 
 /**
  * Find the shapes by the given id array.
@@ -99,10 +100,7 @@ export function registerCommands() {
         const json = JSON.parse(data);
         window.app.editor.loadFromJSON(json);
         const doc = window.app.editor.getDoc();
-        useEditorStore
-          .getState()
-          .setFilePath(filePath, doc, fileEntry.readonly);
-        useExplorerStore.getState().setCurrentFile(filePath);
+        useEditorStore.getState().setWorkingFile(fileEntry, doc);
         useExplorerStore.getState().updateFile(filePath);
         useExplorerStore.getState().setView("editor");
       } catch (err) {
@@ -118,15 +116,15 @@ export function registerCommands() {
     {},
     async ({}) => {
       try {
-        const filePath = useEditorStore.getState().filePath;
+        const workingFile = useEditorStore.getState().workingFile;
         const modified = useEditorStore.getState().modified;
-        if (filePath && modified) {
+        if (workingFile && modified) {
           const app = window.app;
           const content = JSON.stringify(app.editor.store.toJSON());
-          await workspace.writeFile(filePath, content);
+          await workspace.writeFile(workingFile.fullPath, content);
           useEditorStore.getState().setModified(false);
-          useExplorerStore.getState().updateFile(filePath);
-          useRecentsStore.getState().addToRecents(filePath);
+          useExplorerStore.getState().updateFile(workingFile.fullPath);
+          useRecentsStore.getState().addToRecents(workingFile.fullPath);
         }
       } catch (error) {
         toast.error("Failed to save file");
@@ -139,21 +137,32 @@ export function registerCommands() {
     "file:rename",
     "Rename a file.",
     {
-      oldPath: z.string(),
-      newPath: z.string(),
+      filePath: z.string(),
+      newName: z.string(),
     },
-    async ({ oldPath, newPath }) => {
+    async ({ filePath, newName }) => {
       try {
+        const oldPath = filePath;
+        const { dir: baseDir } = await workspace.parsePath(oldPath);
+        const newPath = await join(baseDir, newName + EXT_NAME);
+        if (oldPath === newPath) return;
         // check new name already exists
         if (await workspace.existsFile(newPath)) {
           toast.error("File already exists.");
           return;
         }
         // rename file in workspace
-        await workspace.renameFile(oldPath, newPath);
-        useExplorerStore.getState().renameFile(oldPath, newPath);
-        useRecentsStore.getState().replaceRecentItem(oldPath, newPath);
-        useFavoritesStore.getState().updateFavoriteItem(oldPath, newPath);
+        await workspace.renameFile(filePath, newPath);
+        // update all states
+        const newEntry = await workspace.getFileEntry(newPath);
+        useExplorerStore.getState().renameFile(filePath, newPath);
+        useRecentsStore.getState().replaceRecentItem(filePath, newPath);
+        useFavoritesStore.getState().updateFavoriteItem(filePath, newPath);
+        if (filePath === useEditorStore.getState().workingFile?.fullPath) {
+          useEditorStore
+            .getState()
+            .setWorkingFile(newEntry, useEditorStore.getState().doc!);
+        }
       } catch (err) {
         toast.error("Failed to rename file.");
         console.error("Failed to rename file:", err);

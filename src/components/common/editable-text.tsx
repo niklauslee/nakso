@@ -9,7 +9,7 @@ import {
 
 interface EditableTextProps extends React.HTMLProps<HTMLDivElement> {
   value: string;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value: string) => Promise<void>;
 }
 
 export interface EditableTextHandle {
@@ -51,12 +51,14 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
       e.preventDefault();
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
         e.preventDefault();
         commitedRef.current = true;
-        if (currentValue !== value) onValueChange?.(currentValue);
-        setEditable(false);
+        if (currentValue !== value) await onValueChange?.(currentValue);
+        setTimeout(() => {
+          setEditable(false);
+        }, 10);
       } else if (e.key === "Escape") {
         commitedRef.current = true;
         setEditable(false);
