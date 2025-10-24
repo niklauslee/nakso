@@ -34,6 +34,7 @@ import {
 } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { workspace } from "@/api/workspace";
+import { invoke } from "@tauri-apps/api/core";
 
 export function AppSidebar() {
   const view = useExplorerStore((state) => state.view);
@@ -46,6 +47,16 @@ export function AppSidebar() {
 
   const handleNewFile = () => {
     window.app?.commands.execute("file:new");
+  };
+
+  const handleTestGreet = async () => {
+    try {
+      // const result = await invoke<string>("greet", { name: "Niklaus" });
+      const result = await window.api.system.getSystemFonts();
+      console.log(result);
+    } catch (error) {
+      console.error("Error calling greet:", error);
+    }
   };
 
   return (
@@ -215,7 +226,11 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center justify-between">
-          <div></div>
+          <div>
+            <Button size="sm" variant="outline" onClick={handleTestGreet}>
+              Test
+            </Button>
+          </div>
           <div>
             <Button
               size="icon-sm"
