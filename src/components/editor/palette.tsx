@@ -39,6 +39,7 @@ import {
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
   Settings2Icon,
+  SettingsIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -226,20 +227,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
           {hasSelection && (
             <>
               <Separator className="opacity-50" />
-              <div className="flex items-center gap-1">
-                <Toggle size="sm">
-                  <PaintBucketIcon size={16} />
-                </Toggle>
-                <Toggle size="sm">
-                  <PenLineIcon size={16} />
-                </Toggle>
-                <Toggle size="sm">
-                  <TypeIcon size={16} />
-                </Toggle>
-                <Toggle size="sm">
-                  <Settings2Icon size={16} />
-                </Toggle>
-              </div>
+              <AdditionalTools selection={selection} onChange={onChange} />
             </>
           )}
         </div>
@@ -1169,5 +1157,62 @@ function AlignmentTool({}: ToolProps) {
         </Button>
       </div>
     </>
+  );
+}
+
+function AdditionalTools({}: ToolProps) {
+  return (
+    <div className="flex items-center gap-1">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="sm" variant="ghost">
+            <PenLineIcon size={16} />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-fit p-0 text-sm" align="end">
+          <div>stroke stroke</div>
+          <div>roughness</div>
+          <div>stroke pattern</div>
+          <div>padding</div>
+          <div>corners</div>
+          <div>borders</div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="sm" variant="ghost">
+            <TypeIcon size={16} />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-fit p-0 text-sm" align="end">
+          <div>font color</div>
+          <div>font family</div>
+          <div>font weight</div>
+          <div>font size</div>
+          <div>line height</div>
+          <div>paragraph spacing</div>
+          <div>word wrap</div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="sm" variant="ghost">
+            <Settings2Icon size={16} />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-fit p-0 text-sm" align="end">
+          <div>shadow</div>
+          <div>container</div>
+          <div>lock</div>
+          <div>hide</div>
+        </PopoverContent>
+      </Popover>
+
+      <Toggle size="sm">
+        <SettingsIcon size={16} />
+      </Toggle>
+    </div>
   );
 }
