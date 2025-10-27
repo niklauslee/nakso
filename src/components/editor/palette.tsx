@@ -17,6 +17,9 @@ import {
   RoundedLargeIcon,
   LineStraightIcon,
   LineCurveIcon,
+  RoundedIcon,
+  RoundedNoneIcon,
+  RoundedSmallIcon,
 } from "@/components/icons";
 import {
   PaintBucketIcon,
@@ -638,6 +641,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
 }
 
 function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
+  const [popupOpen, setPopupOpen] = useState(false);
   const tool = useEditorStore((state) => state.activeHandler);
   const hasRectangle = hasShapeType(tool, selection, "Rectangle");
   const hasFrame = hasShapeType(tool, selection, "Frame");
@@ -690,18 +694,72 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
         <StrokeDashedIcon size={16} />
       </Toggle>
       {(hasRectangle || hasFrame) && (
-        <Toggle
-          size="sm"
-          title="Rounded corners"
-          pressed={stringifiedCorners === "-10,-10,-10,-10"}
-          onPressedChange={(pressed) => {
-            onChange?.({
-              corners: pressed ? [-10, -10, -10, -10] : [0, 0, 0, 0],
-            });
-          }}
-        >
-          <RoundedLargeIcon size={16} />
-        </Toggle>
+        <Popover open={popupOpen} onOpenChange={setPopupOpen}>
+          <PopoverTrigger asChild>
+            <Button size="icon-sm" variant="ghost" title="Rounded corners">
+              {stringifiedCorners === "0,0,0,0" && (
+                <RoundedNoneIcon size={16} />
+              )}
+              {stringifiedCorners === "8,8,8,8" && (
+                <RoundedSmallIcon size={16} />
+              )}
+              {stringifiedCorners === "16,16,16,16" && (
+                <RoundedIcon size={16} />
+              )}
+              {stringifiedCorners === "-50,-50,-50,-50" && (
+                <RoundedLargeIcon size={16} />
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-fit p-0" align="end">
+            <div className="flex items-center gap-1 p-1">
+              <Toggle
+                size="sm"
+                title="No rounded corners"
+                pressed={stringifiedCorners === "0,0,0,0"}
+                onPressedChange={() => {
+                  onChange?.({ corners: [0, 0, 0, 0] });
+                  setPopupOpen(false);
+                }}
+              >
+                <RoundedNoneIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Small rounded corners"
+                pressed={stringifiedCorners === "8,8,8,8"}
+                onPressedChange={() => {
+                  onChange?.({ corners: [8, 8, 8, 8] });
+                  setPopupOpen(false);
+                }}
+              >
+                <RoundedSmallIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Large rounded corners"
+                pressed={stringifiedCorners === "16,16,16,16"}
+                onPressedChange={() => {
+                  onChange?.({ corners: [16, 16, 16, 16] });
+                  setPopupOpen(false);
+                }}
+              >
+                <RoundedIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Fully rounded corners"
+                pressed={stringifiedCorners === "-50,-50,-50,-50"}
+                onPressedChange={() => {
+                  onChange?.({ corners: [-50, -50, -50, -50] });
+                  setPopupOpen(false);
+                }}
+              >
+                <RoundedLargeIcon size={16} />
+              </Toggle>
+            </div>
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   );
