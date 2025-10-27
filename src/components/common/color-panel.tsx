@@ -16,7 +16,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HexAlphaColorPicker } from "react-colorful";
 import "./react-colorful.css";
 import { ColorPalette, fullPalette, simplePalette } from "./color-palette";
-// import { TextField } from "@/components/ui/text-field";
 import colorString from "color-string";
 import { TextField } from "./text-field";
 

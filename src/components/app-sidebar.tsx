@@ -34,7 +34,6 @@ import {
 } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { workspace } from "@/api/workspace";
-import { invoke } from "@tauri-apps/api/core";
 
 export function AppSidebar() {
   const view = useExplorerStore((state) => state.view);

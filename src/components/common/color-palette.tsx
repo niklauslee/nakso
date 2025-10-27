@@ -99,13 +99,15 @@ export const fullPalette: string[][] = colors_.map((c) =>
 interface ColorItemProps {
   darkMode: boolean;
   value: string;
+  border?: boolean;
   className?: string;
   onClick?: (value: string) => void;
 }
 
-const ColorItem: React.FC<ColorItemProps> = ({
+export const ColorItem: React.FC<ColorItemProps> = ({
   darkMode,
   value,
+  border = false,
   className,
   onClick,
 }) => {
@@ -119,17 +121,20 @@ const ColorItem: React.FC<ColorItemProps> = ({
     <div
       className={cn(
         "h-5 w-5 cursor-pointer rounded-full",
+        border && "border-3 ",
         className,
         value === "$background" || value === "$transparent" ? "border" : ""
       )}
-      style={
-        value === "$transparent"
-          ? {
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".25" d="M0 0H3V3H0V0ZM6 3H3V6H0V9H3V12H0V15H3V12H6V15H9V12H12V15H15V12H12V9H15V6H12V3H15V0H12V3H9V0H6V3ZM6 6V3H9V6H6ZM6 9H3V6H6V9ZM9 9V6H12V9H9ZM9 9H6V12H9V9Z" fill="rgb(127,127,127)" fill-rule="evenodd" clip-rule="evenodd"></path></svg>')`,
-              backgroundRepeat: "repeat",
-            }
-          : { backgroundColor: c }
-      }
+      style={{
+        ...(!border &&
+          value === "$transparent" && {
+            backgroundImage: `url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.25" d="M0 4V0H4V4H8V8H4V4H0Z" fill="%237F7F7F"/></svg>')`,
+            backgroundRepeat: "repeat",
+          }),
+        ...(!border && value !== "$transparent" && { backgroundColor: c }),
+        ...(!border && { backgroundColor: c }),
+        ...(border && { borderColor: c }),
+      }}
       onClick={() => {
         if (onClick) onClick(value);
       }}

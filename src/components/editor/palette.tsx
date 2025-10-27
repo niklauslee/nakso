@@ -39,7 +39,6 @@ import {
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
-  Shape,
   ShapeProps,
   FillStyle,
   Box,
@@ -49,10 +48,10 @@ import {
   Line,
   LineEndTypeEnum,
   LineType,
+  Path,
 } from "@dgmjs/core";
 import { cn, merge } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
-import { ColorIcon } from "./color-icon";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -72,6 +71,7 @@ import {
   DEFAULT_SERIF_FONT,
 } from "@/const";
 import { ColorPanel } from "@/components/common/color-panel";
+import { ColorItem } from "@/components/common/color-palette";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -125,8 +125,8 @@ export function Palette({ selection, onChange }: PaletteProps) {
   const hasGroup = hasShapeType(tool, selection, "Group");
   const hasFrame = hasShapeType(tool, selection, "Frame");
   const hasLine = hasShapeType(tool, selection, "Line");
-  const hasClosedLine = selection.some(
-    (s) => s instanceof Line && s.isClosed()
+  const hasClosedPath = selection.some(
+    (s) => s instanceof Path && s.isClosed()
   );
   const hasConnector = hasShapeType(tool, selection, "Connector");
   const hasFreehand = hasShapeType(tool, selection, "Freehand");
@@ -167,7 +167,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
         className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg pointer-events-auto"
       >
         <div ref={innerRef} className="flex flex-col gap-2 w-full h-fit p-2">
-          {(hasRectangle || hasEllipse || hasFrame || hasClosedLine) && (
+          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
               <FillColorTool selection={selection} onChange={onChange} />
               <FillStyleTool selection={selection} onChange={onChange} />
@@ -255,11 +255,10 @@ function FillColorTool({ selection, onChange }: ToolProps) {
         <Popover modal={true}>
           <PopoverTrigger asChild>
             <Button size="icon-sm" variant="ghost" title="Fill color">
-              <ColorIcon
+              <ColorItem
                 className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
                 value={fillColor ?? "$background"}
                 darkMode={darkMode}
-                ellipsis={false}
               />
             </Button>
           </PopoverTrigger>
@@ -288,10 +287,10 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon
+          <ColorItem
             value="$background"
             darkMode={darkMode}
-            className="border-1 border-neutral-300 dark:border-neutral-600"
+            className="border-1 size-4 border-neutral-300 dark:border-neutral-600"
           />
         </Toggle>
         <Toggle
@@ -304,7 +303,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$gray4" darkMode={darkMode} />
+          <ColorItem value="$gray4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
@@ -316,7 +315,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$red4" darkMode={darkMode} />
+          <ColorItem value="$red4" darkMode={darkMode} className="size-4" />
         </Toggle>
       </div>
       <div className="flex items-center gap-1">
@@ -330,7 +329,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$blue4" darkMode={darkMode} />
+          <ColorItem value="$blue4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
@@ -342,7 +341,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$green4" darkMode={darkMode} />
+          <ColorItem value="$green4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
@@ -354,7 +353,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$yellow4" darkMode={darkMode} />
+          <ColorItem value="$yellow4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
@@ -366,7 +365,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$purple4" darkMode={darkMode} />
+          <ColorItem value="$purple4" darkMode={darkMode} className="size-4" />
         </Toggle>
       </div>
     </>
@@ -439,12 +438,10 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
         <Popover modal={true}>
           <PopoverTrigger asChild>
             <Button size="icon-sm" variant="ghost" title="Stroke color">
-              <ColorIcon
+              <ColorItem
                 className="size-6 rounded-sm"
                 value={strokeColor ?? "$foreground"}
                 darkMode={darkMode}
-                border={true}
-                ellipsis={false}
               />
             </Button>
           </PopoverTrigger>
@@ -476,7 +473,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$foreground" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$foreground"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
         <Toggle
           size="sm"
@@ -488,7 +490,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$gray9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$gray9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
         <Toggle
           size="sm"
@@ -500,7 +507,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$red9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$red9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
       </div>
       <div className="flex items-center gap-1">
@@ -514,7 +526,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$blue9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$blue9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
         <Toggle
           size="sm"
@@ -526,7 +543,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$green9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$green9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
         <Toggle
           size="sm"
@@ -538,7 +560,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$yellow9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$yellow9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
         <Toggle
           size="sm"
@@ -550,7 +577,12 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
             }
           }}
         >
-          <ColorIcon value="$purple9" darkMode={darkMode} border={true} />
+          <ColorItem
+            value="$purple9"
+            darkMode={darkMode}
+            border={true}
+            className="size-4"
+          />
         </Toggle>
       </div>
     </>
