@@ -20,6 +20,10 @@ import {
   RoundedIcon,
   RoundedNoneIcon,
   RoundedSmallIcon,
+  RoughMediumIcon,
+  RoughnessMediumIcon,
+  RoughnessNoneIcon,
+  RoughnessHighIcon,
 } from "@/components/icons";
 import {
   PaintBucketIcon,
@@ -582,24 +586,15 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
 
 function StrokeWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
+  const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
   return (
     <div className="flex items-center gap-1">
       <Toggle
         size="sm"
-        title="No stroke"
-        pressed={strokeWidth === 0}
-        onPressedChange={() => {
-          onChange?.({ strokeWidth: 0 });
-        }}
-      >
-        <CircleSlashIcon size={16} />
-      </Toggle>
-      <Toggle
-        size="sm"
         title="Thin stroke"
-        pressed={strokeWidth === 2}
+        pressed={strokeWidth === 1}
         onPressedChange={() => {
-          onChange?.({ strokeWidth: 2 });
+          onChange?.({ strokeWidth: 1 });
         }}
       >
         <MinusIcon size={16} strokeWidth={2} />
@@ -607,23 +602,68 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="sm"
         title="Medium stroke"
+        pressed={strokeWidth === 2}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 2 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={3} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Thick stroke"
         pressed={strokeWidth === 4}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 4 });
         }}
       >
-        <MinusIcon size={16} strokeWidth={3.5} />
+        <MinusIcon size={16} strokeWidth={4} />
       </Toggle>
-      <Toggle
-        size="sm"
-        title="Thick stroke"
-        pressed={strokeWidth === 6}
-        onPressedChange={() => {
-          onChange?.({ strokeWidth: 6 });
-        }}
-      >
-        <MinusIcon size={16} strokeWidth={6} />
-      </Toggle>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="icon-sm" variant="ghost" title="Roughness">
+            {roughness !== 1 && roughness !== 2 && (
+              <RoughnessNoneIcon size={16} />
+            )}
+            {roughness === 1 && <RoughnessMediumIcon size={16} />}
+            {roughness === 2 && <RoughnessHighIcon size={16} />}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-fit p-0" align="end">
+          <div className="flex items-center gap-1 p-1">
+            <Toggle
+              size="sm"
+              title="No roughness"
+              pressed={roughness === 0}
+              onPressedChange={() => {
+                onChange?.({ roughness: 0 });
+              }}
+            >
+              <RoughnessNoneIcon size={16} />
+            </Toggle>
+            <Toggle
+              size="sm"
+              title="Low roughness"
+              pressed={roughness === 1}
+              onPressedChange={() => {
+                onChange?.({ roughness: 1 });
+              }}
+            >
+              <RoughnessMediumIcon size={16} />
+            </Toggle>
+            <Toggle
+              size="sm"
+              title="High roughness"
+              pressed={roughness === 2}
+              onPressedChange={() => {
+                onChange?.({ roughness: 2 });
+              }}
+            >
+              <RoughnessHighIcon size={16} />
+            </Toggle>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
