@@ -71,6 +71,7 @@ import {
   DEFAULT_SANS_FONT,
   DEFAULT_SERIF_FONT,
 } from "@/const";
+import { ColorPanel } from "@/components/common/color-panel";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -251,14 +252,32 @@ function FillColorTool({ selection, onChange }: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Fill color">
-          <ColorIcon
-            className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
-            value={fillColor ?? "$background"}
-            darkMode={darkMode}
-            ellipsis={false}
-          />
-        </Button>
+        <Popover modal={true}>
+          <PopoverTrigger asChild>
+            <Button size="icon-sm" variant="ghost" title="Fill color">
+              <ColorIcon
+                className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
+                value={fillColor ?? "$background"}
+                darkMode={darkMode}
+                ellipsis={false}
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="left"
+            align="start"
+            sideOffset={8}
+            className="w-fit text-center"
+          >
+            <ColorPanel
+              darkMode={darkMode}
+              value={fillColor ?? "$background"}
+              onChange={(color) => {
+                onChange?.({ fillColor: color });
+              }}
+            />
+          </PopoverContent>
+        </Popover>
         <Toggle
           size="sm"
           title="Fill color ⎯ Background"
@@ -417,15 +436,33 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <Button size="icon-sm" variant="ghost" title="Stroke color">
-          <ColorIcon
-            className="size-6 rounded-sm"
-            value={strokeColor ?? "$foreground"}
-            darkMode={darkMode}
-            border={true}
-            ellipsis={false}
-          />
-        </Button>
+        <Popover modal={true}>
+          <PopoverTrigger asChild>
+            <Button size="icon-sm" variant="ghost" title="Stroke color">
+              <ColorIcon
+                className="size-6 rounded-sm"
+                value={strokeColor ?? "$foreground"}
+                darkMode={darkMode}
+                border={true}
+                ellipsis={false}
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="left"
+            align="start"
+            sideOffset={8}
+            className="w-fit text-center"
+          >
+            <ColorPanel
+              darkMode={darkMode}
+              value={strokeColor ?? "$foreground"}
+              onChange={(color) => {
+                onChange?.({ strokeColor: color });
+              }}
+            />
+          </PopoverContent>
+        </Popover>
         <Toggle
           size="sm"
           title="Stroke color ⎯ Foreground"
