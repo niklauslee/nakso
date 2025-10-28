@@ -15,7 +15,7 @@ const SvgRoughnessNone = ({
     {...props}
   >
     <path
-      d="M3 14.25L8.375 11L10 13.8438L19.1875 9"
+      d="M5.5 4.5L4.5 7.5L11.5 4.5L4.5 13L19.5 4.5L4.5 19.5L19.5 11L12.5 19.5L19.5 16.5L18.5 19.5"
       stroke="currentColor"
       strokeWidth={strokeWidth}
       strokeLinecap="round"

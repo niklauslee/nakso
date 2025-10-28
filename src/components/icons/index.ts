@@ -34,7 +34,7 @@ export { default as RoughLowIcon } from "./rough-low";
 export { default as RoughMediumIcon } from "./rough-medium";
 export { default as RoughHighIcon } from "./rough-high";
 export { default as RoughnessNoneIcon } from "./roughness-none";
-export { default as RoughnessMediumIcon } from "./roughness-medium";
+export { default as RoughnessLowIcon } from "./roughness-low";
 export { default as RoughnessHighIcon } from "./roughness-high";
 export { default as VerticalTopIcon } from "./vertical-top";
 export { default as VerticalMiddleIcon } from "./vertical-middle";

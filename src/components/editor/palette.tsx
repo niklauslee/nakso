@@ -20,8 +20,7 @@ import {
   RoundedIcon,
   RoundedNoneIcon,
   RoundedSmallIcon,
-  RoughMediumIcon,
-  RoughnessMediumIcon,
+  RoughnessLowIcon,
   RoughnessNoneIcon,
   RoughnessHighIcon,
 } from "@/components/icons";
@@ -192,7 +191,10 @@ export function Palette({ selection, onChange }: PaletteProps) {
             hasLine ||
             hasConnector) && (
             <>
-              <StrokeWidthTool selection={selection} onChange={onChange} />
+              <StrokeWidthAndRoughTool
+                selection={selection}
+                onChange={onChange}
+              />
               <StrokePatternAndCornerTool
                 selection={selection}
                 onChange={onChange}
@@ -584,7 +586,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokeWidthTool({ selection, onChange }: ToolProps) {
+function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
   const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
   return (
@@ -592,9 +594,9 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="sm"
         title="Thin stroke"
-        pressed={strokeWidth === 1}
+        pressed={strokeWidth === 2}
         onPressedChange={() => {
-          onChange?.({ strokeWidth: 1 });
+          onChange?.({ strokeWidth: 2 });
         }}
       >
         <MinusIcon size={16} strokeWidth={2} />
@@ -602,16 +604,6 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="sm"
         title="Medium stroke"
-        pressed={strokeWidth === 2}
-        onPressedChange={() => {
-          onChange?.({ strokeWidth: 2 });
-        }}
-      >
-        <MinusIcon size={16} strokeWidth={3} />
-      </Toggle>
-      <Toggle
-        size="sm"
-        title="Thick stroke"
         pressed={strokeWidth === 4}
         onPressedChange={() => {
           onChange?.({ strokeWidth: 4 });
@@ -619,14 +611,22 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
       >
         <MinusIcon size={16} strokeWidth={4} />
       </Toggle>
+      <Toggle
+        size="sm"
+        title="Thick stroke"
+        pressed={strokeWidth === 6}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 6 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={6} />
+      </Toggle>
       <Popover>
         <PopoverTrigger asChild>
           <Button size="icon-sm" variant="ghost" title="Roughness">
-            {roughness !== 1 && roughness !== 2 && (
-              <RoughnessNoneIcon size={16} />
-            )}
-            {roughness === 1 && <RoughnessMediumIcon size={16} />}
-            {roughness === 2 && <RoughnessHighIcon size={16} />}
+            {roughness <= 0 && <RoughnessNoneIcon size={16} />}
+            {roughness > 0 && roughness <= 1 && <RoughnessLowIcon size={16} />}
+            {roughness > 1 && <RoughnessHighIcon size={16} />}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-fit p-0" align="end">
@@ -649,7 +649,7 @@ function StrokeWidthTool({ selection, onChange }: ToolProps) {
                 onChange?.({ roughness: 1 });
               }}
             >
-              <RoughnessMediumIcon size={16} />
+              <RoughnessLowIcon size={16} />
             </Toggle>
             <Toggle
               size="sm"
@@ -1205,7 +1205,7 @@ function AdditionalTools({}: ToolProps) {
     <div className="flex items-center gap-1">
       <Popover>
         <PopoverTrigger asChild>
-          <Button size="sm" variant="ghost">
+          <Button size="icon-sm" variant="ghost">
             <PenLineIcon size={16} />
           </Button>
         </PopoverTrigger>
@@ -1221,7 +1221,7 @@ function AdditionalTools({}: ToolProps) {
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button size="sm" variant="ghost">
+          <Button size="icon-sm" variant="ghost">
             <TypeIcon size={16} />
           </Button>
         </PopoverTrigger>
@@ -1238,7 +1238,7 @@ function AdditionalTools({}: ToolProps) {
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button size="sm" variant="ghost">
+          <Button size="icon-sm" variant="ghost">
             <Settings2Icon size={16} />
           </Button>
         </PopoverTrigger>
@@ -1250,9 +1250,9 @@ function AdditionalTools({}: ToolProps) {
         </PopoverContent>
       </Popover>
 
-      <Toggle size="sm">
+      <Button size="icon-sm" variant="ghost">
         <SettingsIcon size={16} />
-      </Toggle>
+      </Button>
     </div>
   );
 }
