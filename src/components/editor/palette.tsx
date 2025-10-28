@@ -202,6 +202,15 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
+          {!hasRectangle &&
+            !hasEllipse &&
+            !hasFrame &&
+            !hasLine &&
+            !hasConnector &&
+            (hasFreehand || hasHighlighter) && (
+              <FreehandWidthTool selection={selection} onChange={onChange} />
+            )}
+
           {(hasRectangle || hasEllipse || hasText) && (
             <>
               <Separator className="opacity-50" />
@@ -589,6 +598,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
 function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
   const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
+
   return (
     <div className="flex items-center gap-1">
       <Toggle
@@ -621,7 +631,8 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
       >
         <MinusIcon size={16} strokeWidth={6} />
       </Toggle>
-      <Popover>
+
+      <Popover modal={true}>
         <PopoverTrigger asChild>
           <Button size="icon-sm" variant="ghost" title="Roughness">
             {roughness <= 0 && <RoughnessNoneIcon size={16} />}
@@ -789,6 +800,55 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
           </PopoverContent>
         </Popover>
       )}
+    </div>
+  );
+}
+
+function FreehandWidthTool({ selection, onChange }: ToolProps) {
+  const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
+
+  return (
+    <div className="flex items-center gap-1 py-2 px-1">
+      <Toggle
+        size="sm"
+        title="Thin pen"
+        pressed={strokeWidth === 4}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 4 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={2} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Medium pen"
+        pressed={strokeWidth === 8}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 8 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={4} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Thick pen"
+        pressed={strokeWidth === 16}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 16 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={8} />
+      </Toggle>
+      <Toggle
+        size="sm"
+        title="Extra thick pen"
+        pressed={strokeWidth === 28}
+        onPressedChange={() => {
+          onChange?.({ strokeWidth: 28 });
+        }}
+      >
+        <MinusIcon size={16} strokeWidth={12} />
+      </Toggle>
     </div>
   );
 }
