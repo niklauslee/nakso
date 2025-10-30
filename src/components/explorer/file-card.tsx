@@ -204,7 +204,7 @@ export function FileCard({ file, className }: FileCardProps) {
           >
             <HeartIcon
               size={16}
-              className={"text-muted-foreground cursor-pointer"}
+              className={"text-destructive cursor-pointer"}
               fill={isFavorite ? "currentColor" : "transparent"}
             />
           </button>
