@@ -1,7 +1,14 @@
-# Tauri + React + Typescript
+# Sketchnote
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+## Setup for build
 
-## Recommended IDE Setup
+```sh
+# install dotenv-cli
+npm i -g dotenv-cli
+```
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Build
+
+```sh
+dotenv npm run tauri build
+```
