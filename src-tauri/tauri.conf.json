@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "sketchnote",
+  "productName": "Nakso",
   "version": "0.1.0",
-  "identifier": "com.sketchnote.app",
+  "identifier": "app.nakso",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -34,9 +34,7 @@
     },
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDcwQTZCNUVDQTQzMURFNkQKUldSdDNqR2s3TFdtY0pUbWI2WnF1NVozSGdyVE4rNE9TRXl2T2U3N1dSazQ1bTlFWWlkbDZrMVYK",
-      "endpoints": [
-        "https://fs.<my-domain>.app/{{target}}/{{arch}}/{{current_version}}"
-      ]
+      "endpoints": ["https://fs.nakso.app/releases/latest.json"]
     }
   },
   "bundle": {

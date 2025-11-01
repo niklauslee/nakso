@@ -1,4 +1,4 @@
-# Sketchnote
+# Nakso
 
 ## Setup for build
 

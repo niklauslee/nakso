@@ -1,7 +1,7 @@
 {
-  "name": "sketchnote",
-  "productName": "Sketchnote",
-  "productId": "Sketchnote.V1",
+  "name": "nakso",
+  "productName": "Nakso",
+  "productId": "Nakso.V1",
   "private": true,
   "version": "0.1.0",
   "type": "module",
