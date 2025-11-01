@@ -1,0 +1,22 @@
+{
+  "version": "0.1.0",
+  "pub_date": "2025-11-01T21:30:00Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "",
+      "url": "https://fs.nakso.app/releases/darwin/aarch64/Nakso_0.1.0_aarch64.dmg"
+    },
+    "darwin-x86_64": {
+      "signature": "",
+      "url": "https://fs.nakso.app/releases/darwin/x86_64/Nakso_0.1.0_x86_64.dmg"
+    },
+    "windows-x86_64": {
+      "signature": "",
+      "url": "https://fs.nakso.app/releases/windows/x86_64/Nakso_0.1.0_Windows-x64.exe"
+    },
+    "linux-x86_64": {
+      "signature": "",
+      "url": "https://fs.nakso.app/releases/linux/x86_64/Nakso_0.1.0_Linux-x64.AppImage"
+    }
+  }
+}

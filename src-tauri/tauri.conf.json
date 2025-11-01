@@ -38,7 +38,7 @@
     }
   },
   "bundle": {
-    "createUpdaterArtifacts": false,
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": ["app", "dmg", "msi", "deb", "rpm"],
     "icon": [

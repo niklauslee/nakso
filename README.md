@@ -1,14 +1,26 @@
 # Nakso
 
-## Setup for build
+## Release
+
+### Checklist
+
+- [] Update version
+  - `package.json`
+  - `tauri.conf.json`
+  - `src-tauri/Cargo/toml`
+
+### Build and publish
 
 ```sh
-# install dotenv-cli
-npm i -g dotenv-cli
-```
+# macOS (aarch64)
+npm run publish
 
-## Build
+# macOS (x86_64)
+npm run publish -- -arch=?
 
-```sh
-dotenv npm run tauri build
+# Windows (x86_64)
+npm run publish
+
+# Linux (x86_64)
+npm run publish
 ```
