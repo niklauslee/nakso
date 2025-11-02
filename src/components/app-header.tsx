@@ -2,33 +2,23 @@ import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/app-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
-import { PanelLeftIcon, PanelLeftOpenIcon } from "lucide-react";
+import { PanelLeftIcon } from "lucide-react";
 
-interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  rightArea?: React.ReactNode;
-}
+interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function AppHeader({
-  children,
-  className,
-  rightArea,
-  ...others
-}: HeaderProps) {
+export function AppHeader({ children, className, ...others }: HeaderProps) {
   const platform = useAppStore((state) => state.platform);
   const showSidebar = useSettingStore((state) => state.showSidebar);
 
   return (
     <header
       data-manual-window-drag-region
-      className={cn(
-        "flex items-center justify-between w-full h-12 px-4",
-        className
-      )}
+      className={cn("flex items-center w-full h-12 px-4", className)}
       {...others}
     >
       <div
         className={cn(
-          "h-full flex items-center gap-1 pointer-events-none",
+          "w-full h-full flex items-center gap-1 pointer-events-none",
           !showSidebar && platform === "darwin" && "pl-18"
         )}
       >
@@ -44,7 +34,6 @@ export function AppHeader({
         )}
         {children}
       </div>
-      <div className="">{rightArea}</div>
     </header>
   );
 }

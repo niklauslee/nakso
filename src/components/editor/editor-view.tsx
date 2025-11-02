@@ -8,21 +8,15 @@ import {
 } from "@dgmjs/core";
 import { applyTextHorzAlign, cn, merge, trimObject } from "@/lib/utils";
 import { ApplicationContextMenu } from "@/components/menu/context-menu";
-import { Button } from "@/components/ui/button";
-import { EditableText } from "@/components/common/editable-text";
 import { useMenuStore } from "@/store/menu-store";
-import { AppHeader } from "../app-header";
 import { Toolbar } from "./toolbar";
 import { Palette } from "./palette";
-import { ApplicationMenu } from "../menu/menu";
-import { EllipsisVerticalIcon, LockIcon, PlusIcon } from "lucide-react";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
 import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
 import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
-import { workspace } from "@/api/workspace";
 
 interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
@@ -32,7 +26,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorType | null>(null);
   const [tiptapEditor, setTiptapEditor] = useState<any>(null);
-  const [fileName, setFileName] = useState<string>("");
 
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
@@ -40,7 +33,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const workingFile = useEditorStore((state) => state.workingFile);
   const readonly = workingFile?.readonly ?? true;
-  const modified = useEditorStore((state) => state.modified);
   const setModified = useEditorStore((state) => state.setModified);
   const selection = useEditorStore((state) => state.selection);
   const setSelection = useEditorStore((state) => state.setSelection);
@@ -83,18 +75,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   useEffect(() => {
     if (workingFile && editor) {
       editor.setEnabled(readonly === false);
-      fetchFileName();
     }
   }, [workingFile, readonly]);
-
-  const fetchFileName = async () => {
-    if (workingFile) {
-      const parsed = await workspace.parsePath(workingFile.fullPath);
-      setFileName(parsed.name);
-    } else {
-      setFileName("");
-    }
-  };
 
   const handleMount = (editor: EditorType) => {
     setEditor(editor);
@@ -211,95 +193,44 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
     }
   };
 
-  const handleNewFile = () => {
-    window.app?.commands.execute("file:new");
-  };
-
-  const handleRenameFile = async (newName: string) => {
-    await window.app.commands.execute("file:rename", {
-      filePath: workingFile!.fullPath,
-      newName,
-    });
-  };
-
   return (
-    <div className="absolute inset-0" {...others}>
-      <AppHeader
-        rightArea={
-          <div className="flex items-center gap-1 pointer-events-auto">
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={handleNewFile}
-              title="New File"
-            >
-              <PlusIcon size={16} />
-            </Button>
-            <ApplicationMenu menu={menus.main} className="w-36">
-              <Button
-                className="size-7"
-                variant="ghost"
-                size="icon"
-                title="Menu"
-              >
-                <EllipsisVerticalIcon size={16} />
-              </Button>
-            </ApplicationMenu>
-          </div>
-        }
-      >
-        <div
-          className={cn(
-            "flex items-center gap-2 text-sm pointer-events-auto",
-            readonly && "opacity-50"
-          )}
-        >
-          {readonly && <LockIcon size={16} />}
-          <EditableText value={fileName} onValueChange={handleRenameFile} />
-          {modified && <span> •</span>}
+    <>
+      <ApplicationContextMenu menu={menus.context} className="w-44">
+        <div className="absolute inset-0">
+          <DGMEditor
+            options={{
+              showDOM: false,
+              showCreateConnectorController: false,
+              blankColor: "$slate4",
+              canvasColor: "$background", // "$slate2",
+              imageResize: {
+                quality: 1,
+                maxWidth: 1600,
+                maxHeight: 1600,
+              },
+            }}
+            className="absolute inset-0"
+            showGrid={showGrid}
+            darkMode={darkMode}
+            onMount={handleMount}
+            onShapeInitialize={handleShapeInitialize}
+            onAction={handleAction}
+            onUndo={handleAction}
+            onRedo={handleAction}
+            onActiveHandlerChange={handleActiveHandlerChange}
+            onActiveHandlerLockChange={handleActiveHandlerLockChange}
+            onSelectionChange={handleSelectionChange}
+            // onCurrentPageChange={handleCurrentPageChange}
+            onFileDrop={handleFileDrop}
+            onTextInplaceEditorMount={handleTextInplaceEditorMount}
+            onTextInplaceEditorOpen={handleTextInplaceEditorOpen}
+            // onFloatingToolbarMove={handleFloatingToolbarMove}
+          />
         </div>
-      </AppHeader>
-      <article
-        className={cn("absolute top-12 bottom-0 inset-x-0 pointer-events-auto")}
-        ref={wrapperRef}
-      >
-        <ApplicationContextMenu menu={menus.context} className="w-44">
-          <div className="absolute inset-0">
-            <DGMEditor
-              options={{
-                showDOM: false,
-                showCreateConnectorController: false,
-                blankColor: "$slate4",
-                canvasColor: "$background", // "$slate2",
-                imageResize: {
-                  quality: 1,
-                  maxWidth: 1600,
-                  maxHeight: 1600,
-                },
-              }}
-              className="absolute inset-0"
-              showGrid={showGrid}
-              darkMode={darkMode}
-              onMount={handleMount}
-              onShapeInitialize={handleShapeInitialize}
-              onAction={handleAction}
-              onUndo={handleAction}
-              onRedo={handleAction}
-              onActiveHandlerChange={handleActiveHandlerChange}
-              onActiveHandlerLockChange={handleActiveHandlerLockChange}
-              onSelectionChange={handleSelectionChange}
-              // onCurrentPageChange={handleCurrentPageChange}
-              onFileDrop={handleFileDrop}
-              onTextInplaceEditorMount={handleTextInplaceEditorMount}
-              onTextInplaceEditorOpen={handleTextInplaceEditorOpen}
-              // onFloatingToolbarMove={handleFloatingToolbarMove}
-            />
-          </div>
-        </ApplicationContextMenu>
-        <Palette selection={shapeProps} onChange={handlePropsChange} />
-        <Toolbar />
-        <HelpButton />
-      </article>
-    </div>
+      </ApplicationContextMenu>
+      <Palette selection={shapeProps} onChange={handlePropsChange} />
+      <Toolbar />
+      <HelpButton />
+    </>
   );
 }

@@ -14,6 +14,10 @@ import { apiContext } from "@/api";
 import { useExplorerStore } from "@/store/explorer-store";
 import { SettingsDialog } from "./settings/settings-dialog";
 import { AboutDialog } from "./dialogs/about-dialog";
+import { AppHeader } from "./app-header";
+import { cn } from "@/lib/utils";
+import { EditorViewHeader } from "./editor/editor-view-header";
+import { FolderViewHeader } from "./explorer/folder-view-header";
 
 declare global {
   interface Window {
@@ -56,12 +60,28 @@ function App() {
         <SidebarProvider open={showSidebar}>
           <AppSidebar />
           <SidebarInset>
-            <Activity mode={view === "editor" ? "visible" : "hidden"}>
-              <EditorView onMount={handleAppReady} />
-            </Activity>
-            <Activity mode={view === "folder" ? "visible" : "hidden"}>
-              <FolderView folder={currentFolder} />
-            </Activity>
+            <div className="absolute inset-0">
+              <AppHeader>
+                <Activity mode={view === "editor" ? "visible" : "hidden"}>
+                  <EditorViewHeader />
+                </Activity>
+                <Activity mode={view === "folder" ? "visible" : "hidden"}>
+                  <FolderViewHeader folder={currentFolder} />
+                </Activity>
+              </AppHeader>
+              <article
+                className={cn(
+                  "absolute top-12 bottom-0 inset-x-0 pointer-events-auto"
+                )}
+              >
+                <Activity mode={view === "editor" ? "visible" : "hidden"}>
+                  <EditorView onMount={handleAppReady} />
+                </Activity>
+                <Activity mode={view === "folder" ? "visible" : "hidden"}>
+                  <FolderView folder={currentFolder} />
+                </Activity>
+              </article>
+            </div>
           </SidebarInset>
         </SidebarProvider>
       </div>
