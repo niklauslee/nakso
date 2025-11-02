@@ -66,18 +66,21 @@ const INSTALLER_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/${productName}_${currentVersion}_aarch64.dmg`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/${productName}_${currentVersion}_x64.dmg`,
   "x86_64-pc-windows-msvc": `../src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/${productName}_${currentVersion}_x64_en-US.msi`,
+  "x86_64-unknown-linux-gnu": `../src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage/${productName}_${currentVersion}_amd64.AppImage`,
 };
 
 const BUNDLE_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz`,
   "x86_64-pc-windows-msvc": false, // Installer file reused for the bundle
+  "x86_64-unknown-linux-gnu": false, // Installer file reused for the bundle
 };
 
 const SIGNATURE_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz.sig`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz.sig`,
   "x86_64-pc-windows-msvc": `../src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/${productName}_${currentVersion}_x64_en-US.msi.sig`,
+  "x86_64-unknown-linux-gnu": `../src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage/${productName}_${currentVersion}_amd64.AppImage.sig`,
 };
 
 function getPlatform() {

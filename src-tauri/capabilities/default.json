@@ -18,6 +18,7 @@
     "fs:allow-app-meta",
     "fs:allow-app-write",
     "dialog:default",
+    "updater:default",
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "**/*" }]
