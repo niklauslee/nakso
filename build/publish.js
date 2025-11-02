@@ -34,14 +34,17 @@ process.chdir(rootDir);
 // Load environment variables from .env file
 dotenv.config({ path: path.join(rootDir, ".env") });
 
-function runCommands(cmds) {
+function runCommands(cmds, useShell = true) {
   for (const cmd of cmds) {
     console.log(`Executing: ${cmd}`);
-    execSync(cmd, {
+    const options = {
       stdio: "inherit",
-      shell: "/bin/zsh",
       env: process.env,
-    });
+    };
+    if (useShell) {
+      options.shell = "/bin/zsh";
+    }
+    execSync(cmd, options);
     console.log("✓ Command completed\n");
   }
 }
@@ -51,7 +54,7 @@ function publish() {
   if (platform === "darwin") {
     runCommands(COMMANDS.darwin);
   } else if (platform === "win32") {
-    runCommands(COMMANDS.win32);
+    runCommands(COMMANDS.win32, false);
   } else if (platform === "linux") {
     runCommands(COMMANDS.linux);
   } else {
