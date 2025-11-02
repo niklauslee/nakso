@@ -4,7 +4,7 @@ import { FileSortType, workspace } from "@/api/workspace";
 import { useFavoritesStore } from "./favorites-store";
 import { useRecentsStore } from "./recents-store";
 
-const PAGE_SIZE = 10; // FIXME: set to 30, 50, or 100?
+const PAGE_SIZE = 50; // FIXME: set to 30, 50, or 100?
 
 type ViewType = "editor" | "folder";
 
@@ -15,6 +15,7 @@ export interface ExplorerState {
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
+  getDraftsFolder: () => FileEntry | null;
   setView(view: ViewType): void;
   setFolders: (folders: FileEntry[]) => void;
   setCurrentFolder: (folder: FileEntry | null) => Promise<void>;
@@ -33,6 +34,10 @@ export const useExplorerStore = create<ExplorerState>()((set, get) => ({
   files: [],
   loadedFiles: [],
   sortBy: { field: "mtime", direction: "desc" },
+  getDraftsFolder: () => {
+    const folders = get().folders;
+    return folders.find((f) => f.tag === "drafts") || null;
+  },
   setView: (view) => {
     set({ view });
   },

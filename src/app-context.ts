@@ -58,7 +58,7 @@ export class AppContext {
     await this.setupFonts();
     this.setupKeymap();
     this.setupMenus();
-    this.setupWorkspace();
+    await this.setupWorkspace();
     registerCommands();
     await this.loadWorkingState();
   }
@@ -194,10 +194,9 @@ export class AppContext {
           });
         }, 0);
       } else {
-        // TODO: 1. Find the last opened file from recent files
-        // TODO: 2. If not found, find the most recently modified file from workspace
-        // TODO: 3. If not found, just create a new file in 'Drafts' folder
-        console.log("No working file to restore");
+        const draftFolder = useExplorerStore.getState().getDraftsFolder();
+        useExplorerStore.getState().setCurrentFolder(draftFolder);
+        useExplorerStore.getState().setView("folder");
       }
     } catch (err) {
       console.error("Failed to load working state", err);
