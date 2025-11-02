@@ -74,7 +74,6 @@ export function SettingsDialog() {
 
   return (
     <Dialog open={showSettings} onOpenChange={setShowSettings}>
-      <DialogTitle className="hidden">Settings</DialogTitle>
       <DialogContent className="sm:max-w-3xl w-3xl h-[600px] max-h-[90%] p-0 overflow-clip [&>button]:hidden">
         <div className="relative h-full w-full">
           <div className="absolute inset-y-0 left-0 w-48 bg-sidebar">

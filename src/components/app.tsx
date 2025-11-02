@@ -13,6 +13,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { apiContext } from "@/api";
 import { useExplorerStore } from "@/store/explorer-store";
 import { SettingsDialog } from "./settings/settings-dialog";
+import { AboutDialog } from "./dialogs/about-dialog";
 
 declare global {
   interface Window {
@@ -65,6 +66,7 @@ function App() {
         </SidebarProvider>
       </div>
       <SettingsDialog />
+      <AboutDialog />
       <Toaster position="top-center" />
     </>
   );

@@ -24,6 +24,7 @@ import { useRecentsStore } from "@/store/recents-store";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { useAppStore } from "@/store/app-store";
 import { join } from "@tauri-apps/api/path";
+import { useAboutDialog } from "./components/dialogs/about-dialog";
 
 /**
  * Find the shapes by the given id array.
@@ -849,5 +850,9 @@ export function registerCommands() {
       const setShowSettings = useAppStore.getState().setShowSettings;
       setShowSettings(true);
     }
+  );
+
+  app.commands.register("help:about", "Show about dialog", {}, async () =>
+    useAboutDialog.getState().show(true)
   );
 }
