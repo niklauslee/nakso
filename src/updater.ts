@@ -3,35 +3,11 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { confirm } from "@tauri-apps/plugin-dialog";
 
 export async function checkForUpdates() {
-  console.log("checking for updates...");
   const update = await check();
-
   if (update) {
-    console.log(
-      `found update ${update.version} from ${update.date} with notes ${update.body}`
-    );
-
-    let downloaded = 0;
-    let contentLength = 0;
-    // alternatively we could also call update.download() and update.install() separately
-    await update.downloadAndInstall((event) => {
-      switch (event.event) {
-        case "Started":
-          contentLength = event.data.contentLength!;
-          console.log(`started downloading ${event.data.contentLength} bytes`);
-          break;
-        case "Progress":
-          downloaded += event.data.chunkLength;
-          console.log(`downloaded ${downloaded} from ${contentLength}`);
-          break;
-        case "Finished":
-          console.log("download finished");
-          break;
-      }
-    });
-
-    console.log("update installed");
-
+    // download and install the update
+    await update.downloadAndInstall();
+    // ask user to restart the app to apply the update
     const result = await confirm(
       `A new version has been downloaded. Restart to apply the update?`,
       {
@@ -41,9 +17,8 @@ export async function checkForUpdates() {
       }
     );
     if (result) {
+      if (window.app) await window.app.ensureSave();
       await relaunch();
     }
-  } else {
-    console.log("no update available");
   }
 }

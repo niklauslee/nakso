@@ -13,7 +13,7 @@
     "core:window:allow-toggle-maximize",
     "window-state:default",
     "os:default",
-    "process:allow-exit",
+    "process:default",
     "fs:default",
     "fs:allow-app-meta",
     "fs:allow-app-write",
