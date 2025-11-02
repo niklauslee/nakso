@@ -226,9 +226,9 @@
         },
         { "type": "separator" },
         {
-          "label": "Toggle developer tools",
-          "id": "view.toggle-dev-tools",
-          "command": "help:toggle-dev-tools"
+          "label": "Open developer tools",
+          "id": "view.open-dev-tools",
+          "command": "help:open-dev-tools"
         }
       ]
     },
@@ -359,9 +359,9 @@
     },
     { "type": "separator" },
     {
-      "label": "Toggle developer tools",
-      "id": "view.toggle-dev-tools",
-      "command": "help:toggle-dev-tools"
+      "label": "Open developer tools",
+      "id": "view.open-dev-tools",
+      "command": "help:open-dev-tools"
     }
   ]
 }

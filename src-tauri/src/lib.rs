@@ -18,6 +18,11 @@ fn get_system_fonts() -> Result<Vec<String>, String> {
   Ok(result)
 }
 
+#[tauri::command]
+fn open_devtools(window: tauri::WebviewWindow) {
+  window.open_devtools();
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
@@ -28,7 +33,11 @@ pub fn run() {
     .plugin(tauri_plugin_os::init())
     .plugin(tauri_plugin_opener::init())
     .plugin(tauri_plugin_process::init())
-    .invoke_handler(tauri::generate_handler![greet, get_system_fonts])
+    .invoke_handler(tauri::generate_handler![
+      greet,
+      get_system_fonts,
+      open_devtools
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

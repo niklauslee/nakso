@@ -25,6 +25,7 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useAppStore } from "@/store/app-store";
 import { join } from "@tauri-apps/api/path";
 import { useAboutDialog } from "./components/dialogs/about-dialog";
+import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Find the shapes by the given id array.
@@ -854,5 +855,14 @@ export function registerCommands() {
 
   app.commands.register("help:about", "Show about dialog", {}, async () =>
     useAboutDialog.getState().show(true)
+  );
+
+  app.commands.register(
+    "help:open-dev-tools",
+    "Open dev tools",
+    {},
+    async () => {
+      await invoke("open_devtools");
+    }
   );
 }
