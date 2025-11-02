@@ -60,16 +60,19 @@ const BUCKET_URL = process.env.AWS_S3_BUCKET_URL;
 const INSTALLER_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/${productName}_${currentVersion}_aarch64.dmg`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/${productName}_${currentVersion}_x64.dmg`,
+  "x86_64-pc-windows-msvc": `../src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/${productName}_${currentVersion}_x64_en-US.msi`,
 };
 
 const BUNDLE_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz`,
+  "x86_64-pc-windows-msvc": false, // Installer file reused for the bundle
 };
 
 const SIGNATURE_FILES = {
   "aarch64-apple-darwin": `../src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz.sig`,
   "x86_64-apple-darwin": `../src-tauri/target/x86_64-apple-darwin/release/bundle/macos/${productName}.app.tar.gz.sig`,
+  "x86_64-pc-windows-msvc": `../src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/${productName}_${currentVersion}_x64_en-US.msi.sig`,
 };
 
 function getPlatform() {
@@ -187,15 +190,20 @@ async function ensureLatestJson() {
  * Check if build artifacts exist for the given rust target
  */
 function checkBundleArtifacts(rustTarget) {
+  const hasBundle = BUNDLE_FILES[rustTarget] !== false;
+
   const installerPath = path.join(__dirname, INSTALLER_FILES[rustTarget]);
-  const bundlePath = path.join(__dirname, BUNDLE_FILES[rustTarget]);
+  const bundlePath = path.join(
+    __dirname,
+    hasBundle ? BUNDLE_FILES[rustTarget] : ""
+  );
   const signaturePath = path.join(__dirname, SIGNATURE_FILES[rustTarget]);
 
   if (!fs.existsSync(installerPath)) {
     console.error(`[publish] error: installer not found at ${installerPath}`);
     return false;
   }
-  if (!fs.existsSync(bundlePath)) {
+  if (hasBundle && !fs.existsSync(bundlePath)) {
     console.error(`[publish] error: bundle not found at ${bundlePath}`);
     return false;
   }
@@ -211,10 +219,14 @@ function checkBundleArtifacts(rustTarget) {
  * Upload bundle artifacts to S3
  */
 async function uploadBundleArtifacts(rustTarget, platform, arch, version) {
-  const installerPath = path.join(__dirname, INSTALLER_FILES[rustTarget]);
-  const bundlePath = path.join(__dirname, BUNDLE_FILES[rustTarget]);
-  const signaturePath = path.join(__dirname, SIGNATURE_FILES[rustTarget]);
+  const hasBundle = BUNDLE_FILES[rustTarget] !== false;
 
+  const installerPath = path.join(__dirname, INSTALLER_FILES[rustTarget]);
+  const bundlePath = path.join(
+    __dirname,
+    hasBundle ? BUNDLE_FILES[rustTarget] : INSTALLER_FILES[rustTarget]
+  );
+  const signaturePath = path.join(__dirname, SIGNATURE_FILES[rustTarget]);
   const uploadPath = `releases/${platform}/${arch}/${version}`;
 
   try {
@@ -231,18 +243,25 @@ async function uploadBundleArtifacts(rustTarget, platform, arch, version) {
     );
     console.log(`[publish] uploaded installer: ${installerKey}`);
 
-    // Upload bundle (tar.gz)
+    console.log("hasBundle:", hasBundle, bundlePath);
+
+    // Upload bundle
+
+    console.log("1. hasBundle:", hasBundle, bundlePath);
+
     const bundleKey = `${uploadPath}/${path.basename(bundlePath)}`;
-    const bundleBody = fs.readFileSync(bundlePath);
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: bundleKey,
-        Body: bundleBody,
-        ContentType: "application/gzip",
-      })
-    );
-    console.log(`[publish] uploaded bundle: ${bundleKey}`);
+    if (hasBundle) {
+      const bundleBody = fs.readFileSync(bundlePath);
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: bundleKey,
+          Body: bundleBody,
+          ContentType: "application/gzip",
+        })
+      );
+      console.log(`[publish] uploaded bundle: ${bundleKey}`);
+    }
 
     // Read signature (not uploaded to S3)
     const signatureBody = fs.readFileSync(signaturePath, "utf-8");

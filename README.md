@@ -23,9 +23,8 @@ npm run tauri build -- --target=x86_64-apple-darwin
 node build/publish -- --arch=x86_64
 
 # Windows (x86_64)
-.env ???
-npm run tauri build -- --target=x86_64-pc-windows-msvc
-node build/publish -- --arch=x86_64
+npx dotenv "npm run tauri build -- --target=x86_64-pc-windows-msvc"
+npx dotenv "node build/publish -- --arch=x86_64"
 
 # Linux (x86_64)
 source .env
