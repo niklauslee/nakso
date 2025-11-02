@@ -13,9 +13,15 @@
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import packageJson from "../../../package.json";
 import { LogoIcon } from "@/components/icons";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export interface AboutDialogState {
   open: boolean;
@@ -40,7 +46,10 @@ export function AboutDialog({}) {
   return (
     <Dialog open={open} onOpenChange={(open) => show(open)}>
       <DialogContent className="w-full h-52 md:w-64" title="About">
-        <DialogHeader></DialogHeader>
+        <DialogHeader>
+          <DialogTitle className="hidden">About</DialogTitle>
+          <DialogDescription />
+        </DialogHeader>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center">
             <LogoIcon size={48} />

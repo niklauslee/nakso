@@ -4,6 +4,7 @@ import { platform as getPlatform } from "@tauri-apps/plugin-os";
 import App from "./components/app";
 import { AppContext } from "./app-context";
 import { apiContext } from "./api";
+import { checkForUpdates } from "./updater";
 
 declare global {
   interface Window {
@@ -30,6 +31,7 @@ async function detectPlatform() {
 }
 
 async function start() {
+  checkForUpdates();
   const platform = await detectPlatform();
   window.app = new AppContext(platform);
   window.api = apiContext;

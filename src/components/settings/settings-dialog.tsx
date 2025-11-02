@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAppStore } from "@/store/app-store";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -75,6 +81,10 @@ export function SettingsDialog() {
   return (
     <Dialog open={showSettings} onOpenChange={setShowSettings}>
       <DialogContent className="sm:max-w-3xl w-3xl h-[600px] max-h-[90%] p-0 overflow-clip [&>button]:hidden">
+        <DialogHeader className="hidden">
+          <DialogTitle>Settings</DialogTitle>
+          <DialogDescription />
+        </DialogHeader>
         <div className="relative h-full w-full">
           <div className="absolute inset-y-0 left-0 w-48 bg-sidebar">
             <div className="flex flex-col gap-1 px-2 py-4">
