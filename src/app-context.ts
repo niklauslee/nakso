@@ -94,21 +94,23 @@ export class AppContext {
     await appWindow.setTheme(darkMode ? "dark" : "light");
 
     // setup native menu for macOS
-    const aboutSubmenu = await Submenu.new({
-      text: "About",
-      items: [
-        await MenuItem.new({
-          id: "quit",
-          text: "Quit",
-          accelerator: "CmdOrCtrl+Q",
-          action: () => {
-            window.app.commands.execute("file:quit");
-          },
-        }),
-      ],
-    });
-    const menu = await Menu.new({ items: [aboutSubmenu] });
-    await menu.setAsAppMenu();
+    if (this.platform === "darwin") {
+      const aboutSubmenu = await Submenu.new({
+        text: "About",
+        items: [
+          await MenuItem.new({
+            id: "quit",
+            text: "Quit",
+            accelerator: "CmdOrCtrl+Q",
+            action: () => {
+              window.app.commands.execute("file:quit");
+            },
+          }),
+        ],
+      });
+      const menu = await Menu.new({ items: [aboutSubmenu] });
+      await menu.setAsAppMenu();
+    }
 
     // setup window drag area
     const dragRegions = document.querySelectorAll(
