@@ -266,15 +266,28 @@ async function uploadBundleArtifacts(rustTarget, platform, arch, version) {
       console.log(`[upload] uploaded bundle: ${bundleKey}`);
     }
 
+    /// Upload signature
+    const signatureKey = `${uploadPath}/${path.basename(signaturePath)}`;
+    const signatureBody = fs.readFileSync(signaturePath);
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: signatureKey,
+        Body: signatureBody,
+        ContentType: "application/pgp-signature",
+      })
+    );
+    console.log(`[upload] uploaded signature: ${signatureKey}`);
+
     // Read signature (not uploaded to S3)
-    const signatureBody = fs.readFileSync(signaturePath, "utf-8");
+    const signatureText = fs.readFileSync(signaturePath, "utf-8");
 
     // Construct the download URL for the bundle
     const bundleUrl = `${BUCKET_URL}/${bundleKey}`;
 
     return {
       url: bundleUrl,
-      signature: signatureBody,
+      signature: signatureText,
     };
   } catch (error) {
     console.error("[upload] error uploading bundle artifacts:", error.message);
