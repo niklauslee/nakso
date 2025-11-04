@@ -634,7 +634,13 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
 
       <Popover modal={true}>
         <PopoverTrigger asChild>
-          <Button size="icon-sm" variant="ghost" title="Roughness">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            title={`Roughness ⎯ ${
+              roughness <= 0 ? "None" : roughness <= 1 ? "Low" : "High"
+            }`}
+          >
             {roughness <= 0 && <RoughnessNoneIcon size={16} />}
             {roughness > 0 && roughness <= 1 && <RoughnessLowIcon size={16} />}
             {roughness > 1 && <RoughnessHighIcon size={16} />}
@@ -735,7 +741,21 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
       {(hasRectangle || hasFrame) && (
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
-            <Button size="icon-sm" variant="ghost" title="Rounded corners">
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              title={`Rounded ⎯ ${
+                stringifiedCorners === "0,0,0,0"
+                  ? "None"
+                  : stringifiedCorners === "8,8,8,8"
+                  ? "Small"
+                  : stringifiedCorners === "16,16,16,16"
+                  ? "Large"
+                  : stringifiedCorners === "-50,-50,-50,-50"
+                  ? "Full"
+                  : "Custom"
+              }`}
+            >
               {stringifiedCorners === "0,0,0,0" && (
                 <RoundedNoneIcon size={16} />
               )}

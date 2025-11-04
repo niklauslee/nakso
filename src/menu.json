@@ -1,236 +1,33 @@
 {
   "main": [
     {
-      "label": "File",
-      "id": "file",
-      "submenu": [
-        {
-          "label": "New",
-          "id": "file.new",
-          "command": "file:new"
-        },
-        {
-          "label": "Open...",
-          "id": "file.open",
-          "command": "file:open"
-        },
-        {
-          "label": "Save",
-          "id": "file.save",
-          "command": "file:save"
-        },
-        { "type": "separator" },
-        {
-          "label": "Export image...",
-          "id": "file.export-image",
-          "command": "view:show-export-image-dialog"
-        },
-        {
-          "label": "Export to PDF...",
-          "id": "file.export-to-pdf",
-          "command": "view:show-export-to-pdf-dialog"
-        },
-        {
-          "label": "Export to HTML...",
-          "id": "file.export-to-html",
-          "command": "view:show-export-to-html-dialog"
-        }
-      ]
+      "label": "About...",
+      "id": "help.about",
+      "command": "help:about"
+    },
+    { "type": "separator" },
+    {
+      "label": "Homepage",
+      "id": "help.homepage",
+      "command": "help:homepage",
+      "external": true
     },
     {
-      "label": "Edit",
-      "id": "edit",
-      "submenu": [
-        {
-          "label": "Undo",
-          "id": "edit.undo",
-          "command": "edit:undo",
-          "inset": true
-        },
-        {
-          "label": "Redo",
-          "id": "edit.redo",
-          "command": "edit:redo",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Copy",
-          "id": "edit.copy",
-          "command": "edit:copy",
-          "inset": true
-        },
-        {
-          "label": "Cut",
-          "id": "edit.cut",
-          "command": "edit:cut",
-          "inset": true
-        },
-        {
-          "label": "Paste",
-          "id": "edit.paste",
-          "command": "edit:paste",
-          "inset": true
-        },
-        {
-          "label": "Duplicate",
-          "id": "edit.duplicate",
-          "command": "edit:duplicate",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Delete",
-          "id": "edit.delete",
-          "command": "edit:delete",
-          "inset": true
-        },
-        {
-          "label": "Select all",
-          "id": "edit.select-all",
-          "command": "edit:select-all",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Bring to front",
-          "id": "alignment.bring-to-front",
-          "command": "align:bring-to-front",
-          "inset": true
-        },
-        {
-          "label": "Send to back",
-          "id": "alignment.send-to-back",
-          "command": "align:send-to-back",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Group",
-          "id": "shape.group",
-          "command": "shape:group",
-          "inset": true
-        },
-        {
-          "label": "Ungroup",
-          "id": "shape.ungroup",
-          "command": "shape:ungroup",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Lock",
-          "id": "shape.lock",
-          "type": "checkbox",
-          "command": "shape:toggle-lock"
-        },
-        {
-          "label": "Container",
-          "id": "shape.container",
-          "type": "checkbox",
-          "command": "shape:toggle-container"
-        }
-      ]
+      "label": "Documentation",
+      "id": "help.documentation",
+      "command": "help:documentation",
+      "external": true
     },
     {
-      "label": "View",
-      "id": "view",
-      "submenu": [
-        {
-          "label": "Insert shapes...",
-          "id": "view.insert-shapes",
-          "command": "view:show-insert-shape-dialog",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Zoom in",
-          "id": "view.zoom-in",
-          "command": "view:zoom-in",
-          "inset": true
-        },
-        {
-          "label": "Zoom out",
-          "id": "view.zoom-out",
-          "command": "view:zoom-out",
-          "inset": true
-        },
-        {
-          "label": "Zoom to 100%",
-          "id": "view.actual-size",
-          "command": "view:actual-size",
-          "inset": true
-        },
-        {
-          "label": "Fit to screen",
-          "id": "view.fit-to-screen",
-          "command": "view:fit-to-screen",
-          "inset": true
-        },
-        { "type": "separator" },
-        {
-          "label": "Toggle grid",
-          "id": "view.toggle-grid",
-          "type": "checkbox",
-          "command": "view:toggle-grid"
-        },
-        { "type": "separator" },
-        {
-          "label": "Snap to grid",
-          "id": "view.snap-to-grid",
-          "type": "checkbox",
-          "command": "view:snap-to-grid"
-        },
-        {
-          "label": "Snap to objects",
-          "id": "view.snap-to-objects",
-          "type": "checkbox",
-          "command": "view:snap-to-objects"
-        },
-        { "type": "separator" },
-        {
-          "label": "Dark mode",
-          "id": "view.dark-mode",
-          "type": "checkbox",
-          "command": "view:dark-mode",
-          "inset": true
-        }
-      ]
+      "label": "Keyboard shortcuts",
+      "id": "help.keyboard-shortcuts",
+      "command": "help:keyboard-shortcuts"
     },
+    { "type": "separator" },
     {
-      "label": "Help",
-      "id": "help",
-      "submenu": [
-        {
-          "label": "About...",
-          "id": "help.about",
-          "command": "help:about"
-        },
-        { "type": "separator" },
-        {
-          "label": "Homepage",
-          "id": "help.homepage",
-          "command": "help:homepage",
-          "external": true
-        },
-        {
-          "label": "Documentation",
-          "id": "help.documentation",
-          "command": "help:documentation",
-          "external": true
-        },
-        {
-          "label": "Keyboard shortcuts",
-          "id": "help.keyboard-shortcuts",
-          "command": "help:keyboard-shortcuts"
-        },
-        { "type": "separator" },
-        {
-          "label": "Open developer tools",
-          "id": "view.open-dev-tools",
-          "command": "help:open-dev-tools"
-        }
-      ]
+      "label": "Open developer tools",
+      "id": "view.open-dev-tools",
+      "command": "help:open-dev-tools"
     },
     { "type": "separator" },
     {
@@ -239,7 +36,7 @@
       "command": "file:quit"
     }
   ],
-  "zoom": [
+  "view": [
     {
       "label": "Zoom in",
       "id": "view.zoom-in",
@@ -259,66 +56,84 @@
       "label": "Fit to screen",
       "id": "view.fit-to-screen",
       "command": "view:fit-to-screen"
+    },
+    { "type": "separator" },
+    {
+      "label": "Toggle grid",
+      "id": "view.toggle-grid",
+      "type": "checkbox",
+      "command": "view:toggle-grid"
+    },
+    { "type": "separator" },
+    {
+      "label": "Snap to grid",
+      "id": "view.snap-to-grid",
+      "type": "checkbox",
+      "command": "view:snap-to-grid"
+    },
+    {
+      "label": "Snap to objects",
+      "id": "view.snap-to-objects",
+      "type": "checkbox",
+      "command": "view:snap-to-objects"
+    },
+    { "type": "separator" },
+    {
+      "label": "Dark mode",
+      "id": "view.dark-mode",
+      "type": "checkbox",
+      "command": "view:dark-mode"
     }
   ],
   "context": [
     {
       "label": "Copy",
       "id": "edit.copy",
-      "command": "edit:copy",
-      "inset": true
+      "command": "edit:copy"
     },
-    { "label": "Cut", "id": "edit.cut", "command": "edit:cut", "inset": true },
+    { "label": "Cut", "id": "edit.cut", "command": "edit:cut" },
     {
       "label": "Paste",
       "id": "edit.paste",
-      "command": "edit:paste",
-      "inset": true
+      "command": "edit:paste"
     },
     {
       "label": "Duplicate",
       "id": "edit.duplicate",
-      "command": "edit:duplicate",
-      "inset": true
+      "command": "edit:duplicate"
     },
     { "type": "separator" },
     {
       "label": "Delete",
       "id": "edit.delete",
-      "command": "edit:delete",
-      "inset": true
+      "command": "edit:delete"
     },
     {
       "label": "Select all",
       "id": "edit.select-all",
-      "command": "edit:select-all",
-      "inset": true
+      "command": "edit:select-all"
     },
     { "type": "separator" },
     {
       "label": "Bring to front",
       "id": "alignment.bring-to-front",
-      "command": "align:bring-to-front",
-      "inset": true
+      "command": "align:bring-to-front"
     },
     {
       "label": "Send to back",
       "id": "alignment.send-to-back",
-      "command": "align:send-to-back",
-      "inset": true
+      "command": "align:send-to-back"
     },
     { "type": "separator" },
     {
       "label": "Group",
       "id": "shape.group",
-      "command": "shape:group",
-      "inset": true
+      "command": "shape:group"
     },
     {
       "label": "Ungroup",
       "id": "shape.ungroup",
-      "command": "shape:ungroup",
-      "inset": true
+      "command": "shape:ungroup"
     },
     { "type": "separator" },
     {

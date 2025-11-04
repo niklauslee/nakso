@@ -88,6 +88,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({
         onSelect={onSelect}
         disabled={!item.enabled}
         checked={item.checked}
+        className="text-xs data-[inset]:pl-3 pl-3"
       >
         {item.label}
         {item.subtext && (
@@ -98,13 +99,14 @@ export const MenuItem: React.FC<MenuItemProp> = ({
   } else {
     return (
       <DropdownMenuItem
-        inset={item.inset ?? false}
+        inset={false}
         key={item.id}
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
         onSelect={onSelect}
         disabled={!item.enabled}
+        className="text-xs data-[inset]:pl-3 pl-3"
       >
         <span className="pr-6 flex items-center">
           {/* {item.icon && (
