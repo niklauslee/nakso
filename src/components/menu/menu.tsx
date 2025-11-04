@@ -38,6 +38,7 @@ interface MenuProps {
   children: React.ReactNode;
   align?: "start" | "end";
   sideOffset?: number;
+  open?: boolean;
   onSelect?: (id: string, command: string, commandArgs: any) => void;
   onOpenChange?: (open: boolean) => void;
 }
@@ -88,7 +89,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({
         onSelect={onSelect}
         disabled={!item.enabled}
         checked={item.checked}
-        className="text-xs data-[inset]:pl-3 pl-3"
+        className="text-xs data-[inset]:pl-4 pl-4"
       >
         {item.label}
         {item.subtext && (
@@ -106,7 +107,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({
         data-command-args={JSON.stringify(item["command-args"])}
         onSelect={onSelect}
         disabled={!item.enabled}
-        className="text-xs data-[inset]:pl-3 pl-3"
+        className="text-xs data-[inset]:pl-4 pl-4"
       >
         <span className="pr-6 flex items-center">
           {/* {item.icon && (
@@ -136,6 +137,7 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
   children,
   align = "start",
   sideOffset = 10,
+  open,
   onSelect,
   onOpenChange,
 }) => {
@@ -159,7 +161,7 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
   };
 
   return (
-    <DropdownMenu onOpenChange={onOpenChange}>
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent
         align={align}

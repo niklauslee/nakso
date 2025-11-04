@@ -15,6 +15,7 @@ import { workspace } from "@/api/workspace";
 
 export function EditorViewHeader({}) {
   const [fileName, setFileName] = useState<string>("");
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menus = useMenuStore((state) => state.menus);
   const workingFile = useEditorStore((state) => state.workingFile);
   const scale = useEditorStore((state) => state.scale);
@@ -66,7 +67,12 @@ export function EditorViewHeader({}) {
         >
           <PlusIcon size={16} />
         </Button>
-        <ApplicationMenu menu={menus.view} align="end">
+        <ApplicationMenu
+          menu={menus.view}
+          align="end"
+          open={openMenu === "view"}
+          onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
+        >
           <Button
             size="sm"
             variant="ghost"
@@ -77,7 +83,12 @@ export function EditorViewHeader({}) {
             <ChevronDownIcon className="size-3.5" />
           </Button>
         </ApplicationMenu>
-        <ApplicationMenu menu={menus.main} className="w-48">
+        <ApplicationMenu
+          menu={menus.main}
+          className="w-52"
+          open={openMenu === "main"}
+          onOpenChange={(open) => setOpenMenu(open ? "main" : null)}
+        >
           <Button className="size-7" variant="ghost" size="icon" title="Menu">
             <EllipsisVerticalIcon size={16} />
           </Button>
