@@ -85,11 +85,12 @@ export function EditorViewHeader({}) {
         </ApplicationMenu>
         <ApplicationMenu
           menu={menus.main}
+          align="end"
           className="w-52"
           open={openMenu === "main"}
           onOpenChange={(open) => setOpenMenu(open ? "main" : null)}
         >
-          <Button className="size-7" variant="ghost" size="icon" title="Menu">
+          <Button size="icon-sm" variant="ghost" title="Menu">
             <EllipsisVerticalIcon size={16} />
           </Button>
         </ApplicationMenu>

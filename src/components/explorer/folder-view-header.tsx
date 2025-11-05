@@ -9,6 +9,7 @@ import { useSettingStore } from "@/store/setting-store";
 import { Button } from "../ui/button";
 import {
   ClockIcon,
+  EllipsisVerticalIcon,
   FolderCheckIcon,
   FolderIcon,
   HeartIcon,
@@ -24,6 +25,8 @@ import {
   SEARCH_TAG,
   TRASH_TAG,
 } from "@/const";
+import { ApplicationMenu } from "../menu/menu";
+import { useMenuStore } from "@/store/menu-store";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -32,6 +35,7 @@ interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
   if (!folder) return null;
 
+  const menus = useMenuStore((state) => state.menus);
   const workspaceDir = useSettingStore((state) => state.workspaceDir);
   const sortBy = useExplorerStore((state) => state.sortBy);
   const setSortBy = useExplorerStore((state) => state.setSortBy);
@@ -107,6 +111,11 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
             setSortBy(value);
           }}
         />
+        <ApplicationMenu menu={menus.main} className="w-52" align="end">
+          <Button size="icon-sm" variant="ghost" title="Menu">
+            <EllipsisVerticalIcon size={16} />
+          </Button>
+        </ApplicationMenu>
       </div>
     </div>
   );

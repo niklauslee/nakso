@@ -25,28 +25,28 @@ export function FileSort({ value, onValueChange }: FileSortProps) {
         });
       }}
     >
-      <SelectTrigger className="text-sm">
+      <SelectTrigger className="text-sm border-none shadow-none hover:bg-accent h-8 py-0 rounded-md gap-1.5 px-3">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="name-asc">
-          Alphabetical <MoveUpIcon />
+        <SelectItem value="name-asc" className="text-xs">
+          Alphabetical (A-Z)
         </SelectItem>
-        <SelectItem value="name-desc">
-          Alphabetical <MoveDownIcon />
+        <SelectItem value="name-desc" className="text-xs">
+          Alphabetical (Z-A)
         </SelectItem>
-        <SelectItem value="mtime-asc">
-          Modified <MoveUpIcon />
+        <SelectItem value="mtime-asc" className="text-xs">
+          Oldest First
         </SelectItem>
-        <SelectItem value="mtime-desc">
-          Modified <MoveDownIcon />
+        <SelectItem value="mtime-desc" className="text-xs">
+          Newest First
         </SelectItem>
-        <SelectItem value="birthtime-asc">
-          Created <MoveUpIcon />
+        {/* <SelectItem value="birthtime-asc" className="text-xs">
+          Created ↓
         </SelectItem>
-        <SelectItem value="birthtime-desc">
-          Created <MoveDownIcon />
-        </SelectItem>
+        <SelectItem value="birthtime-desc" className="text-xs">
+          Created ↑
+        </SelectItem> */}
       </SelectContent>
     </Select>
   );

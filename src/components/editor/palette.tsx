@@ -211,12 +211,14 @@ export function Palette({ selection, onChange }: PaletteProps) {
               <FreehandWidthTool selection={selection} onChange={onChange} />
             )}
 
-          {(hasRectangle || hasEllipse || hasText) && (
+          {(hasRectangle || hasEllipse || hasText || hasFrame) && (
             <>
               <Separator className="opacity-50" />
               <FontFamilyTool selection={selection} onChange={onChange} />
               <FontSizeTool selection={selection} onChange={onChange} />
-              <TextAlignTool selection={selection} onChange={onChange} />
+              {!hasFrame && (
+                <TextAlignTool selection={selection} onChange={onChange} />
+              )}
             </>
           )}
 
