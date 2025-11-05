@@ -195,7 +195,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   return (
     <>
-      <ApplicationContextMenu menu={menus.context} className="w-44">
+      <ApplicationContextMenu menu={menus.context} className="w-56">
         <div className="absolute inset-0">
           <DGMEditor
             options={{

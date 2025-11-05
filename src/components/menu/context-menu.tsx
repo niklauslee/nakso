@@ -35,7 +35,6 @@ import {
 interface MenuProps {
   menu: MenuType;
   className?: string;
-  iconByCommand?: Record<string, React.ReactNode>;
   children: React.ReactNode;
   onSelect?: (id: string, command: string, commandArgs: any) => void;
   onOpenChange?: (open: boolean) => void;
@@ -43,15 +42,10 @@ interface MenuProps {
 
 interface MenuItemProp {
   item: MenuItemType;
-  iconByCommand?: Record<string, React.ReactNode>;
   onSelect?: (event: Event) => void;
 }
 
-export const MenuItem: React.FC<MenuItemProp> = ({
-  item,
-  iconByCommand,
-  onSelect,
-}) => {
+export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
   const id = useId();
   if (Array.isArray(item.submenu)) {
     return (
@@ -85,7 +79,6 @@ export const MenuItem: React.FC<MenuItemProp> = ({
         onSelect={onSelect}
         disabled={!item.enabled}
         checked={item.checked}
-        className="text-xs data-[inset]:pl-4 pl-4"
       >
         {item.label}
         {item.subtext && (
@@ -96,23 +89,15 @@ export const MenuItem: React.FC<MenuItemProp> = ({
   } else {
     return (
       <ContextMenuItem
-        inset={item.inset ?? false}
+        inset={item.inset}
         key={item.id}
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
         onSelect={onSelect}
         disabled={!item.enabled}
-        className="text-xs data-[inset]:pl-4 pl-4"
       >
-        <span className="pr-6 flex items-center">
-          {item.icon && (
-            <span className="mr-2">
-              {iconByCommand && item.command && iconByCommand[item.command]}
-            </span>
-          )}
-          {item.label}
-        </span>
+        {item.label}
         {item.subtext && (
           <ContextMenuShortcut>{item.subtext}</ContextMenuShortcut>
         )}
@@ -124,7 +109,6 @@ export const MenuItem: React.FC<MenuItemProp> = ({
 export const ApplicationContextMenu: React.FC<MenuProps> = ({
   menu,
   className,
-  iconByCommand,
   children,
   onSelect,
   onOpenChange,
@@ -177,12 +161,7 @@ export const ApplicationContextMenu: React.FC<MenuProps> = ({
       <ContextMenuContent className={className}>
         {Array.isArray(menu) &&
           menu.map((item, idx) => (
-            <MenuItem
-              key={idx}
-              item={item}
-              onSelect={handleSelect}
-              iconByCommand={iconByCommand}
-            />
+            <MenuItem key={idx} item={item} onSelect={handleSelect} />
           ))}
       </ContextMenuContent>
     </ContextMenu>

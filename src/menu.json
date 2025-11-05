@@ -19,13 +19,13 @@
       "external": true
     },
     {
-      "label": "Keyboard shortcuts",
+      "label": "Keyboard Shortcuts",
       "id": "help.keyboard-shortcuts",
       "command": "help:keyboard-shortcuts"
     },
     { "type": "separator" },
     {
-      "label": "Open developer tools",
+      "label": "Open Developer Tools",
       "id": "view.open-dev-tools",
       "command": "help:open-dev-tools"
     },
@@ -38,48 +38,45 @@
   ],
   "view": [
     {
-      "label": "Zoom in",
+      "label": "Zoom In",
       "id": "view.zoom-in",
+      "inset": true,
       "command": "view:zoom-in"
     },
     {
-      "label": "Zoom out",
+      "label": "Zoom Out",
       "id": "view.zoom-out",
+      "inset": true,
       "command": "view:zoom-out"
     },
     {
       "label": "Zoom to 100%",
       "id": "view.actual-size",
+      "inset": true,
       "command": "view:actual-size"
     },
     {
-      "label": "Fit to screen",
+      "label": "Fit to Screen",
       "id": "view.fit-to-screen",
+      "inset": true,
       "command": "view:fit-to-screen"
     },
     { "type": "separator" },
     {
-      "label": "Toggle grid",
-      "id": "view.toggle-grid",
-      "type": "checkbox",
-      "command": "view:toggle-grid"
-    },
-    { "type": "separator" },
-    {
-      "label": "Snap to grid",
+      "label": "Snap to Grid",
       "id": "view.snap-to-grid",
       "type": "checkbox",
       "command": "view:snap-to-grid"
     },
     {
-      "label": "Snap to objects",
+      "label": "Snap to Objects",
       "id": "view.snap-to-objects",
       "type": "checkbox",
       "command": "view:snap-to-objects"
     },
     { "type": "separator" },
     {
-      "label": "Dark mode",
+      "label": "Dark Mode",
       "id": "view.dark-mode",
       "type": "checkbox",
       "command": "view:dark-mode"
@@ -89,50 +86,59 @@
     {
       "label": "Copy",
       "id": "edit.copy",
+      "inset": true,
       "command": "edit:copy"
     },
-    { "label": "Cut", "id": "edit.cut", "command": "edit:cut" },
+    { "label": "Cut", "id": "edit.cut", "inset": true, "command": "edit:cut" },
     {
       "label": "Paste",
       "id": "edit.paste",
+      "inset": true,
       "command": "edit:paste"
     },
     {
       "label": "Duplicate",
       "id": "edit.duplicate",
+      "inset": true,
       "command": "edit:duplicate"
     },
     { "type": "separator" },
     {
       "label": "Delete",
       "id": "edit.delete",
+      "inset": true,
       "command": "edit:delete"
     },
     {
       "label": "Select all",
       "id": "edit.select-all",
+      "inset": true,
       "command": "edit:select-all"
     },
     { "type": "separator" },
     {
       "label": "Bring to front",
       "id": "alignment.bring-to-front",
+      "inset": true,
       "command": "align:bring-to-front"
     },
     {
       "label": "Send to back",
       "id": "alignment.send-to-back",
+      "inset": true,
       "command": "align:send-to-back"
     },
     { "type": "separator" },
     {
       "label": "Group",
       "id": "shape.group",
+      "inset": true,
       "command": "shape:group"
     },
     {
       "label": "Ungroup",
       "id": "shape.ungroup",
+      "inset": true,
       "command": "shape:ungroup"
     },
     { "type": "separator" },

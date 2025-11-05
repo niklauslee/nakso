@@ -72,6 +72,7 @@ export function EditorViewHeader({}) {
           align="end"
           open={openMenu === "view"}
           onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
+          className="w-54"
         >
           <Button
             size="sm"
@@ -86,7 +87,7 @@ export function EditorViewHeader({}) {
         <ApplicationMenu
           menu={menus.main}
           align="end"
-          className="w-52"
+          className="w-60"
           open={openMenu === "main"}
           onOpenChange={(open) => setOpenMenu(open ? "main" : null)}
         >

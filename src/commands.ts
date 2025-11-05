@@ -812,10 +812,6 @@ export function registerCommands() {
     }
   );
 
-  app.commands.register("view:toggle-grid", "Toggle grid", {}, async () =>
-    useSettingStore.getState().toggleGrid()
-  );
-
   app.commands.register("view:dark-mode", "Toggle dark mode", {}, async () => {
     const darkMode = useSettingStore.getState().darkMode;
     await getCurrentWindow().setTheme(darkMode ? "light" : "dark");

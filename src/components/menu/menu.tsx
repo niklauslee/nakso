@@ -24,6 +24,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuShortcut,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import type {
   MenuItem as MenuItemType,
@@ -34,7 +35,6 @@ import { ExternalLinkIcon } from "lucide-react";
 interface MenuProps {
   menu: MenuType;
   className?: string;
-  iconByCommand?: Record<string, React.ReactNode>;
   children: React.ReactNode;
   align?: "start" | "end";
   sideOffset?: number;
@@ -45,27 +45,24 @@ interface MenuProps {
 
 interface MenuItemProp {
   item: MenuItemType;
-  iconByCommand?: Record<string, React.ReactNode>;
   onSelect?: (event: Event) => void;
 }
 
-export const MenuItem: React.FC<MenuItemProp> = ({
-  item,
-  iconByCommand,
-  onSelect,
-}) => {
+export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
   const id = useId();
   if (Array.isArray(item.submenu)) {
     return (
       <DropdownMenuSub key={item.id}>
-        <DropdownMenuSubTrigger inset={item.inset ?? false}>
+        <DropdownMenuSubTrigger inset={item.inset}>
           {item.label}
         </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent sideOffset={4}>
-          {item.submenu.map((subitem, idx) => (
-            <MenuItem key={idx} item={subitem} onSelect={onSelect} />
-          ))}
-        </DropdownMenuSubContent>
+        <DropdownMenuPortal>
+          <DropdownMenuSubContent sideOffset={4}>
+            {item.submenu.map((subitem, idx) => (
+              <MenuItem key={idx} item={subitem} onSelect={onSelect} />
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuPortal>
       </DropdownMenuSub>
     );
   } else if (item.type === "separator") {
@@ -89,7 +86,6 @@ export const MenuItem: React.FC<MenuItemProp> = ({
         onSelect={onSelect}
         disabled={!item.enabled}
         checked={item.checked}
-        className="text-xs data-[inset]:pl-4 pl-4"
       >
         {item.label}
         {item.subtext && (
@@ -100,29 +96,21 @@ export const MenuItem: React.FC<MenuItemProp> = ({
   } else {
     return (
       <DropdownMenuItem
-        inset={false}
+        inset={item.inset}
         key={item.id}
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
         onSelect={onSelect}
         disabled={!item.enabled}
-        className="text-xs data-[inset]:pl-4 pl-4"
       >
-        <span className="pr-6 flex items-center">
-          {/* {item.icon && (
-            <span className="mr-2">
-              {iconByCommand && item.command && iconByCommand[item.command]}
-            </span>
-          )} */}
-          {item.label}
-        </span>
+        {item.label}
         {item.subtext && (
           <DropdownMenuShortcut>{item.subtext}</DropdownMenuShortcut>
         )}
         {!item.subtext && item.external && (
           <DropdownMenuShortcut>
-            <ExternalLinkIcon size={16} strokeWidth={1.5} />
+            <ExternalLinkIcon size={16} />
           </DropdownMenuShortcut>
         )}
       </DropdownMenuItem>
@@ -133,7 +121,6 @@ export const MenuItem: React.FC<MenuItemProp> = ({
 export const ApplicationMenu: React.FC<MenuProps> = ({
   menu,
   className,
-  iconByCommand,
   children,
   align = "start",
   sideOffset = 10,
@@ -170,12 +157,7 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
       >
         {Array.isArray(menu) &&
           menu.map((item, idx) => (
-            <MenuItem
-              key={idx}
-              item={item}
-              iconByCommand={iconByCommand}
-              onSelect={handleSelect}
-            />
+            <MenuItem key={idx} item={item} onSelect={handleSelect} />
           ))}
       </DropdownMenuContent>
     </DropdownMenu>
