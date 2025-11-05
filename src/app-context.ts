@@ -282,19 +282,14 @@ export class AppContext {
             app.editor.selection.size() > 0 &&
             app.editor.selection.getShapes().every((s) => s.containable),
         },
-        "view.show-grid": { checked: state.showGrid },
-        "view.dark-mode": { checked: darkMode },
+        "view.show-grid": { checked: state.snapToGrid },
         "view.snap-to-grid": { checked: state.snapToGrid },
         "view.snap-to-objects": { checked: state.snapToObjects },
+        "view.dark-mode": { checked: darkMode },
       };
       for (const id in menuStates) {
         useMenuStore.getState().updateStates(id, menuStates[id]);
       }
-
-      // update editor states
-      app.editor.setShowGrid(state.showGrid);
-      app.editor.setSnapToGrid(state.snapToGrid);
-      app.editor.setSnapToObjects(state.snapToObjects);
       app.editor.repaint();
     } catch (err) {
       console.error("Failed to update UI state:", err);

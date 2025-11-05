@@ -4,10 +4,10 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { useExplorerStore } from "@/store/explorer-store";
-import { FileSort } from "./file-sort";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "../ui/button";
 import {
+  ArrowUpDownIcon,
   ClockIcon,
   EllipsisVerticalIcon,
   FolderCheckIcon,
@@ -105,12 +105,17 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
         >
           <PlusIcon size={16} />
         </Button>
-        <FileSort
+        {/* <FileSort
           value={sortBy}
           onValueChange={(value) => {
             setSortBy(value);
           }}
-        />
+        /> */}
+        <ApplicationMenu menu={menus.sort} className="w-52" align="end">
+          <Button size="icon-sm" variant="ghost" title="Sort By">
+            <ArrowUpDownIcon size={16} />
+          </Button>
+        </ApplicationMenu>
         <ApplicationMenu menu={menus.main} className="w-52" align="end">
           <Button size="icon-sm" variant="ghost" title="Menu">
             <EllipsisVerticalIcon size={16} />

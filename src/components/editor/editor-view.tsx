@@ -14,7 +14,6 @@ import { Palette } from "./palette";
 import { DGMEditor } from "@dgmjs/react";
 import { useSettingStore } from "@/store/setting-store";
 import { useEditorStore } from "@/store/editor-store";
-import { HelpButton } from "./help-button";
 import { useStyleStore } from "@/store/style-store";
 import { getFilesFromDataTransferItems } from "@/lib/flat-drop-files";
 
@@ -29,7 +28,8 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   const menus = useMenuStore((state) => state.menus);
   const darkMode = useSettingStore((state) => state.darkMode);
-  const showGrid = useSettingStore((state) => state.showGrid);
+  const snapToGrid = useSettingStore((state) => state.snapToGrid);
+  const snapToObjects = useSettingStore((state) => state.snapToObjects);
 
   const workingFile = useEditorStore((state) => state.workingFile);
   const readonly = workingFile?.readonly ?? true;
@@ -210,7 +210,9 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
               },
             }}
             className="absolute inset-0"
-            showGrid={showGrid}
+            showGrid={snapToGrid}
+            snapToGrid={snapToGrid}
+            snapToObjects={snapToObjects}
             darkMode={darkMode}
             onMount={handleMount}
             onShapeInitialize={handleShapeInitialize}
@@ -230,7 +232,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       </ApplicationContextMenu>
       <Palette selection={shapeProps} onChange={handlePropsChange} />
       <Toolbar />
-      <HelpButton />
     </>
   );
 }

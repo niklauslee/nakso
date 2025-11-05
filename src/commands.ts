@@ -849,6 +849,20 @@ export function registerCommands() {
     }
   );
 
+  app.commands.register(
+    "view:file-sort",
+    "Show file sort menu",
+    {
+      sortBy: z.object({
+        field: z.enum(["name", "mtime", "birthtime"]),
+        direction: z.enum(["asc", "desc"]),
+      }),
+    },
+    async ({ sortBy }) => {
+      useExplorerStore.getState().setSortBy(sortBy);
+    }
+  );
+
   app.commands.register("help:about", "Show about dialog", {}, async () =>
     useAboutDialog.getState().show(true)
   );

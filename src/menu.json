@@ -82,6 +82,36 @@
       "command": "view:dark-mode"
     }
   ],
+  "sort": [
+    {
+      "label": "Alphabetical: A-Z",
+      "id": "view.sort-alphabetical-az",
+      "type": "checkbox",
+      "command": "view:file-sort",
+      "command-args": { "sortBy": { "field": "name", "direction": "asc" } }
+    },
+    {
+      "label": "Alphabetical: Z-A",
+      "id": "view.sort-alphabetical-za",
+      "type": "checkbox",
+      "command": "view:file-sort",
+      "command-args": { "sortBy": { "field": "name", "direction": "desc" } }
+    },
+    {
+      "label": "Oldest First",
+      "id": "view.sort-oldest-first",
+      "type": "checkbox",
+      "command": "view:file-sort",
+      "command-args": { "sortBy": { "field": "mtime", "direction": "asc" } }
+    },
+    {
+      "label": "Newest First",
+      "id": "view.sort-newest-first",
+      "type": "checkbox",
+      "command": "view:file-sort",
+      "command-args": { "sortBy": { "field": "mtime", "direction": "desc" } }
+    }
+  ],
   "context": [
     {
       "label": "Copy",
