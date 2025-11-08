@@ -111,15 +111,21 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
             setSortBy(value);
           }}
         /> */}
-        <ApplicationMenu menu={menus.sort} className="w-52" align="end">
-          <Button size="icon-sm" variant="ghost" title="Sort By">
-            <ArrowUpDownIcon size={16} />
-          </Button>
+        <ApplicationMenu
+          menu={menus.sort}
+          className="w-52"
+          align="end"
+          render={<Button size="icon-sm" variant="ghost" title="Sort By" />}
+        >
+          <ArrowUpDownIcon size={16} />
         </ApplicationMenu>
-        <ApplicationMenu menu={menus.main} className="w-52" align="end">
-          <Button size="icon-sm" variant="ghost" title="Menu">
-            <EllipsisVerticalIcon size={16} />
-          </Button>
+        <ApplicationMenu
+          menu={menus.main}
+          className="w-52"
+          align="end"
+          render={<Button size="icon-sm" variant="ghost" title="Menu" />}
+        >
+          <EllipsisVerticalIcon size={16} />
         </ApplicationMenu>
       </div>
     </div>

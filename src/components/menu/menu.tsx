@@ -25,6 +25,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuShortcut,
   DropdownMenuPortal,
+  DropdownMenuPositioner,
 } from "@/components/ui/dropdown-menu";
 import type {
   MenuItem as MenuItemType,
@@ -39,16 +40,17 @@ interface MenuProps {
   align?: "start" | "end";
   sideOffset?: number;
   open?: boolean;
+  render?: React.ReactElement<Record<string, unknown>>;
   onSelect?: (id: string, command: string, commandArgs: any) => void;
   onOpenChange?: (open: boolean) => void;
 }
 
 interface MenuItemProp {
   item: MenuItemType;
-  onSelect?: (event: Event) => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
-export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
+export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
   const id = useId();
   if (Array.isArray(item.submenu)) {
     return (
@@ -57,11 +59,13 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
           {item.label}
         </DropdownMenuSubTrigger>
         <DropdownMenuPortal>
-          <DropdownMenuSubContent sideOffset={4}>
-            {item.submenu.map((subitem, idx) => (
-              <MenuItem key={idx} item={subitem} onSelect={onSelect} />
-            ))}
-          </DropdownMenuSubContent>
+          <DropdownMenuPositioner>
+            <DropdownMenuSubContent>
+              {item.submenu.map((subitem, idx) => (
+                <MenuItem key={idx} item={subitem} onClick={onClick} />
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuPositioner>
         </DropdownMenuPortal>
       </DropdownMenuSub>
     );
@@ -83,7 +87,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
-        onSelect={onSelect}
+        onClick={onClick}
         disabled={!item.enabled}
         checked={item.checked}
       >
@@ -101,7 +105,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
-        onSelect={onSelect}
+        onClick={onClick}
         disabled={!item.enabled}
       >
         {item.label}
@@ -110,7 +114,11 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         )}
         {!item.subtext && item.external && (
           <DropdownMenuShortcut>
-            <ExternalLinkIcon size={16} />
+            <ExternalLinkIcon
+              size={16}
+              strokeWidth={1.5}
+              className="!size-3.5"
+            />
           </DropdownMenuShortcut>
         )}
       </DropdownMenuItem>
@@ -124,6 +132,7 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
   children,
   align = "start",
   sideOffset = 10,
+  render,
   open,
   onSelect,
   onOpenChange,
@@ -149,17 +158,15 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
 
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent
-        align={align}
-        sideOffset={sideOffset}
-        className={className}
-      >
-        {Array.isArray(menu) &&
-          menu.map((item, idx) => (
-            <MenuItem key={idx} item={item} onSelect={handleSelect} />
-          ))}
-      </DropdownMenuContent>
+      <DropdownMenuTrigger render={render}>{children}</DropdownMenuTrigger>
+      <DropdownMenuPositioner align={align} sideOffset={sideOffset}>
+        <DropdownMenuContent className={className}>
+          {Array.isArray(menu) &&
+            menu.map((item, idx) => (
+              <MenuItem key={idx} item={item} onClick={handleSelect} />
+            ))}
+        </DropdownMenuContent>
+      </DropdownMenuPositioner>
     </DropdownMenu>
   );
 };

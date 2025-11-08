@@ -453,6 +453,7 @@
     width: 100%;
     overflow: clip;
     background-color: transparent;
+    isolation: isolate;
   }
 }
 

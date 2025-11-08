@@ -25,14 +25,12 @@ import {
   RoughnessHighIcon,
 } from "@/components/icons";
 import {
-  PaintBucketIcon,
   PenLineIcon,
   TypeIcon,
   AlignCenterIcon,
   AlignLeftIcon,
   AlignRightIcon,
   MinusIcon,
-  CircleSlashIcon,
   AlignStartVerticalIcon,
   AlignCenterVerticalIcon,
   AlignEndVerticalIcon,
@@ -63,6 +61,7 @@ import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect, useRef, useState } from "react";
@@ -261,29 +260,28 @@ function FillColorTool({ selection, onChange }: ToolProps) {
     <>
       <div className="flex items-center gap-1">
         <Popover modal={true}>
-          <PopoverTrigger asChild>
-            <Button size="icon-sm" variant="ghost" title="Fill color">
-              <ColorItem
-                className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
-                value={fillColor ?? "$background"}
-                darkMode={darkMode}
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            side="left"
-            align="start"
-            sideOffset={8}
-            className="w-fit text-center"
+          <PopoverTrigger
+            render={
+              <Button size="icon-sm" variant="ghost" title="Fill color" />
+            }
           >
-            <ColorPanel
-              darkMode={darkMode}
+            <ColorItem
+              className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
               value={fillColor ?? "$background"}
-              onChange={(color) => {
-                onChange?.({ fillColor: color });
-              }}
+              darkMode={darkMode}
             />
-          </PopoverContent>
+          </PopoverTrigger>
+          <PopoverPositioner side="left" align="start" sideOffset={8}>
+            <PopoverContent className="w-fit text-center">
+              <ColorPanel
+                darkMode={darkMode}
+                value={fillColor ?? "$background"}
+                onChange={(color) => {
+                  onChange?.({ fillColor: color });
+                }}
+              />
+            </PopoverContent>
+          </PopoverPositioner>
         </Popover>
         <Toggle
           size="sm"
@@ -444,29 +442,28 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
     <>
       <div className="flex items-center gap-1">
         <Popover modal={true}>
-          <PopoverTrigger asChild>
-            <Button size="icon-sm" variant="ghost" title="Stroke color">
-              <ColorItem
-                className="size-6 rounded-sm"
-                value={strokeColor ?? "$foreground"}
-                darkMode={darkMode}
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            side="left"
-            align="start"
-            sideOffset={8}
-            className="w-fit text-center"
+          <PopoverTrigger
+            render={
+              <Button size="icon-sm" variant="ghost" title="Stroke color" />
+            }
           >
-            <ColorPanel
-              darkMode={darkMode}
+            <ColorItem
+              className="size-6 rounded-sm"
               value={strokeColor ?? "$foreground"}
-              onChange={(color) => {
-                onChange?.({ strokeColor: color });
-              }}
+              darkMode={darkMode}
             />
-          </PopoverContent>
+          </PopoverTrigger>
+          <PopoverPositioner side="left" align="start" sideOffset={8}>
+            <PopoverContent className="w-fit text-center">
+              <ColorPanel
+                darkMode={darkMode}
+                value={strokeColor ?? "$foreground"}
+                onChange={(color) => {
+                  onChange?.({ strokeColor: color });
+                }}
+              />
+            </PopoverContent>
+          </PopoverPositioner>
         </Popover>
         <Toggle
           size="sm"
@@ -635,53 +632,57 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
       </Toggle>
 
       <Popover modal={true}>
-        <PopoverTrigger asChild>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            title={`Roughness ⎯ ${
-              roughness <= 0 ? "None" : roughness <= 1 ? "Low" : "High"
-            }`}
-          >
-            {roughness <= 0 && <RoughnessNoneIcon size={16} />}
-            {roughness > 0 && roughness <= 1 && <RoughnessLowIcon size={16} />}
-            {roughness > 1 && <RoughnessHighIcon size={16} />}
-          </Button>
+        <PopoverTrigger
+          render={
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              title={`Roughness ⎯ ${
+                roughness <= 0 ? "None" : roughness <= 1 ? "Low" : "High"
+              }`}
+            />
+          }
+        >
+          {roughness <= 0 && <RoughnessNoneIcon size={16} />}
+          {roughness > 0 && roughness <= 1 && <RoughnessLowIcon size={16} />}
+          {roughness > 1 && <RoughnessHighIcon size={16} />}
         </PopoverTrigger>
-        <PopoverContent className="w-fit p-0" align="end">
-          <div className="flex items-center gap-1 p-1">
-            <Toggle
-              size="sm"
-              title="No roughness"
-              pressed={roughness === 0}
-              onPressedChange={() => {
-                onChange?.({ roughness: 0 });
-              }}
-            >
-              <RoughnessNoneIcon size={16} />
-            </Toggle>
-            <Toggle
-              size="sm"
-              title="Low roughness"
-              pressed={roughness === 1}
-              onPressedChange={() => {
-                onChange?.({ roughness: 1 });
-              }}
-            >
-              <RoughnessLowIcon size={16} />
-            </Toggle>
-            <Toggle
-              size="sm"
-              title="High roughness"
-              pressed={roughness === 2}
-              onPressedChange={() => {
-                onChange?.({ roughness: 2 });
-              }}
-            >
-              <RoughnessHighIcon size={16} />
-            </Toggle>
-          </div>
-        </PopoverContent>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0">
+            <div className="flex items-center gap-1 p-1">
+              <Toggle
+                size="sm"
+                title="No roughness"
+                pressed={roughness === 0}
+                onPressedChange={() => {
+                  onChange?.({ roughness: 0 });
+                }}
+              >
+                <RoughnessNoneIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Low roughness"
+                pressed={roughness === 1}
+                onPressedChange={() => {
+                  onChange?.({ roughness: 1 });
+                }}
+              >
+                <RoughnessLowIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="High roughness"
+                pressed={roughness === 2}
+                onPressedChange={() => {
+                  onChange?.({ roughness: 2 });
+                }}
+              >
+                <RoughnessHighIcon size={16} />
+              </Toggle>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
     </div>
   );
@@ -742,84 +743,82 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
       </Toggle>
       {(hasRectangle || hasFrame) && (
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              title={`Rounded ⎯ ${
-                stringifiedCorners === "0,0,0,0"
-                  ? "None"
-                  : stringifiedCorners === "8,8,8,8"
-                  ? "Small"
-                  : stringifiedCorners === "16,16,16,16"
-                  ? "Large"
-                  : stringifiedCorners === "-50,-50,-50,-50"
-                  ? "Full"
-                  : "Custom"
-              }`}
-            >
-              {stringifiedCorners === "0,0,0,0" && (
-                <RoundedNoneIcon size={16} />
-              )}
-              {stringifiedCorners === "8,8,8,8" && (
-                <RoundedSmallIcon size={16} />
-              )}
-              {stringifiedCorners === "16,16,16,16" && (
-                <RoundedIcon size={16} />
-              )}
-              {stringifiedCorners === "-50,-50,-50,-50" && (
-                <RoundedLargeIcon size={16} />
-              )}
-            </Button>
+          <PopoverTrigger
+            render={
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                title={`Rounded ⎯ ${
+                  stringifiedCorners === "0,0,0,0"
+                    ? "None"
+                    : stringifiedCorners === "8,8,8,8"
+                    ? "Small"
+                    : stringifiedCorners === "16,16,16,16"
+                    ? "Large"
+                    : stringifiedCorners === "-50,-50,-50,-50"
+                    ? "Full"
+                    : "Custom"
+                }`}
+              />
+            }
+          >
+            {stringifiedCorners === "0,0,0,0" && <RoundedNoneIcon size={16} />}
+            {stringifiedCorners === "8,8,8,8" && <RoundedSmallIcon size={16} />}
+            {stringifiedCorners === "16,16,16,16" && <RoundedIcon size={16} />}
+            {stringifiedCorners === "-50,-50,-50,-50" && (
+              <RoundedLargeIcon size={16} />
+            )}
           </PopoverTrigger>
-          <PopoverContent className="w-fit p-0" align="end">
-            <div className="flex items-center gap-1 p-1">
-              <Toggle
-                size="sm"
-                title="No rounded corners"
-                pressed={stringifiedCorners === "0,0,0,0"}
-                onPressedChange={() => {
-                  onChange?.({ corners: [0, 0, 0, 0] });
-                  setPopupOpen(false);
-                }}
-              >
-                <RoundedNoneIcon size={16} />
-              </Toggle>
-              <Toggle
-                size="sm"
-                title="Small rounded corners"
-                pressed={stringifiedCorners === "8,8,8,8"}
-                onPressedChange={() => {
-                  onChange?.({ corners: [8, 8, 8, 8] });
-                  setPopupOpen(false);
-                }}
-              >
-                <RoundedSmallIcon size={16} />
-              </Toggle>
-              <Toggle
-                size="sm"
-                title="Large rounded corners"
-                pressed={stringifiedCorners === "16,16,16,16"}
-                onPressedChange={() => {
-                  onChange?.({ corners: [16, 16, 16, 16] });
-                  setPopupOpen(false);
-                }}
-              >
-                <RoundedIcon size={16} />
-              </Toggle>
-              <Toggle
-                size="sm"
-                title="Fully rounded corners"
-                pressed={stringifiedCorners === "-50,-50,-50,-50"}
-                onPressedChange={() => {
-                  onChange?.({ corners: [-50, -50, -50, -50] });
-                  setPopupOpen(false);
-                }}
-              >
-                <RoundedLargeIcon size={16} />
-              </Toggle>
-            </div>
-          </PopoverContent>
+          <PopoverPositioner align="end">
+            <PopoverContent className="w-fit p-0">
+              <div className="flex items-center gap-1 p-1">
+                <Toggle
+                  size="sm"
+                  title="No rounded corners"
+                  pressed={stringifiedCorners === "0,0,0,0"}
+                  onPressedChange={() => {
+                    onChange?.({ corners: [0, 0, 0, 0] });
+                    setPopupOpen(false);
+                  }}
+                >
+                  <RoundedNoneIcon size={16} />
+                </Toggle>
+                <Toggle
+                  size="sm"
+                  title="Small rounded corners"
+                  pressed={stringifiedCorners === "8,8,8,8"}
+                  onPressedChange={() => {
+                    onChange?.({ corners: [8, 8, 8, 8] });
+                    setPopupOpen(false);
+                  }}
+                >
+                  <RoundedSmallIcon size={16} />
+                </Toggle>
+                <Toggle
+                  size="sm"
+                  title="Large rounded corners"
+                  pressed={stringifiedCorners === "16,16,16,16"}
+                  onPressedChange={() => {
+                    onChange?.({ corners: [16, 16, 16, 16] });
+                    setPopupOpen(false);
+                  }}
+                >
+                  <RoundedIcon size={16} />
+                </Toggle>
+                <Toggle
+                  size="sm"
+                  title="Fully rounded corners"
+                  pressed={stringifiedCorners === "-50,-50,-50,-50"}
+                  onPressedChange={() => {
+                    onChange?.({ corners: [-50, -50, -50, -50] });
+                    setPopupOpen(false);
+                  }}
+                >
+                  <RoundedLargeIcon size={16} />
+                </Toggle>
+              </div>
+            </PopoverContent>
+          </PopoverPositioner>
         </Popover>
       )}
     </div>
@@ -830,7 +829,7 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
 
   return (
-    <div className="flex items-center gap-1 py-2 px-1">
+    <div className="flex items-center gap-1">
       <Toggle
         size="sm"
         title="Thin pen"
@@ -1024,54 +1023,58 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
         <AlignRightIcon size={16} />
       </Toggle>
       <Popover open={popupOpen} onOpenChange={setPopupOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            size={"icon-sm"}
-            variant={"ghost"}
-            title="Align text vertically"
-          >
-            {vertAlign === VertAlign.TOP && <VerticalTopIcon size={16} />}
-            {vertAlign === VertAlign.MIDDLE && <VerticalMiddleIcon size={16} />}
-            {vertAlign === VertAlign.BOTTOM && <VerticalBottomIcon size={16} />}
-          </Button>
+        <PopoverTrigger
+          render={
+            <Button
+              size={"icon-sm"}
+              variant={"ghost"}
+              title="Align text vertically"
+            />
+          }
+        >
+          {vertAlign === VertAlign.TOP && <VerticalTopIcon size={16} />}
+          {vertAlign === VertAlign.MIDDLE && <VerticalMiddleIcon size={16} />}
+          {vertAlign === VertAlign.BOTTOM && <VerticalBottomIcon size={16} />}
         </PopoverTrigger>
-        <PopoverContent className="w-fit p-0" align="end">
-          <div className="flex items-center gap-1 p-1">
-            <Toggle
-              size="sm"
-              title="Align text top"
-              pressed={vertAlign === VertAlign.TOP}
-              onPressedChange={() => {
-                onChange?.({ vertAlign: VertAlign.TOP });
-                setPopupOpen(false);
-              }}
-            >
-              <VerticalTopIcon size={16} />
-            </Toggle>
-            <Toggle
-              size="sm"
-              title="Align text middle"
-              pressed={vertAlign === VertAlign.MIDDLE}
-              onPressedChange={() => {
-                onChange?.({ vertAlign: VertAlign.MIDDLE });
-                setPopupOpen(false);
-              }}
-            >
-              <VerticalMiddleIcon size={16} />
-            </Toggle>
-            <Toggle
-              size="sm"
-              title="Align text bottom"
-              pressed={vertAlign === VertAlign.BOTTOM}
-              onPressedChange={() => {
-                onChange?.({ vertAlign: VertAlign.BOTTOM });
-                setPopupOpen(false);
-              }}
-            >
-              <VerticalBottomIcon size={16} />
-            </Toggle>
-          </div>
-        </PopoverContent>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0">
+            <div className="flex items-center gap-1 p-1">
+              <Toggle
+                size="sm"
+                title="Align text top"
+                pressed={vertAlign === VertAlign.TOP}
+                onPressedChange={() => {
+                  onChange?.({ vertAlign: VertAlign.TOP });
+                  setPopupOpen(false);
+                }}
+              >
+                <VerticalTopIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Align text middle"
+                pressed={vertAlign === VertAlign.MIDDLE}
+                onPressedChange={() => {
+                  onChange?.({ vertAlign: VertAlign.MIDDLE });
+                  setPopupOpen(false);
+                }}
+              >
+                <VerticalMiddleIcon size={16} />
+              </Toggle>
+              <Toggle
+                size="sm"
+                title="Align text bottom"
+                pressed={vertAlign === VertAlign.BOTTOM}
+                onPressedChange={() => {
+                  onChange?.({ vertAlign: VertAlign.BOTTOM });
+                  setPopupOpen(false);
+                }}
+              >
+                <VerticalBottomIcon size={16} />
+              </Toggle>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
     </div>
   );
@@ -1081,16 +1084,19 @@ function OpacityTool({ selection, onChange }: ToolProps) {
   const opacity = merge(selection.map((s) => s.opacity));
 
   return (
-    <div className="flex items-center gap-1 py-2 px-1">
+    <div className="flex items-center gap-1 py-2 px-2">
       <Slider
         title={`Opacity`}
         value={[opacity || 1]}
         min={0}
         max={1}
         step={0.1}
-        className={"w-full"}
+        className={"w-full max-w-full"}
         onValueChange={(value) => {
-          onChange?.({ opacity: value.length > 0 ? value[0] : 1 });
+          onChange?.({
+            opacity:
+              Array.isArray(value) && value.length > 0 ? value[0] : value,
+          });
         }}
       />
     </div>
@@ -1286,50 +1292,50 @@ function AdditionalTools({}: ToolProps) {
   return (
     <div className="flex items-center gap-1">
       <Popover>
-        <PopoverTrigger asChild>
-          <Button size="icon-sm" variant="ghost">
-            <PenLineIcon size={16} />
-          </Button>
+        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+          <PenLineIcon size={16} />
         </PopoverTrigger>
-        <PopoverContent className="w-fit p-0 text-sm" align="end">
-          <div>stroke stroke</div>
-          <div>roughness</div>
-          <div>stroke pattern</div>
-          <div>padding</div>
-          <div>corners</div>
-          <div>borders</div>
-        </PopoverContent>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0 text-sm">
+            <div>stroke stroke</div>
+            <div>roughness</div>
+            <div>stroke pattern</div>
+            <div>padding</div>
+            <div>corners</div>
+            <div>borders</div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
 
       <Popover>
-        <PopoverTrigger asChild>
-          <Button size="icon-sm" variant="ghost">
-            <TypeIcon size={16} />
-          </Button>
+        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+          <TypeIcon size={16} />
         </PopoverTrigger>
-        <PopoverContent className="w-fit p-0 text-sm" align="end">
-          <div>font color</div>
-          <div>font family</div>
-          <div>font weight</div>
-          <div>font size</div>
-          <div>line height</div>
-          <div>paragraph spacing</div>
-          <div>word wrap</div>
-        </PopoverContent>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0 text-sm">
+            <div>font color</div>
+            <div>font family</div>
+            <div>font weight</div>
+            <div>font size</div>
+            <div>line height</div>
+            <div>paragraph spacing</div>
+            <div>word wrap</div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
 
       <Popover>
-        <PopoverTrigger asChild>
-          <Button size="icon-sm" variant="ghost">
-            <Settings2Icon size={16} />
-          </Button>
+        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+          <Settings2Icon size={16} />
         </PopoverTrigger>
-        <PopoverContent className="w-fit p-0 text-sm" align="end">
-          <div>shadow</div>
-          <div>container</div>
-          <div>lock</div>
-          <div>hide</div>
-        </PopoverContent>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0 text-sm">
+            <div>shadow</div>
+            <div>container</div>
+            <div>lock</div>
+            <div>hide</div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
 
       <Button size="icon-sm" variant="ghost">

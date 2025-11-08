@@ -15,6 +15,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPositioner,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -160,29 +161,35 @@ export function FileCard({ file, className }: FileCardProps) {
           </div>
           <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer">
-                  <EllipsisIcon size={16} />
-                </button>
+              <DropdownMenuTrigger
+                render={
+                  <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer" />
+                }
+              >
+                {/* <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer"> */}
+                <EllipsisIcon size={16} />
+                {/* </button> */}
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-fit" align="end">
-                <DropdownMenuItem onSelect={handleOpenClick}>
-                  Open
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleRenameClick}>
-                  Rename
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleDuplicateClick}>
-                  Duplicate
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={handleToggleFavorite}>
-                  {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleMoveToTrashClick}>
-                  Move to Trash
-                </DropdownMenuItem>
-              </DropdownMenuContent>
+              <DropdownMenuPositioner align="end">
+                <DropdownMenuContent className="w-fit">
+                  <DropdownMenuItem onSelect={handleOpenClick}>
+                    Open
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleRenameClick}>
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleDuplicateClick}>
+                    Duplicate
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={handleToggleFavorite}>
+                    {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleMoveToTrashClick}>
+                    Move to Trash
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenuPositioner>
             </DropdownMenu>
           </div>
         </div>

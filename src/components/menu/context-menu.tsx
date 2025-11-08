@@ -18,7 +18,7 @@ import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
+  ContextMenuPositioner,
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuSub,
@@ -42,10 +42,10 @@ interface MenuProps {
 
 interface MenuItemProp {
   item: MenuItemType;
-  onSelect?: (event: Event) => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
-export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
+export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
   const id = useId();
   if (Array.isArray(item.submenu)) {
     return (
@@ -53,22 +53,13 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         <ContextMenuSubTrigger>{item.label}</ContextMenuSubTrigger>
         <ContextMenuSubContent>
           {item.submenu.map((subitem, idx) => (
-            <MenuItem key={idx} item={subitem} onSelect={onSelect} />
+            <MenuItem key={idx} item={subitem} onClick={onClick} />
           ))}
         </ContextMenuSubContent>
       </ContextMenuSub>
     );
   } else if (item.type === "separator") {
     return <ContextMenuSeparator key={`${item.id}-separator-${id}`} />;
-  } else if (item.type === "label") {
-    return (
-      <ContextMenuLabel
-        inset={item.inset ?? false}
-        key={`${item.id}-separator-${id}`}
-      >
-        {item.label}
-      </ContextMenuLabel>
-    );
   } else if (item.type === "checkbox") {
     return (
       <ContextMenuCheckboxItem
@@ -76,7 +67,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
-        onSelect={onSelect}
+        onClick={onClick}
         disabled={!item.enabled}
         checked={item.checked}
       >
@@ -94,7 +85,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onSelect }) => {
         data-id={item.id}
         data-command={item.command}
         data-command-args={JSON.stringify(item["command-args"])}
-        onSelect={onSelect}
+        onClick={onClick}
         disabled={!item.enabled}
       >
         {item.label}
@@ -154,16 +145,16 @@ export const ApplicationContextMenu: React.FC<MenuProps> = ({
   };
 
   return (
-    <ContextMenu onOpenChange={onOpenChange}>
-      <ContextMenuTrigger disabled={isTextFocused} asChild>
-        {children}
-      </ContextMenuTrigger>
-      <ContextMenuContent className={className}>
-        {Array.isArray(menu) &&
-          menu.map((item, idx) => (
-            <MenuItem key={idx} item={item} onSelect={handleSelect} />
-          ))}
-      </ContextMenuContent>
+    <ContextMenu disabled={isTextFocused} onOpenChange={onOpenChange}>
+      <ContextMenuTrigger>{children}</ContextMenuTrigger>
+      <ContextMenuPositioner>
+        <ContextMenuContent className={className}>
+          {Array.isArray(menu) &&
+            menu.map((item, idx) => (
+              <MenuItem key={idx} item={item} onClick={handleSelect} />
+            ))}
+        </ContextMenuContent>
+      </ContextMenuPositioner>
     </ContextMenu>
   );
 };

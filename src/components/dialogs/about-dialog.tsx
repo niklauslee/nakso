@@ -18,10 +18,10 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import packageJson from "../../../package.json";
 import { LogoIcon } from "@/components/icons";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
 export interface AboutDialogState {
   open: boolean;

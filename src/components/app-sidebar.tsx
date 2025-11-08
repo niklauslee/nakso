@@ -113,12 +113,10 @@ export function AppSidebar() {
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
-                  asChild
+                  render={<a href="#" />}
                 >
-                  <a href="#">
-                    <SearchIcon size={16} />
-                    <span>Search</span>
-                  </a>
+                  <SearchIcon size={16} />
+                  <span>Search</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
@@ -133,12 +131,10 @@ export function AppSidebar() {
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
-                  asChild
+                  render={<a href="#" />}
                 >
-                  <a href="#">
-                    <ClockIcon size={16} />
-                    <span>Recents</span>
-                  </a>
+                  <ClockIcon size={16} />
+                  <span>Recents</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
@@ -153,12 +149,10 @@ export function AppSidebar() {
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
-                  asChild
+                  render={<a href="#" />}
                 >
-                  <a href="#">
-                    <HeartIcon size={16} />
-                    <span>Favorites</span>
-                  </a>
+                  <HeartIcon size={16} />
+                  <span>Favorites</span>
                 </SidebarMenuButton>
                 <SidebarMenuBadge className="text-muted-foreground">
                   {favoriteFiles.length}
@@ -176,12 +170,10 @@ export function AppSidebar() {
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
-                  asChild
+                  render={<a href="#" />}
                 >
-                  <a href="#">
-                    <Trash2Icon size={16} />
-                    <span>Trash</span>
-                  </a>
+                  <Trash2Icon size={16} />
+                  <span>Trash</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -206,16 +198,14 @@ export function AppSidebar() {
                       setCurrentFolder(folder);
                       setView("folder");
                     }}
-                    asChild
+                    render={<a href="#" />}
                   >
-                    <a href="#">
-                      {folder.tag === DRAFTS_TAG ? (
-                        <FolderCheckIcon size={16} />
-                      ) : (
-                        <FolderIcon size={16} />
-                      )}
-                      <span>{folder.name}</span>
-                    </a>
+                    {folder.tag === DRAFTS_TAG ? (
+                      <FolderCheckIcon size={16} />
+                    ) : (
+                      <FolderIcon size={16} />
+                    )}
+                    <span>{folder.name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

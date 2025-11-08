@@ -39,11 +39,11 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn, toPascalCaseWithSpace } from "@/lib/utils";
-import { ChevronDownIcon } from "lucide-react";
 
 function ArrowheadIcon({
   value,
@@ -213,41 +213,45 @@ export const SelectArrowhead: React.FC<SelectArrowheadProps> = ({
 
   return (
     <Popover open={open} onOpenChange={(open) => setOpen(open)}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          title={title}
-          className={cn(className)}
-        >
-          <ArrowheadIcon
-            value={value ?? LineEndType.FLAT}
-            className={cn(rotate && "transform rotate-180")}
+      <PopoverTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            title={title}
+            className={cn(className)}
           />
-        </Button>
+        }
+      >
+        <ArrowheadIcon
+          value={value ?? LineEndType.FLAT}
+          className={cn(rotate && "transform rotate-180")}
+        />
       </PopoverTrigger>
-      <PopoverContent className="w-fit p-2">
-        <div className="grid grid-cols-5 gap-0.5 w-fit">
-          {Object.values(LineEndType).map((value) => (
-            <Button
-              key={value}
-              variant="ghost"
-              size="icon"
-              title={toPascalCaseWithSpace(value)}
-              className={cn("h-7 w-7")}
-              onClick={() => {
-                setOpen(false);
-                if (onValueChange) onValueChange(value);
-              }}
-            >
-              <ArrowheadIcon
-                value={value}
-                className={cn(rotate && "transform rotate-180")}
-              />
-            </Button>
-          ))}
-        </div>
-      </PopoverContent>
+      <PopoverPositioner>
+        <PopoverContent className="w-fit p-2">
+          <div className="grid grid-cols-5 gap-0.5 w-fit">
+            {Object.values(LineEndType).map((value) => (
+              <Button
+                key={value}
+                variant="ghost"
+                size="icon"
+                title={toPascalCaseWithSpace(value)}
+                className={cn("h-7 w-7")}
+                onClick={() => {
+                  setOpen(false);
+                  if (onValueChange) onValueChange(value);
+                }}
+              >
+                <ArrowheadIcon
+                  value={value}
+                  className={cn(rotate && "transform rotate-180")}
+                />
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </PopoverPositioner>
     </Popover>
   );
 };

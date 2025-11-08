@@ -73,16 +73,17 @@ export function EditorViewHeader({}) {
           open={openMenu === "view"}
           onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
           className="w-54"
+          render={
+            <Button
+              size="sm"
+              variant="ghost"
+              title={`Zoom/view options`}
+              className="font-normal flex gap-1 items-center"
+            />
+          }
         >
-          <Button
-            size="sm"
-            variant="ghost"
-            title={`Zoom/view options`}
-            className="font-normal flex gap-1 items-center"
-          >
-            {Math.round(scale * 100) + "%"}
-            <ChevronDownIcon className="size-3.5" />
-          </Button>
+          {Math.round(scale * 100) + "%"}
+          <ChevronDownIcon className="size-3.5" />
         </ApplicationMenu>
         <ApplicationMenu
           menu={menus.main}
@@ -90,10 +91,9 @@ export function EditorViewHeader({}) {
           className="w-60"
           open={openMenu === "main"}
           onOpenChange={(open) => setOpenMenu(open ? "main" : null)}
+          render={<Button size="icon-sm" variant="ghost" title="Menu" />}
         >
-          <Button size="icon-sm" variant="ghost" title="Menu">
-            <EllipsisVerticalIcon size={16} />
-          </Button>
+          <EllipsisVerticalIcon size={16} />
         </ApplicationMenu>
       </div>
     </div>

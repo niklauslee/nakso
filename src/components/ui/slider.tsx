@@ -1,7 +1,9 @@
-import * as React from "react"
-import * as SliderPrimitive from "@radix-ui/react-slider"
+"use client";
 
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { Slider as SliderPrimitive } from "@base-ui-components/react/slider";
+
+import { cn } from "@/lib/utils";
 
 function Slider({
   className,
@@ -16,10 +18,10 @@ function Slider({
       Array.isArray(value)
         ? value
         : Array.isArray(defaultValue)
-          ? defaultValue
-          : [min, max],
+        ? defaultValue
+        : [min, max],
     [value, defaultValue, min, max]
-  )
+  );
 
   return (
     <SliderPrimitive.Root
@@ -34,28 +36,30 @@ function Slider({
       )}
       {...props}
     >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className={cn(
-          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
-        )}
-      >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
+      <SliderPrimitive.Control className="grid grow data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5">
+        <SliderPrimitive.Track
+          data-slot="slider-track"
           className={cn(
-            "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            "bg-muted relative overflow-hidden rounded-full data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
           )}
-        />
-      </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
-        <SliderPrimitive.Thumb
-          data-slot="slider-thumb"
-          key={index}
-          className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-        />
-      ))}
+        >
+          <SliderPrimitive.Indicator
+            data-slot="slider-range"
+            className={cn(
+              "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            )}
+          />
+        </SliderPrimitive.Track>
+        {Array.from({ length: _values.length }, (_, index) => (
+          <SliderPrimitive.Thumb
+            data-slot="slider-thumb"
+            key={index}
+            className="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          />
+        ))}
+      </SliderPrimitive.Control>
     </SliderPrimitive.Root>
-  )
+  );
 }
 
-export { Slider }
+export { Slider };

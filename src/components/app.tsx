@@ -85,8 +85,8 @@ function App() {
           </SidebarInset>
         </SidebarProvider>
       </div>
-      <SettingsDialog />
       <AboutDialog />
+      <SettingsDialog />
       <Toaster position="top-center" />
     </>
   );
