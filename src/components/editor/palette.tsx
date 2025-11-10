@@ -186,6 +186,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
           )}
           {(hasRectangle ||
             hasEllipse ||
+            hasIcon ||
             hasFrame ||
             hasLine ||
             hasConnector) && (
