@@ -69,6 +69,7 @@ export function AppSidebar() {
               size="icon-sm"
               className="cursor-pointer"
               title="New File"
+              onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={handleNewFile}
             >
               <PlusIcon size={16} />
@@ -78,6 +79,7 @@ export function AppSidebar() {
               size="icon-sm"
               className="cursor-pointer"
               title="New Folder"
+              onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={() => {
                 console.log("New Folder");
               }}
@@ -89,6 +91,7 @@ export function AppSidebar() {
               size="icon-sm"
               className="cursor-pointer"
               title="New File"
+              onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={() =>
                 window.app?.commands.execute("view:toggle-sidebar")
               }

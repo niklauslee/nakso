@@ -62,6 +62,7 @@ export function EditorViewHeader({}) {
         <Button
           size="icon-sm"
           variant="ghost"
+          onMouseDownCapture={(e) => e.stopPropagation()}
           onClick={handleNewFile}
           title="New File"
         >

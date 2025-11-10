@@ -123,7 +123,7 @@ export class AppContext {
           appWindow.startDragging();
         }
       });
-      region.addEventListener("dblclick", () => {
+      region.addEventListener("dblclick", (e) => {
         appWindow.toggleMaximize();
       });
     });

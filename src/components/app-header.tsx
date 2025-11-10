@@ -3,7 +3,6 @@ import { useAppStore } from "@/store/app-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PanelLeftIcon, XIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { MaximizeWindowIcon } from "./icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
@@ -16,20 +15,20 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
   return (
     <header
       data-manual-window-drag-region
-      className={cn("flex items-center w-full h-12 px-2 gap-2", className)}
+      className={cn("flex items-center w-full h-12", className)}
       {...others}
     >
       <div
         className={cn(
-          "w-full h-full flex items-center gap-1 pointer-events-none px-2",
+          "w-full h-full flex items-center gap-1 px-2",
           !showSidebar && platform === "darwin" && "pl-18"
         )}
       >
         {!showSidebar && (
           <Button
-            className="pointer-events-auto"
             variant="ghost"
             size="icon-sm"
+            onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
           >
             <PanelLeftIcon size={16} />
@@ -37,32 +36,43 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
         )}
         {children}
       </div>
-      {/* <Separator orientation="vertical" className="max-h-6" /> */}
       {platform !== "darwin" && (
-        <div className="flex items-center gap-2">
+        <div className="h-full flex items-center">
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             title="Minimize"
-            onClick={() => getCurrentWindow().minimize()}
+            className="rounded-none h-full"
+            onMouseDownCapture={(e) => e.stopPropagation()}
+            onClick={() => {
+              getCurrentWindow().minimize();
+            }}
           >
-            <MinusIcon size={16} />
+            <MinusIcon className="!size-3" />
           </Button>
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             title="Maximize"
-            onClick={() => getCurrentWindow().toggleMaximize()}
+            className="rounded-none h-full"
+            onMouseDownCapture={(e) => e.stopPropagation()}
+            onClick={() => {
+              getCurrentWindow().toggleMaximize();
+            }}
           >
-            <MaximizeWindowIcon size={16} />
+            <MaximizeWindowIcon className="!size-3" />
           </Button>
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             title="Close"
-            onClick={() => getCurrentWindow().close()}
+            className="rounded-none h-full"
+            onMouseDownCapture={(e) => e.stopPropagation()}
+            onClick={() => {
+              getCurrentWindow().close();
+            }}
           >
-            <XIcon size={16} />
+            <XIcon className="!size-3" />
           </Button>
         </div>
       )}
