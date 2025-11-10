@@ -71,6 +71,7 @@ export { default as ConnectionMarginNoneIcon } from "./connection-margin-none";
 export { default as ConnectionMarginSmallIcon } from "./connection-margin-small";
 export { default as ConnectionMarginMediumIcon } from "./connection-margin-medium";
 export { default as ConnectionMarginLargeIcon } from "./connection-margin-large";
+export { default as MaximizeWindowIcon } from "./maximize-window";
 export { default as GoogleIcon } from "./google";
 export { default as TwitterXIcon } from "./twitter-x";
 export { default as DiscordIcon } from "./discord";
