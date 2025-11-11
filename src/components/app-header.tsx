@@ -20,7 +20,7 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
     >
       <div
         className={cn(
-          "w-full h-full flex items-center gap-1 pl-4 pr-2",
+          "w-full h-full flex items-center gap-1 px-4",
           !showSidebar && platform === "darwin" && "pl-22"
         )}
       >
