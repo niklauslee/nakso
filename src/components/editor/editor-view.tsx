@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Box,
+  CanvasPointerEvent,
   Editor as EditorType,
   FileDropEvent,
   Shape,
@@ -194,7 +195,33 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
   };
 
   return (
-    <>
+    <div
+      className="absolute inset-0"
+      // onPointerDown={(e) => {
+      //   if (e.button === 2 && editor) {
+      //     const canvas = editor.canvas;
+      //     const rect = editor.canvasElement.getBoundingClientRect();
+      //     // create canvas pointer event
+      //     let _p = [e.clientX - rect.left, e.clientY - rect.top];
+      //     let p = [_p[0] * canvas.ratio, _p[1] * canvas.ratio];
+      //     const evt = new CanvasPointerEvent(p[0], p[1], e);
+      //     // propagate to active handler
+      //     (editor as any).activeHandler.pointerDown(editor, evt);
+      //   }
+      // }}
+      // onPointerMove={(e) => {
+      //   if (editor) {
+      //     const canvas = editor.canvas;
+      //     const rect = editor.canvasElement.getBoundingClientRect();
+      //     // create canvas pointer event
+      //     let _p = [e.clientX - rect.left, e.clientY - rect.top];
+      //     let p = [_p[0] * canvas.ratio, _p[1] * canvas.ratio];
+      //     const evt = new CanvasPointerEvent(p[0], p[1], e);
+      //     // propagate to active handler
+      //     (editor as any).activeHandler.pointerMove(editor, evt);
+      //   }
+      // }}
+    >
       <ApplicationContextMenu
         menu={menus.context}
         className="w-56 outline-none"
@@ -235,6 +262,6 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       </ApplicationContextMenu>
       <Palette selection={shapeProps} onChange={handlePropsChange} />
       <Toolbar />
-    </>
+    </div>
   );
 }
