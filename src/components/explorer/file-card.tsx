@@ -35,9 +35,15 @@ async function load(path: string): Promise<Page | null> {
 
 interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
   file: FileEntry;
+  selected?: boolean;
 }
 
-export function FileCard({ file, className }: FileCardProps) {
+export function FileCard({
+  file,
+  selected = false,
+  className,
+  ...others
+}: FileCardProps) {
   const pageViewRef = useRef<DGMPageViewHandle>(null);
   const editableTextRef = useRef<EditableTextHandle>(null);
   const [page, setPage] = useState<Page | null>(null);
@@ -120,7 +126,13 @@ export function FileCard({ file, className }: FileCardProps) {
   };
 
   return (
-    <div className="relative w-52 h-fit border rounded-xl overflow-clip group">
+    <div
+      className={cn(
+        "relative w-52 ring-1 ring-border h-fit rounded-xl overflow-clip group",
+        selected && "ring-3 ring-primary/75"
+      )}
+      {...others}
+    >
       <div className="w-52 h-36" onDoubleClick={handleOpenClick}>
         {page && !broken && (
           <div className="w-full h-full flex items-center justify-center p-2">
