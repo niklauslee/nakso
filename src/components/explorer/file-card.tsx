@@ -99,6 +99,7 @@ export function FileCard({
   };
 
   const handleRenameClick = () => {
+    console.log("Rename clicked");
     setTimeout(() => {
       editableTextRef.current?.startEdit();
     }, 200);
@@ -129,7 +130,7 @@ export function FileCard({
     <div
       className={cn(
         "relative w-52 ring-1 ring-border h-fit rounded-xl overflow-clip group",
-        selected && "ring-3 ring-primary/75"
+        selected && "ring-2 ring-primary/75"
       )}
       {...others}
     >
@@ -184,20 +185,20 @@ export function FileCard({
               </DropdownMenuTrigger>
               <DropdownMenuPositioner align="end">
                 <DropdownMenuContent className="w-fit">
-                  <DropdownMenuItem onSelect={handleOpenClick}>
+                  <DropdownMenuItem onClick={handleOpenClick}>
                     Open
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={handleRenameClick}>
+                  <DropdownMenuItem onClick={handleRenameClick}>
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={handleDuplicateClick}>
+                  <DropdownMenuItem onClick={handleDuplicateClick}>
                     Duplicate
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={handleToggleFavorite}>
+                  <DropdownMenuItem onClick={handleToggleFavorite}>
                     {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={handleMoveToTrashClick}>
+                  <DropdownMenuItem onClick={handleMoveToTrashClick}>
                     Move to Trash
                   </DropdownMenuItem>
                 </DropdownMenuContent>

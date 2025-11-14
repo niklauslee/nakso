@@ -219,9 +219,9 @@ export function AppSidebar() {
       <SidebarFooter>
         <div className="flex items-center justify-between">
           <div>
-            <Button size="sm" variant="outline" onClick={handleTestGreet}>
+            {/* <Button size="sm" variant="outline" onClick={handleTestGreet}>
               Test
-            </Button>
+            </Button> */}
           </div>
           <div>
             <Button

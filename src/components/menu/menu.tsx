@@ -41,7 +41,7 @@ interface MenuProps {
   sideOffset?: number;
   open?: boolean;
   render?: React.ReactElement<Record<string, unknown>>;
-  onSelect?: (id: string, command: string, commandArgs: any) => void;
+  onClick?: (id: string, command: string, commandArgs: any) => void;
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -134,7 +134,7 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
   sideOffset = 10,
   render,
   open,
-  onSelect,
+  onClick,
   onOpenChange,
 }) => {
   const handleSelect = (event: any) => {
@@ -143,8 +143,8 @@ export const ApplicationMenu: React.FC<MenuProps> = ({
     const commandArgs = event.target.dataset.commandArgs
       ? JSON.parse(event.target.dataset.commandArgs)
       : {};
-    if (onSelect) {
-      onSelect(id, command, commandArgs);
+    if (onClick) {
+      onClick(id, command, commandArgs);
     } else {
       if (command) {
         // Use setTimeout to avoid react-remove-scroll-bar error
