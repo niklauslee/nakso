@@ -29,7 +29,6 @@ declare global {
 function App() {
   const setAppReady = useAppStore((state) => state.setAppReady);
   const view = useExplorerStore((state) => state.view);
-  const showSidebar = useSettingStore((state) => state.showSidebar);
   const darkMode = useSettingStore((state) => state.darkMode);
   const currentFolder = useExplorerStore((state) => state.currentFolder);
 
@@ -57,7 +56,7 @@ function App() {
   return (
     <>
       <div className="fixed inset-0 select-none">
-        <SidebarProvider open={showSidebar}>
+        <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
             <div className="absolute inset-0">

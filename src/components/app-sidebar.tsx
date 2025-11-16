@@ -11,6 +11,7 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   ClockIcon,
@@ -35,8 +36,12 @@ import {
 } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { workspace } from "@/api/workspace";
+import { useSettingStore } from "@/store/setting-store";
+import { useEffect } from "react";
 
 export function AppSidebar() {
+  const showSidebar = useSettingStore((state) => state.showSidebar);
+  const setShowSidebar = useSettingStore((state) => state.setShowSidebar);
   const view = useExplorerStore((state) => state.view);
   const setView = useExplorerStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);
@@ -44,6 +49,18 @@ export function AppSidebar() {
   const currentFolder = useExplorerStore((state) => state.currentFolder);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
   const folderTag = currentFolder?.tag;
+  const { setOpen, openMobile, setOpenMobile, isMobile } = useSidebar();
+
+  useEffect(() => {
+    setOpen(showSidebar);
+    setOpenMobile(showSidebar);
+  }, [showSidebar]);
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowSidebar(openMobile);
+    }
+  }, [isMobile, openMobile]);
 
   const handleNewFile = () => {
     window.app?.commands.execute("file:new");

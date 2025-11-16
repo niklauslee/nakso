@@ -90,7 +90,11 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
           onBlur={handleBlur}
         />
         <span
-          className={cn("inline-block", className, editable && "hidden")}
+          className={cn(
+            "inline-block text-nowrap",
+            className,
+            editable && "hidden"
+          )}
           onDoubleClickCapture={handleDoubleClickCapture}
           {...props}
         >
