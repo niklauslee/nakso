@@ -8,7 +8,7 @@ import {
   ChevronDownIcon,
   EllipsisVerticalIcon,
   LockIcon,
-  PlusIcon,
+  SquarePenIcon,
 } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { workspace } from "@/api/workspace";
@@ -58,7 +58,7 @@ export function EditorViewHeader({}) {
         <EditableText value={fileName} onValueChange={handleRenameFile} />
         {modified && <span> •</span>}
       </div>
-      <div className="flex items-center gap-1 pointer-events-auto">
+      <div className="flex items-center gap-0 pointer-events-auto">
         <Button
           size="icon-sm"
           variant="ghost"
@@ -66,7 +66,7 @@ export function EditorViewHeader({}) {
           onClick={handleNewFile}
           title="New File"
         >
-          <PlusIcon size={16} />
+          <SquarePenIcon size={16} />
         </Button>
         <ApplicationMenu
           menu={menus.view}

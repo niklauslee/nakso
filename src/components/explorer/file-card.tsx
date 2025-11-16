@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useExplorerStore } from "@/store/explorer-store";
+import { Button } from "../ui/button";
 
 async function load(path: string): Promise<Page | null> {
   const data = await workspace.readFile(path);
@@ -61,6 +62,7 @@ export function FileCard({
     try {
       const page = await load(file.fullPath);
       setPage(page);
+      if (!(page instanceof Page)) setBroken(true);
     } catch (error) {
       setBroken(true);
       console.error("Failed to load file:", file.fullPath, error);
@@ -129,35 +131,36 @@ export function FileCard({
   return (
     <div
       className={cn(
-        "relative w-52 ring-1 ring-border h-fit rounded-xl overflow-clip group",
+        "group relative border border-border/65 w-full rounded-lg overflow-clip",
         selected && "ring-2 ring-primary/75"
       )}
       {...others}
     >
-      <div className="w-52 h-36" onDoubleClick={handleOpenClick}>
+      <div className="" onDoubleClick={handleOpenClick}>
         {page && !broken && (
-          <div className="w-full h-full flex items-center justify-center p-2">
+          <div className="w-full aspect-4/3 flex items-center justify-center">
             <DGMPageView
               ref={pageViewRef}
               className={cn("w-full", className)}
               darkMode={darkMode}
               page={page}
-              scaleAdjust={page.size ? 1 : 0.9}
+              scaleAdjust={page.size ? 1 : 0.8}
               onClick={() => {
                 pageViewRef.current?.focus();
               }}
               tabIndex={0}
+              update={true}
             />
           </div>
         )}
         {broken && (
-          <div className="w-full h-full flex items-center justify-center bg-accent/50 text-accent-foreground/20">
-            <BanIcon size={32} strokeWidth={1} />
+          <div className="w-full aspect-4/3 flex items-center justify-center bg-sidebar text-muted-foreground/50">
+            <BanIcon size={32} strokeWidth={1.5} />
           </div>
         )}
       </div>
-      <div className="flex flex-col w-full max-w-full text-sm py-2 bg-accent">
-        <div className="relative flex items-center justify-between px-2 w-full max-w-full">
+      <div className="flex flex-col w-full max-w-full text-sm py-2 bg-sidebar">
+        <div className="relative flex items-center justify-between px-3 w-full max-w-full">
           <div
             className={cn(
               "flex items-center gap-1 min-h-6 w-full max-w-full",
@@ -175,13 +178,9 @@ export function FileCard({
           <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
             <DropdownMenu>
               <DropdownMenuTrigger
-                render={
-                  <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer" />
-                }
+                render={<Button size="icon-sm" variant="ghost" />}
               >
-                {/* <button className="flex bg-accent/90 items-center justify-center text-muted-foreground outline-0 w-4 h-4 cursor-pointer"> */}
                 <EllipsisIcon size={16} />
-                {/* </button> */}
               </DropdownMenuTrigger>
               <DropdownMenuPositioner align="end">
                 <DropdownMenuContent className="w-fit">
@@ -206,15 +205,16 @@ export function FileCard({
             </DropdownMenu>
           </div>
         </div>
-        <div className="flex items-center text-nowrap text-xs text-muted-foreground px-2">
+        <div className="flex items-center text-nowrap text-xs text-muted-foreground/75 px-3">
           {dateFromNow(new Date(file.mtime!))}
         </div>
       </div>
 
       <div className="absolute right-0 top-0 p-2">
         {!broken && (
-          <button
-            type="button"
+          <Button
+            size="icon-sm"
+            variant="ghost"
             onClick={handleToggleFavorite}
             title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
             className={cn(
@@ -224,10 +224,10 @@ export function FileCard({
           >
             <HeartIcon
               size={16}
-              className={"text-destructive cursor-pointer"}
+              className={"text-foreground cursor-pointer"}
               fill={isFavorite ? "currentColor" : "transparent"}
             />
-          </button>
+          </Button>
         )}
       </div>
     </div>

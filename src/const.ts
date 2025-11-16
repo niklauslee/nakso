@@ -14,9 +14,9 @@ export const FAVORITES_TAG = "favorites";
 export const TRASH_TAG = "trash";
 export const DRAFTS_TAG = "drafts";
 
-export const DEFAULT_SANS_FONT = "Inter";
-export const DEFAULT_SERIF_FONT = "Source Serif Pro";
-export const DEFAULT_MONO_FONT = "IBM Plex Mono";
+export const DEFAULT_SANS_FONT = "Archivo";
+export const DEFAULT_SERIF_FONT = "Newsreader";
+export const DEFAULT_MONO_FONT = "JetBrains Mono";
 export const DEFAULT_HAND_FONT = "Loranthus";
 export const DEFAULT_FONT_SIZE = 20;
 export const FONT_SIZES = [12, 14, 16, 18, 20, 24, 30, 36, 48, 60, 72, 96, 128];

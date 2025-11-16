@@ -4,9 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: "Inter";
-  --font-mono: "IBM Plex Mono";
-  --font-serif: "Source Serif Pro";
+  --font-sans: "Archivo";
+  --font-mono: "JetBrains Mono";
+  --font-serif: "Newsreader";
   --font-hand: "Loranthus";
 
   --radius: 0.65rem;
@@ -16,12 +16,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-
-  /* --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0); */
-  --primary: oklch(0.488 0.243 264.376);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -209,6 +205,13 @@
 }
 
 @theme inline {
+  /* Breakpoints */
+  --breakpoint-2xs: 16rem;
+  --breakpoint-xs: 24rem;
+  --breakpoint-2xl: 100rem;
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 140rem;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -253,12 +256,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-
-  /* --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0); */
-  --primary: oklch(0.488 0.243 264.376);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);

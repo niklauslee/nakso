@@ -3,6 +3,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -21,6 +22,8 @@ import {
   PlusIcon,
   SearchIcon,
   SettingsIcon,
+  SquarePenIcon,
+  SquarePlusIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -59,7 +62,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="border-none">
       <SidebarHeader data-manual-window-drag-region className="w-full h-12">
         <div className="w-full h-full flex items-center justify-between">
           <div className="flex items-center"></div>
@@ -72,19 +75,7 @@ export function AppSidebar() {
               onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={handleNewFile}
             >
-              <PlusIcon size={16} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="cursor-pointer"
-              title="New Folder"
-              onMouseDownCapture={(e) => e.stopPropagation()}
-              onClick={() => {
-                console.log("New Folder");
-              }}
-            >
-              <FolderPlusIcon size={16} />
+              <SquarePenIcon size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -157,7 +148,7 @@ export function AppSidebar() {
                   <HeartIcon size={16} />
                   <span>Favorites</span>
                 </SidebarMenuButton>
-                <SidebarMenuBadge className="text-muted-foreground">
+                <SidebarMenuBadge className="text-sidebar-foreground/40">
                   {favoriteFiles.length}
                 </SidebarMenuBadge>
               </SidebarMenuItem>
@@ -183,11 +174,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Folders</SidebarGroupLabel>
-          {/* <SidebarGroupAction title="Add Folder">
-            <FolderPlusIcon size={16} />{" "}
+          <SidebarGroupLabel className="text-sidebar-foreground/40">
+            Folders
+          </SidebarGroupLabel>
+          <SidebarGroupAction
+            className="text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-transparent cursor-pointer"
+            title="Add Folder"
+            onClick={() => {
+              console.log("new folder");
+            }}
+          >
+            <FolderPlusIcon size={16} />
             <span className="sr-only">Add Folder</span>
-          </SidebarGroupAction> */}
+          </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
               {folders.map((folder) => (

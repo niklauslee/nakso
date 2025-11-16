@@ -1,6 +1,151 @@
 [
   {
     "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 100,
+    "src": "./fonts/Archivo-Thin.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 100,
+    "src": "./fonts/Archivo-ThinItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 200,
+    "src": "./fonts/Archivo-ExtraLight.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 200,
+    "src": "./fonts/Archivo-ExtraLightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 300,
+    "src": "./fonts/Archivo-Light.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 300,
+    "src": "./fonts/Archivo-LightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 400,
+    "src": "./fonts/Archivo-Regular.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 400,
+    "src": "./fonts/Archivo-Italic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 500,
+    "src": "./fonts/Archivo-Medium.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 500,
+    "src": "./fonts/Archivo-MediumItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 600,
+    "src": "./fonts/Archivo-SemiBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 600,
+    "src": "./fonts/Archivo-SemiBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 700,
+    "src": "./fonts/Archivo-Bold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 700,
+    "src": "./fonts/Archivo-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 800,
+    "src": "./fonts/Archivo-ExtraBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 800,
+    "src": "./fonts/Archivo-ExtraBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "normal",
+    "weight": 900,
+    "src": "./fonts/Archivo-Black.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Archivo",
+    "style": "italic",
+    "weight": 900,
+    "src": "./fonts/Archivo-BlackItalic.ttf",
+    "builtin": true
+  },
+
+  {
+    "category": "sans",
     "family": "Inter",
     "style": "normal",
     "weight": 100,
@@ -128,69 +273,264 @@
     "builtin": true
   },
   {
+    "category": "sans",
+    "family": "Inter",
+    "style": "normal",
+    "weight": 900,
+    "src": "./fonts/Inter-Black.ttf",
+    "builtin": true
+  },
+  {
+    "category": "sans",
+    "family": "Inter",
+    "style": "italic",
+    "weight": 900,
+    "src": "./fonts/Inter-BlackItalic.ttf",
+    "builtin": true
+  },
+
+  {
     "category": "serif",
-    "family": "Source Serif Pro",
+    "family": "Newsreader",
+    "style": "normal",
+    "weight": 200,
+    "src": "./fonts/Newsreader-ExtraLight.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "italic",
+    "weight": 200,
+    "src": "./fonts/Newsreader-ExtraLightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "normal",
+    "weight": 300,
+    "src": "./fonts/Newsreader-Light.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "italic",
+    "weight": 300,
+    "src": "./fonts/Newsreader-LightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
     "style": "normal",
     "weight": 400,
-    "src": "./fonts/SourceSerifPro-Regular.ttf",
+    "src": "./fonts/Newsreader-Regular.ttf",
     "builtin": true
   },
   {
     "category": "serif",
-    "family": "Source Serif Pro",
+    "family": "Newsreader",
     "style": "italic",
     "weight": 400,
-    "src": "./fonts/SourceSerifPro-Italic.ttf",
+    "src": "./fonts/Newsreader-Italic.ttf",
     "builtin": true
   },
   {
     "category": "serif",
-    "family": "Source Serif Pro",
+    "family": "Newsreader",
+    "style": "normal",
+    "weight": 500,
+    "src": "./fonts/Newsreader-Medium.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "italic",
+    "weight": 500,
+    "src": "./fonts/Newsreader-MediumItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "normal",
+    "weight": 600,
+    "src": "./fonts/Newsreader-SemiBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "italic",
+    "weight": 600,
+    "src": "./fonts/Newsreader-SemiBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
     "style": "normal",
     "weight": 700,
-    "src": "./fonts/SourceSerifPro-Bold.ttf",
+    "src": "./fonts/Newsreader-Bold.ttf",
     "builtin": true
   },
   {
     "category": "serif",
-    "family": "Source Serif Pro",
+    "family": "Newsreader",
     "style": "italic",
     "weight": 700,
-    "src": "./fonts/SourceSerifPro-BoldItalic.ttf",
+    "src": "./fonts/Newsreader-BoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "normal",
+    "weight": 800,
+    "src": "./fonts/Newsreader-ExtraBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "serif",
+    "family": "Newsreader",
+    "style": "italic",
+    "weight": 800,
+    "src": "./fonts/Newsreader-ExtraBoldItalic.ttf",
+    "builtin": true
+  },
+
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 100,
+    "src": "./fonts/JetBrainsMono-Thin.ttf",
     "builtin": true
   },
   {
     "category": "mono",
-    "family": "IBM Plex Mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 100,
+    "src": "./fonts/JetBrainsMono-ThinItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 200,
+    "src": "./fonts/JetBrainsMono-ExtraLight.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 200,
+    "src": "./fonts/JetBrainsMono-ExtraLightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 300,
+    "src": "./fonts/JetBrainsMono-Light.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 300,
+    "src": "./fonts/JetBrainsMono-LightItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
     "style": "normal",
     "weight": 400,
-    "src": "./fonts/IBMPlexMono-Regular.ttf",
+    "src": "./fonts/JetBrainsMono-Regular.ttf",
     "builtin": true
   },
   {
     "category": "mono",
-    "family": "IBM Plex Mono",
+    "family": "JetBrains Mono",
     "style": "italic",
     "weight": 400,
-    "src": "./fonts/IBMPlexMono-Italic.ttf",
+    "src": "./fonts/JetBrainsMono-Italic.ttf",
     "builtin": true
   },
   {
     "category": "mono",
-    "family": "IBM Plex Mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 500,
+    "src": "./fonts/JetBrainsMono-Medium.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 500,
+    "src": "./fonts/JetBrainsMono-MediumItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 600,
+    "src": "./fonts/JetBrainsMono-SemiBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 600,
+    "src": "./fonts/JetBrainsMono-SemiBoldItalic.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
     "style": "normal",
     "weight": 700,
-    "src": "./fonts/IBMPlexMono-Bold.ttf",
+    "src": "./fonts/JetBrainsMono-Bold.ttf",
     "builtin": true
   },
   {
     "category": "mono",
-    "family": "IBM Plex Mono",
+    "family": "JetBrains Mono",
     "style": "italic",
     "weight": 700,
-    "src": "./fonts/IBMPlexMono-BoldItalic.ttf",
+    "src": "./fonts/JetBrainsMono-BoldItalic.ttf",
     "builtin": true
   },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "normal",
+    "weight": 800,
+    "src": "./fonts/JetBrainsMono-ExtraBold.ttf",
+    "builtin": true
+  },
+  {
+    "category": "mono",
+    "family": "JetBrains Mono",
+    "style": "italic",
+    "weight": 800,
+    "src": "./fonts/JetBrainsMono-ExtraBoldItalic.ttf",
+    "builtin": true
+  },
+
   {
     "category": "hand",
     "family": "Loranthus",

@@ -13,8 +13,8 @@ import {
   FolderCheckIcon,
   FolderIcon,
   HeartIcon,
-  PlusIcon,
   SearchIcon,
+  SquarePenIcon,
   Trash2Icon,
 } from "lucide-react";
 import { FileEntry, workspace } from "@/api/workspace";
@@ -54,63 +54,59 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
     <div className="w-full h-full flex items-center justify-between">
       <div>
         {folderTag === SEARCH_TAG && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <SearchIcon size={16} />
             Search
           </div>
         )}
         {folderTag === RECENTS_TAG && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <ClockIcon size={16} />
             Recents
           </div>
         )}
         {folderTag === FAVORITES_TAG && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <HeartIcon size={16} />
             Favorites
           </div>
         )}
         {folderTag === DRAFTS_TAG && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <FolderCheckIcon size={16} />
             Drafts
           </div>
         )}
         {folderTag === TRASH_TAG && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <Trash2Icon size={16} />
             Trash
           </div>
         )}
         {!folderTag && (
-          <div className="flex items-center gap-2 text-sm pl-2">
+          <div className="flex items-center gap-2 text-sm">
             <FolderIcon size={16} />
             <Breadcrumb>
               <BreadcrumbList>
                 {relDirTerms.map((part, index) => (
-                  <BreadcrumbItem key={index}>{part}</BreadcrumbItem>
+                  <BreadcrumbItem key={index} className="text-foreground">
+                    {part}
+                  </BreadcrumbItem>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         )}
       </div>
-      <div className="flex items-center gap-1 pointer-events-auto">
+      <div className="flex items-center gap-0 pointer-events-auto">
         <Button
           size="icon-sm"
           variant="ghost"
           title="New File"
           onClick={handleNewFile}
         >
-          <PlusIcon size={16} />
+          <SquarePenIcon size={16} />
         </Button>
-        {/* <FileSort
-          value={sortBy}
-          onValueChange={(value) => {
-            setSortBy(value);
-          }}
-        /> */}
         <ApplicationMenu
           menu={menus.sort}
           className="w-52"
