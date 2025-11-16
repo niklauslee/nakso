@@ -19,11 +19,9 @@ import {
   FolderPlusIcon,
   HeartIcon,
   PanelLeftCloseIcon,
-  PlusIcon,
   SearchIcon,
   SettingsIcon,
   SquarePenIcon,
-  SquarePlusIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -81,7 +79,7 @@ export function AppSidebar() {
               variant="ghost"
               size="icon-sm"
               className="cursor-pointer"
-              title="New File"
+              title="Close Sidebar"
               onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={() =>
                 window.app?.commands.execute("view:toggle-sidebar")

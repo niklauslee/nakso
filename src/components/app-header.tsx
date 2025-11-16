@@ -20,7 +20,7 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
     >
       <div
         className={cn(
-          "w-full h-full flex items-center gap-1 px-4",
+          "w-full h-full flex items-center gap-2 px-4",
           !showSidebar && platform === "darwin" && "pl-22"
         )}
       >
@@ -28,6 +28,7 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon-sm"
+            title="Open Sidebar"
             onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
           >

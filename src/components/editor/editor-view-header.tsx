@@ -6,21 +6,28 @@ import { useMenuStore } from "@/store/menu-store";
 import { ApplicationMenu } from "../menu/menu";
 import {
   ChevronDownIcon,
+  ChevronLeftIcon,
   EllipsisVerticalIcon,
   LockIcon,
   SquarePenIcon,
 } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { workspace } from "@/api/workspace";
+import { useExplorerStore } from "@/store/explorer-store";
 
 export function EditorViewHeader({}) {
   const [fileName, setFileName] = useState<string>("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const setView = useExplorerStore((state) => state.setView);
+  const currentFolder = useExplorerStore((state) => state.currentFolder);
+  const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
   const menus = useMenuStore((state) => state.menus);
   const workingFile = useEditorStore((state) => state.workingFile);
   const scale = useEditorStore((state) => state.scale);
   const readonly = workingFile?.readonly ?? true;
   const modified = useEditorStore((state) => state.modified);
+
+  console.log("workingFile", workingFile);
 
   useEffect(() => {
     if (workingFile) fetchFileName();
@@ -50,13 +57,39 @@ export function EditorViewHeader({}) {
     <div className="w-full h-full flex items-center justify-between">
       <div
         className={cn(
-          "flex items-center gap-2 text-sm pointer-events-auto",
+          "flex items-center gap-2 text-sm pointer-events-auto -ml-2",
           readonly && "opacity-50"
         )}
       >
-        {readonly && <LockIcon size={16} />}
-        <EditableText value={fileName} onValueChange={handleRenameFile} />
-        {modified && <span> •</span>}
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Back"
+          onClick={async () => {
+            if (!workingFile) return;
+            if (currentFolder?.fullPath === workingFile.dirname) {
+              setView("folder");
+            } else {
+              const dirEntry = await workspace.getFileEntry(
+                workingFile?.dirname
+              );
+              setCurrentFolder(dirEntry);
+              setView("folder");
+            }
+          }}
+        >
+          <ChevronLeftIcon size={16} />
+        </Button>
+        <div
+          className={cn(
+            "flex items-center gap-2 text-sm pointer-events-auto",
+            readonly && "opacity-50"
+          )}
+        >
+          {readonly && <LockIcon size={16} />}
+          <EditableText value={fileName} onValueChange={handleRenameFile} />
+          {modified && <span> •</span>}
+        </div>
       </div>
       <div className="flex items-center gap-0 pointer-events-auto">
         <Button
