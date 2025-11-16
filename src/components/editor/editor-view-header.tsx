@@ -27,8 +27,6 @@ export function EditorViewHeader({}) {
   const readonly = workingFile?.readonly ?? true;
   const modified = useEditorStore((state) => state.modified);
 
-  console.log("workingFile", workingFile);
-
   useEffect(() => {
     if (workingFile) fetchFileName();
   }, [workingFile, readonly]);
