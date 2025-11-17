@@ -183,6 +183,10 @@ export const useStyleStore = create<StyleState>()(
                 ...state.commonStyle,
                 ...extractProps(props, commonStyleProps),
               },
+              textStyle: {
+                ...state.textStyle,
+                ...extractProps(props, textStyleProps, ["fillColor"]),
+              },
             }));
             break;
           case "Line":
@@ -248,7 +252,7 @@ export const useStyleStore = create<StyleState>()(
           case "Image":
             return { ...get().imageStyle };
           case "Frame":
-            return { ...get().commonStyle };
+            return { ...get().commonStyle, ...get().textStyle };
           case "Line":
             return { ...get().commonStyle, ...get().lineStyle };
           case "Connector":
