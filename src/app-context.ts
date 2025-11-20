@@ -1,4 +1,5 @@
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
+import { open as openExternalLink } from "@tauri-apps/plugin-shell";
 import { Editor, Group } from "@dgmjs/core";
 import { CommandManager } from "@/engine/command-manager";
 import { KeymapManager } from "@/engine/keymap-manager";
@@ -294,5 +295,9 @@ export class AppContext {
     } catch (err) {
       console.error("Failed to update UI state:", err);
     }
+  }
+
+  async openExternalLink(url: string) {
+    await openExternalLink(url);
   }
 }

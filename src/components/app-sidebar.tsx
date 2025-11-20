@@ -86,16 +86,6 @@ export function AppSidebar() {
               variant="ghost"
               size="icon-sm"
               className="cursor-pointer"
-              title="New File"
-              onMouseDownCapture={(e) => e.stopPropagation()}
-              onClick={handleNewFile}
-            >
-              <SquarePenIcon size={16} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="cursor-pointer"
               title="Close Sidebar"
               onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={() =>

@@ -50,14 +50,26 @@ export function AboutDialog({}) {
           <DialogTitle className="hidden">About</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center justify-center">
             <LogoIcon size={48} />
           </div>
           <div className="text-sm font-medium text-center">
             {packageJson.productName}
           </div>
-          <div className="text-xs text-center text-muted-foreground">
+          <div className="text-xs flex items-center justify-center">
+            <a
+              href="https://nakso.app"
+              className="text-blue-500 focus:outline-none"
+              onClick={(e) => {
+                e.preventDefault();
+                window.app.openExternalLink("https://nakso.app");
+              }}
+            >
+              https://nakso.app
+            </a>
+          </div>
+          <div className="text-xs text-center text-muted-foreground mt-2">
             Version {packageJson.version}
           </div>
           <div className="text-xs text-center text-muted-foreground">

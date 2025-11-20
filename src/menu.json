@@ -7,23 +7,10 @@
     },
     { "type": "separator" },
     {
-      "label": "Homepage",
-      "id": "help.homepage",
-      "command": "help:homepage",
-      "external": true
-    },
-    {
-      "label": "Documentation",
-      "id": "help.documentation",
-      "command": "help:documentation",
-      "external": true
-    },
-    {
       "label": "Keyboard Shortcuts",
       "id": "help.keyboard-shortcuts",
       "command": "help:keyboard-shortcuts"
     },
-    { "type": "separator" },
     {
       "label": "Open Developer Tools",
       "id": "view.open-dev-tools",

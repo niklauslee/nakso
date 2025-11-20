@@ -14,7 +14,7 @@ export const FAVORITES_TAG = "favorites";
 export const TRASH_TAG = "trash";
 export const DRAFTS_TAG = "drafts";
 
-export const DEFAULT_SANS_FONT = "Archivo";
+export const DEFAULT_SANS_FONT = "Inter";
 export const DEFAULT_SERIF_FONT = "Newsreader";
 export const DEFAULT_MONO_FONT = "JetBrains Mono";
 export const DEFAULT_HAND_FONT = "Loranthus";

@@ -15,6 +15,8 @@
     "core:window:allow-close",
     "window-state:default",
     "os:default",
+    "shell:allow-open",
+    "shell:default",
     "process:default",
     "fs:default",
     "fs:allow-app-meta",

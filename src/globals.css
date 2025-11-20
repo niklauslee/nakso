@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: "Archivo";
+  --font-sans: "Inter", sans-serif; /* "Archivo"; */
   --font-mono: "JetBrains Mono";
   --font-serif: "Newsreader";
   --font-hand: "Loranthus";
