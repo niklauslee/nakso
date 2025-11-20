@@ -9,7 +9,6 @@ import { Button } from "../ui/button";
 import {
   ArrowUpDownIcon,
   ClockIcon,
-  EllipsisVerticalIcon,
   FolderCheckIcon,
   FolderIcon,
   HeartIcon,
@@ -27,12 +26,18 @@ import {
 } from "@/const";
 import { ApplicationMenu } from "../menu/menu";
 import { useMenuStore } from "@/store/menu-store";
+import { MainMenu } from "./main-menu";
+import { cn } from "@/lib/utils";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
 }
 
-export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
+export function FolderViewHeader({
+  folder,
+  className,
+  ...others
+}: FolderViewHeaderProps) {
   if (!folder) return null;
 
   const menus = useMenuStore((state) => state.menus);
@@ -51,7 +56,13 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-between">
+    <div
+      className={cn(
+        "w-full h-full flex items-center justify-between",
+        className
+      )}
+      {...others}
+    >
       <div>
         {folderTag === SEARCH_TAG && (
           <div className="flex items-center gap-2 text-sm">
@@ -115,14 +126,7 @@ export function FolderViewHeader({ folder }: FolderViewHeaderProps) {
         >
           <ArrowUpDownIcon size={16} />
         </ApplicationMenu>
-        <ApplicationMenu
-          menu={menus.main}
-          className="w-52"
-          align="end"
-          render={<Button size="icon-sm" variant="ghost" title="Menu" />}
-        >
-          <EllipsisVerticalIcon size={16} />
-        </ApplicationMenu>
+        <MainMenu />
       </div>
     </div>
   );

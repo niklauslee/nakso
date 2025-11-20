@@ -3,7 +3,7 @@ import { useAppStore } from "@/store/app-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PanelLeftIcon, XIcon } from "lucide-react";
-import { MaximizeWindowIcon } from "./icons";
+import { MaximizeWindowIcon } from "../icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}

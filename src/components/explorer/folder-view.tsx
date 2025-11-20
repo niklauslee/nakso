@@ -2,12 +2,13 @@ import { FileCard } from "./file-card";
 import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileEntry } from "@/api/workspace";
+import { cn } from "@/lib/utils";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
 }
 
-export function FolderView({ folder, ...others }: FolderViewProps) {
+export function FolderView({ folder, className, ...others }: FolderViewProps) {
   if (!folder) return;
 
   const files = useExplorerStore((state) => state.files);
@@ -16,7 +17,7 @@ export function FolderView({ folder, ...others }: FolderViewProps) {
 
   return (
     <InfiniteScrollArea
-      className="w-full h-full"
+      className={cn("w-full h-full", className)}
       innerClassName="grid gap-4 w-full px-4 py-1 2xs:grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8"
       count={loadedFiles.length}
       totalCount={files.length}
@@ -27,6 +28,7 @@ export function FolderView({ folder, ...others }: FolderViewProps) {
       fetchMore={async () => {
         await fetchMoreFiles();
       }}
+      {...others}
     >
       {loadedFiles.length > 0 && (
         <>

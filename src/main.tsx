@@ -31,14 +31,14 @@ async function detectPlatform() {
 }
 
 async function start() {
-  checkForUpdates();
   const platform = await detectPlatform();
   window.app = new AppContext(platform);
   window.api = apiContext;
-  window.app.setup();
+  await window.app.setup();
+  checkForUpdates();
 }
 
-start();
+await start();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -14,14 +14,11 @@ import {
   DRAFTS_FOLDER_NAME,
   DRAFTS_TAG,
   EXT_NAME,
-  FAVORITES_FILE_NAME,
-  RECENTS_FILE_NAME,
-  SEARCH_PATH_NAME,
   TRASH_FOLDER_NAME,
 } from "@/const";
 
 export type FileSortType = {
-  field: "name" | "mtime" | "birthtime";
+  field: "name" | "mtime";
   direction: "asc" | "desc";
 };
 

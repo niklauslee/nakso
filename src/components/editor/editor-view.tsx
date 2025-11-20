@@ -22,7 +22,7 @@ interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
   onMount?: (editor: EditorType) => void;
 }
 
-export function EditorView({ onMount, ...others }: EditorViewProps) {
+export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorType | null>(null);
   const [tiptapEditor, setTiptapEditor] = useState<any>(null);
@@ -196,7 +196,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
 
   return (
     <div
-      className="absolute inset-0"
+      className={cn("absolute inset-0", className)}
       // onPointerDown={(e) => {
       //   if (e.button === 2 && editor) {
       //     const canvas = editor.canvas;
@@ -221,6 +221,7 @@ export function EditorView({ onMount, ...others }: EditorViewProps) {
       //     (editor as any).activeHandler.pointerMove(editor, evt);
       //   }
       // }}
+      {...others}
     >
       <ApplicationContextMenu
         menu={menus.context}

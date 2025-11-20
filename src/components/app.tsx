@@ -4,7 +4,7 @@ import { AppContext } from "@/app-context";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
-import { Activity, useEffect } from "react";
+import { useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
@@ -14,10 +14,10 @@ import { apiContext } from "@/api";
 import { useExplorerStore } from "@/store/explorer-store";
 import { SettingsDialog } from "./settings/settings-dialog";
 import { AboutDialog } from "./dialogs/about-dialog";
-import { AppHeader } from "./app-header";
+import { AppHeader } from "./header/app-header";
 import { cn } from "@/lib/utils";
-import { EditorViewHeader } from "./editor/editor-view-header";
-import { FolderViewHeader } from "./explorer/folder-view-header";
+import { EditorViewHeader } from "./header/editor-view-header";
+import { FolderViewHeader } from "./header/folder-view-header";
 
 declare global {
   interface Window {
@@ -43,11 +43,8 @@ function App() {
       await window.app.appReady(editor);
       editor.newDoc();
       editor.fitToScreen();
-      window.addEventListener("resize", () => {
-        editor.fit();
-      });
       window.app.updateUI();
-      setAppReady(true, editor.platform);
+      setAppReady(true);
     } catch (error) {
       console.error("Failed to initialize the app:", error);
     }
@@ -61,24 +58,28 @@ function App() {
           <SidebarInset>
             <div className="absolute inset-0">
               <AppHeader>
-                <Activity mode={view === "editor" ? "visible" : "hidden"}>
-                  <EditorViewHeader />
-                </Activity>
-                <Activity mode={view === "folder" ? "visible" : "hidden"}>
-                  <FolderViewHeader folder={currentFolder} />
-                </Activity>
+                <EditorViewHeader
+                  className={view === "editor" ? "" : "hidden"}
+                />
+
+                <FolderViewHeader
+                  folder={currentFolder}
+                  className={view === "folder" ? "" : "hidden"}
+                />
               </AppHeader>
               <article
                 className={cn(
                   "absolute top-12 bottom-0 inset-x-0 pointer-events-auto"
                 )}
               >
-                <Activity mode={view === "editor" ? "visible" : "hidden"}>
-                  <EditorView onMount={handleAppReady} />
-                </Activity>
-                <Activity mode={view === "folder" ? "visible" : "hidden"}>
-                  <FolderView folder={currentFolder} />
-                </Activity>
+                <EditorView
+                  onMount={handleAppReady}
+                  className={view === "editor" ? "" : "hidden"}
+                />
+                <FolderView
+                  folder={currentFolder}
+                  className={view === "folder" ? "" : "hidden"}
+                />
               </article>
             </div>
           </SidebarInset>

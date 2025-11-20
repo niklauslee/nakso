@@ -854,7 +854,7 @@ export function registerCommands() {
     "Show file sort menu",
     {
       sortBy: z.object({
-        field: z.enum(["name", "mtime", "birthtime"]),
+        field: z.enum(["name", "mtime"]),
         direction: z.enum(["asc", "desc"]),
       }),
     },

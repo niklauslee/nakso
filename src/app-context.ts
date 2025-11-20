@@ -27,6 +27,7 @@ import {
 import { useRecentsStore } from "./store/recents-store";
 import { useFavoritesStore } from "./store/favorites-store";
 import { useEditorStore } from "./store/editor-store";
+import { useAppStore } from "./store/app-store";
 
 export class AppContext {
   productName: string;
@@ -54,6 +55,7 @@ export class AppContext {
   }
 
   async setup() {
+    useAppStore.getState().setPlatform(this.platform);
     await this.wiring();
     await this.setupNative();
     await this.setupFonts();
@@ -66,6 +68,10 @@ export class AppContext {
 
   async appReady(editor: Editor) {
     this.editor = editor;
+    this.editor.newDoc();
+    this.editor.fitToScreen();
+    useAppStore.getState().setAppReady(true);
+    this.updateUI();
   }
 
   async wiring() {
@@ -74,7 +80,11 @@ export class AppContext {
     });
 
     window.addEventListener("resize", () => {
-      this.editor.fit();
+      this.editor?.fit();
+    });
+
+    this.commands.onCommandExecuted.addListener((id) => {
+      this.updateUI();
     });
 
     // update ui states
@@ -238,60 +248,74 @@ export class AppContext {
 
   updateUI() {
     try {
-      const app = window.app;
+      const editor = window.app?.editor;
       const state = useSettingStore.getState();
       const { darkMode } = useSettingStore.getState();
-      const menuStates: Record<string, MenuItemState> = {
-        "page.delete": { enabled: app.editor.getPages().length > 1 },
-        "page.previous": {
-          enabled:
-            app.editor.getPages().indexOf(app.editor.getCurrentPage()!) > 0,
-        },
-        "page.next": {
-          enabled:
-            app.editor.getPages().indexOf(app.editor.getCurrentPage()!) <
-            app.editor.getPages().length - 1,
-        },
-        "edit.undo": { enabled: app.editor.transform.canUndo() },
-        "edit.redo": { enabled: app.editor.transform.canRedo() },
-        "edit.copy": { enabled: app.editor.selection.size() > 0 },
-        "edit.cut": { enabled: app.editor.selection.size() > 0 },
-        "edit.paste": { enabled: true /* app.editor.clipboard.hasObjects() */ },
-        "edit.duplicate": { enabled: app.editor.selection.size() > 0 },
-        "edit.delete": { enabled: app.editor.selection.size() > 0 },
-        "shape.group": { enabled: app.editor.selection.size() > 1 },
-        "shape.ungroup": {
-          enabled: app.editor.selection
-            .getShapes()
-            .some((s) => s instanceof Group),
-        },
-        "shape.lock": {
-          enabled: app.editor.selection.size() > 0,
-          checked:
-            app.editor.selection.size() > 0 &&
-            app.editor.selection.getShapes().every((s) => !s.enable),
-        },
-        "shape.hide": {
-          enabled: app.editor.selection.size() > 0,
-          checked:
-            app.editor.selection.size() > 0 &&
-            app.editor.selection.getShapes().every((s) => !s.visible),
-        },
-        "shape.container": {
-          enabled: app.editor.selection.size() > 0,
-          checked:
-            app.editor.selection.size() > 0 &&
-            app.editor.selection.getShapes().every((s) => s.containable),
-        },
+      const sortBy = useExplorerStore.getState().sortBy;
+      let menuStates: Record<string, MenuItemState> = {};
+      // update general menu states
+      menuStates = {
         "view.show-grid": { checked: state.snapToGrid },
         "view.snap-to-grid": { checked: state.snapToGrid },
         "view.snap-to-objects": { checked: state.snapToObjects },
         "view.dark-mode": { checked: darkMode },
+        "view.sort-alphabetical-az": {
+          checked: sortBy.field === "name" && sortBy.direction === "asc",
+        },
+        "view.sort-alphabetical-za": {
+          checked: sortBy.field === "name" && sortBy.direction === "desc",
+        },
+        "view.sort-oldest-first": {
+          checked: sortBy.field === "mtime" && sortBy.direction === "asc",
+        },
+        "view.sort-newest-first": {
+          checked: sortBy.field === "mtime" && sortBy.direction === "desc",
+        },
+        "page.delete": { enabled: editor.getPages().length > 1 },
+        "page.previous": {
+          enabled: editor.getPages().indexOf(editor.getCurrentPage()!) > 0,
+        },
+        "page.next": {
+          enabled:
+            editor.getPages().indexOf(editor.getCurrentPage()!) <
+            editor.getPages().length - 1,
+        },
+        "edit.undo": { enabled: editor.transform.canUndo() },
+        "edit.redo": { enabled: editor.transform.canRedo() },
+        "edit.copy": { enabled: editor.selection.size() > 0 },
+        "edit.cut": { enabled: editor.selection.size() > 0 },
+        "edit.paste": {
+          enabled: true /* TODO: editor.clipboard.hasObjects() */,
+        },
+        "edit.duplicate": { enabled: editor.selection.size() > 0 },
+        "edit.delete": { enabled: editor.selection.size() > 0 },
+        "shape.group": { enabled: editor.selection.size() > 1 },
+        "shape.ungroup": {
+          enabled: editor.selection.getShapes().some((s) => s instanceof Group),
+        },
+        "shape.lock": {
+          enabled: editor.selection.size() > 0,
+          checked:
+            editor.selection.size() > 0 &&
+            editor.selection.getShapes().every((s) => !s.enable),
+        },
+        "shape.hide": {
+          enabled: editor.selection.size() > 0,
+          checked:
+            editor.selection.size() > 0 &&
+            editor.selection.getShapes().every((s) => !s.visible),
+        },
+        "shape.container": {
+          enabled: editor.selection.size() > 0,
+          checked:
+            editor.selection.size() > 0 &&
+            editor.selection.getShapes().every((s) => s.containable),
+        },
       };
+
       for (const id in menuStates) {
         useMenuStore.getState().updateStates(id, menuStates[id]);
       }
-      app.editor.repaint();
     } catch (err) {
       console.error("Failed to update UI state:", err);
     }

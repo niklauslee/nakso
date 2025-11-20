@@ -1,17 +1,19 @@
 import { create } from "zustand";
 
 export interface AppState {
-  appReady: boolean;
   platform: string;
+  appReady: boolean;
   showSettings: boolean;
-  setAppReady(ready: boolean, platform: string): void;
+  setPlatform(platform: string): void;
+  setAppReady(ready: boolean): void;
   setShowSettings(show: boolean): void;
 }
 
 export const useAppStore = create<AppState>()((set) => ({
-  appReady: false,
   platform: "unknown",
+  appReady: false,
   showSettings: false,
-  setAppReady: (ready, platform) => set({ appReady: ready, platform }),
+  setPlatform: (platform) => set({ platform }),
+  setAppReady: (ready) => set({ appReady: ready }),
   setShowSettings: (show) => set({ showSettings: show }),
 }));

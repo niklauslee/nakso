@@ -59,6 +59,11 @@ export class CommandManager {
   onBeforeExecuteCommand: TypedEvent<string>;
 
   /**
+   * Event triggered after the command executed
+   */
+  onCommandExecuted: TypedEvent<string>;
+
+  /**
    * Constructor for CommandManager.
    * Initializes the command entries and event handlers.
    */
@@ -66,6 +71,7 @@ export class CommandManager {
     this.commandEntries = {};
     this.onCommandRegistered = new TypedEvent();
     this.onBeforeExecuteCommand = new TypedEvent();
+    this.onCommandExecuted = new TypedEvent();
   }
 
   /**
@@ -140,6 +146,10 @@ export class CommandManager {
 
     // execute the command
     const result = await commandEntry.handler(args);
+
+    // triggered after a command is executed
+    this.onCommandExecuted.emit(id);
+
     return result;
   }
 

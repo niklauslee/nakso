@@ -7,15 +7,21 @@ import { ApplicationMenu } from "../menu/menu";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
-  EllipsisVerticalIcon,
   LockIcon,
   SquarePenIcon,
 } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { workspace } from "@/api/workspace";
 import { useExplorerStore } from "@/store/explorer-store";
+import { ToggleDarkModeButton } from "./toggle-darkmode-button";
+import { MainMenu } from "./main-menu";
 
-export function EditorViewHeader({}) {
+interface EditorViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function EditorViewHeader({
+  className,
+  ...others
+}: EditorViewHeaderProps) {
   const [fileName, setFileName] = useState<string>("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const setView = useExplorerStore((state) => state.setView);
@@ -52,7 +58,13 @@ export function EditorViewHeader({}) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-between">
+    <div
+      className={cn(
+        "w-full h-full flex items-center justify-between",
+        className
+      )}
+      {...others}
+    >
       <div
         className={cn(
           "flex items-center gap-2 text-sm pointer-events-auto -ml-2",
@@ -99,6 +111,7 @@ export function EditorViewHeader({}) {
         >
           <SquarePenIcon size={16} />
         </Button>
+        <ToggleDarkModeButton />
         <ApplicationMenu
           menu={menus.view}
           align="end"
@@ -117,16 +130,7 @@ export function EditorViewHeader({}) {
           {Math.round(scale * 100) + "%"}
           <ChevronDownIcon className="size-3.5" />
         </ApplicationMenu>
-        <ApplicationMenu
-          menu={menus.main}
-          align="end"
-          className="w-60"
-          open={openMenu === "main"}
-          onOpenChange={(open) => setOpenMenu(open ? "main" : null)}
-          render={<Button size="icon-sm" variant="ghost" title="Menu" />}
-        >
-          <EllipsisVerticalIcon size={16} />
-        </ApplicationMenu>
+        <MainMenu />
       </div>
     </div>
   );
