@@ -99,7 +99,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const handleAction = () => {
     setModified(true);
     window.app.autoSaver.tick();
-    setTimeout(() => window.app.updateUI(), 0);
+    setTimeout(() => window.app.updateMenu(), 0);
   };
 
   const handleActiveHandlerChange = (handlerId: string) => {
@@ -123,7 +123,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const handleSelectionChange = (shapes: Shape[]) => {
     setTimeout(() => {
       setSelection([...shapes]);
-      window.app.updateUI();
+      window.app.updateMenu();
     }, 0);
   };
 

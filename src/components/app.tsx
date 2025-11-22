@@ -43,7 +43,7 @@ function App() {
       await window.app.appReady(editor);
       editor.newDoc();
       editor.fitToScreen();
-      window.app.updateUI();
+      window.app.updateMenu();
       setAppReady(true);
     } catch (error) {
       console.error("Failed to initialize the app:", error);
@@ -69,7 +69,7 @@ function App() {
               </AppHeader>
               <article
                 className={cn(
-                  "absolute top-12 bottom-0 inset-x-0 pointer-events-auto"
+                  "absolute top-12 bottom-0 inset-x-0 pointer-events-auto bg-accent"
                 )}
               >
                 <EditorView

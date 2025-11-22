@@ -836,6 +836,7 @@ export function registerCommands() {
     async () => {
       const show = useSettingStore.getState().showSidebar;
       useSettingStore.getState().setShowSidebar(!show);
+      window.app.editor.fit();
     }
   );
 

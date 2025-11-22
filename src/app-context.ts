@@ -57,21 +57,22 @@ export class AppContext {
   async setup() {
     useAppStore.getState().setPlatform(this.platform);
     await this.wiring();
-    await this.setupNative();
     await this.setupFonts();
+    await this.setupNativeMenu();
     this.setupKeymap();
     this.setupMenus();
     await this.setupWorkspace();
     registerCommands();
-    await this.loadWorkingState();
   }
 
   async appReady(editor: Editor) {
     this.editor = editor;
     this.editor.newDoc();
     this.editor.fitToScreen();
+    this.initDragArea();
+    this.updateMenu();
+    await this.loadWorkingState();
     useAppStore.getState().setAppReady(true);
-    this.updateUI();
   }
 
   async wiring() {
@@ -84,20 +85,20 @@ export class AppContext {
     });
 
     this.commands.onCommandExecuted.addListener((id) => {
-      this.updateUI();
+      this.updateMenu();
     });
 
     // update ui states
     useSettingStore.subscribe(() => {
       try {
-        window.app.updateUI();
+        window.app.updateMenu();
       } catch (err) {
         console.error("Failed to update UI state:", err);
       }
     });
   }
 
-  async setupNative() {
+  async setupNativeMenu() {
     const appWindow = getCurrentWindow();
 
     // set initial theme
@@ -122,22 +123,6 @@ export class AppContext {
       const menu = await Menu.new({ items: [aboutSubmenu] });
       await menu.setAsAppMenu();
     }
-
-    // setup window drag area
-    const dragRegions = document.querySelectorAll(
-      "[data-manual-window-drag-region]"
-    );
-    dragRegions.forEach((region) => {
-      region.addEventListener("mousedown", (e) => {
-        const mouseEvent = e as MouseEvent;
-        if (mouseEvent.buttons === 1 && mouseEvent.detail !== 2) {
-          appWindow.startDragging();
-        }
-      });
-      region.addEventListener("dblclick", (e) => {
-        appWindow.toggleMaximize();
-      });
-    });
   }
 
   async setupFonts() {
@@ -195,6 +180,24 @@ export class AppContext {
     }
   }
 
+  initDragArea() {
+    const appWindow = getCurrentWindow();
+    const dragRegions = document.querySelectorAll(
+      "[data-manual-window-drag-region]"
+    );
+    dragRegions.forEach((region) => {
+      region.addEventListener("mousedown", (e) => {
+        const mouseEvent = e as MouseEvent;
+        if (mouseEvent.buttons === 1 && mouseEvent.detail !== 2) {
+          appWindow.startDragging();
+        }
+      });
+      region.addEventListener("dblclick", (e) => {
+        appWindow.toggleMaximize();
+      });
+    });
+  }
+
   async loadWorkingState() {
     try {
       const workingFile = useEditorStore.getState().workingFile;
@@ -246,7 +249,7 @@ export class AppContext {
     );
   }
 
-  updateUI() {
+  updateMenu() {
     try {
       const editor = window.app?.editor;
       const state = useSettingStore.getState();
@@ -312,7 +315,6 @@ export class AppContext {
             editor.selection.getShapes().every((s) => s.containable),
         },
       };
-
       for (const id in menuStates) {
         useMenuStore.getState().updateStates(id, menuStates[id]);
       }
