@@ -4,7 +4,7 @@ import { AppContext } from "@/app-context";
 import { useAppStore } from "@/store/app-store";
 import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { EditorView } from "./editor/editor-view";
@@ -31,12 +31,23 @@ function App() {
   const view = useExplorerStore((state) => state.view);
   const darkMode = useSettingStore((state) => state.darkMode);
   const currentFolder = useExplorerStore((state) => state.currentFolder);
+  const articleRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      setTimeout(() => window.app?.editor?.fit(), 0);
+    });
+    if (articleRef.current) {
+      observer.observe(articleRef.current);
+    }
+    return () => observer.disconnect();
+  }, [view]);
 
   const handleAppReady = async (editor: EditorType) => {
     try {
@@ -68,8 +79,9 @@ function App() {
                 />
               </AppHeader>
               <article
+                ref={articleRef}
                 className={cn(
-                  "absolute top-12 bottom-0 inset-x-0 pointer-events-auto bg-accent"
+                  "absolute top-12 bottom-0 inset-x-0 pointer-events-auto"
                 )}
               >
                 <EditorView

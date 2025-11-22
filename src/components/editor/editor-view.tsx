@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
-  CanvasPointerEvent,
   Editor as EditorType,
   FileDropEvent,
   Shape,
@@ -23,7 +22,6 @@ interface EditorViewProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function EditorView({ onMount, className, ...others }: EditorViewProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorType | null>(null);
   const [tiptapEditor, setTiptapEditor] = useState<any>(null);
 
@@ -60,18 +58,6 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const shapeProps = isShapeTool
     ? [{ type: activeHandler, ...styleStore.getStyleProps(activeHandler!) }]
     : selection;
-
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (const _ of entries) {
-        setTimeout(() => {
-          editor?.fit();
-        }, 0);
-      }
-    });
-    wrapperRef.current && observer.observe(wrapperRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (workingFile && editor) {
