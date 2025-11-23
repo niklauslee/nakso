@@ -31,6 +31,7 @@ import {
   type MenuItem as MenuItemType,
   type Menu as MenuType,
 } from "@/store/menu-store";
+import { cn } from "@/lib/utils";
 
 interface MenuProps {
   menu: MenuType;
@@ -59,7 +60,12 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
       </ContextMenuSub>
     );
   } else if (item.type === "separator") {
-    return <ContextMenuSeparator key={`${item.id}-separator-${id}`} />;
+    return (
+      <ContextMenuSeparator
+        key={`${item.id}-separator-${id}`}
+        className="my-1.5"
+      />
+    );
   } else if (item.type === "checkbox") {
     return (
       <ContextMenuCheckboxItem
@@ -70,6 +76,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         onClick={onClick}
         disabled={!item.enabled}
         checked={item.checked}
+        className="text-[13px] py-1 pl-6 pr-3 [&_span]:left-1"
       >
         {item.label}
         {item.subtext && (
@@ -87,6 +94,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         data-command-args={JSON.stringify(item["command-args"])}
         onClick={onClick}
         disabled={!item.enabled}
+        className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
       >
         {item.label}
         {item.subtext && (
@@ -148,7 +156,7 @@ export const ApplicationContextMenu: React.FC<MenuProps> = ({
     <ContextMenu disabled={isTextFocused} onOpenChange={onOpenChange}>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuPositioner>
-        <ContextMenuContent className={className}>
+        <ContextMenuContent className={cn("p-1.5 shadow-lg", className)}>
           {Array.isArray(menu) &&
             menu.map((item, idx) => (
               <MenuItem key={idx} item={item} onClick={handleSelect} />
