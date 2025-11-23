@@ -113,7 +113,7 @@ export function KeyboardShortcutsDialog({}) {
           <DialogTitle className="text-sm">Keyboard shortcuts</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <ScrollArea className="h-[520px] w-full outline-none">
+        <ScrollArea className="h-[520px] w-full outline-none" tabIndex={0}>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col gap-4">
               <ShortcutGroup title="Tools">

@@ -183,21 +183,36 @@ export function FileCard({
                 <EllipsisIcon size={16} />
               </DropdownMenuTrigger>
               <DropdownMenuPositioner align="end">
-                <DropdownMenuContent className="w-fit">
-                  <DropdownMenuItem onClick={handleOpenClick}>
+                <DropdownMenuContent className="w-fit p-1.5 shadow-lg">
+                  <DropdownMenuItem
+                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                    onClick={handleOpenClick}
+                  >
                     Open
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleRenameClick}>
+                  <DropdownMenuItem
+                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                    onClick={handleRenameClick}
+                  >
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleDuplicateClick}>
+                  <DropdownMenuItem
+                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                    onClick={handleDuplicateClick}
+                  >
                     Duplicate
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleToggleFavorite}>
+                  <DropdownMenuItem
+                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                    onClick={handleToggleFavorite}
+                  >
                     {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleMoveToTrashClick}>
+                  <DropdownMenuSeparator className="my-1.5" />
+                  <DropdownMenuItem
+                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                    onClick={handleMoveToTrashClick}
+                  >
                     Move to Trash
                   </DropdownMenuItem>
                 </DropdownMenuContent>

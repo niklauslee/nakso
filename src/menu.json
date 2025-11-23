@@ -5,9 +5,8 @@
       "id": "help.about",
       "command": "help:about"
     },
-    { "type": "separator" },
     {
-      "label": "Keyboard Shortcuts",
+      "label": "Keyboard Shortcuts...",
       "id": "help.keyboard-shortcuts",
       "command": "help:keyboard-shortcuts"
     },

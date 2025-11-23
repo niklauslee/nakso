@@ -50,7 +50,7 @@ export function AboutDialog({}) {
           <DialogTitle className="hidden">About</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1" tabIndex={0}>
           <div className="flex items-center justify-center">
             <LogoIcon size={48} />
           </div>
