@@ -241,12 +241,12 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {hasSelection && (
+          {/* {hasSelection && (
             <>
               <Separator className="opacity-50" />
               <AdditionalTools selection={selection} onChange={onChange} />
             </>
-          )}
+          )} */}
         </div>
       </ScrollArea>
     </div>
@@ -1036,6 +1036,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           {vertAlign === VertAlign.TOP && <VerticalTopIcon size={16} />}
           {vertAlign === VertAlign.MIDDLE && <VerticalMiddleIcon size={16} />}
           {vertAlign === VertAlign.BOTTOM && <VerticalBottomIcon size={16} />}
+          {vertAlign === undefined && <VerticalMiddleIcon size={16} />}
         </PopoverTrigger>
         <PopoverPositioner align="end">
           <PopoverContent className="w-fit p-0">
@@ -1199,13 +1200,14 @@ function LayerTool({}: ToolProps) {
 }
 
 function AlignmentTool({}: ToolProps) {
+  const formattedKeys = useKeymapStore((state) => state.formattedKeys);
   return (
     <>
       <div className="flex items-center gap-1">
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align left"
+          title={`Align left ⎯ ${formattedKeys["align:align-left"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-left");
           }}
@@ -1215,7 +1217,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align center"
+          title={`Align center ⎯ ${formattedKeys["align:align-center"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-center");
           }}
@@ -1225,7 +1227,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align right"
+          title={`Align right ⎯ ${formattedKeys["align:align-right"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-right");
           }}
@@ -1235,7 +1237,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Distribute horizontally"
+          title={`Distribute horizontally ⎯ ${formattedKeys["align:distribute-horizontally"]}`}
           onClick={() => {
             window.app.commands.execute("align:distribute-horizontally");
           }}
@@ -1247,7 +1249,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align top"
+          title={`Align top ⎯ ${formattedKeys["align:align-top"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-top");
           }}
@@ -1257,7 +1259,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align middle"
+          title={`Align middle ⎯ ${formattedKeys["align:align-middle"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-middle");
           }}
@@ -1267,7 +1269,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Align bottom"
+          title={`Align bottom ⎯ ${formattedKeys["align:align-bottom"]}`}
           onClick={() => {
             window.app.commands.execute("align:align-bottom");
           }}
@@ -1277,7 +1279,7 @@ function AlignmentTool({}: ToolProps) {
         <Button
           size="icon-sm"
           variant="ghost"
-          title="Distribute vertically"
+          title={`Distribute vertically ⎯ ${formattedKeys["align:distribute-vertically"]}`}
           onClick={() => {
             window.app.commands.execute("align:distribute-vertically");
           }}
