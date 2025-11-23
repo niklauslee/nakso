@@ -70,26 +70,53 @@ export function EditorViewHeader({
           "flex items-center gap-2 text-sm pointer-events-auto -ml-2",
           readonly && "opacity-50"
         )}
+        onDoubleClickCapture={(e) => {
+          console.log("double click capture on header");
+        }}
+        onDoubleClick={(e) => {
+          console.log("double click on header");
+        }}
       >
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          title="Back"
-          onClick={async () => {
-            if (!workingFile) return;
-            if (currentFolder?.fullPath === workingFile.dirname) {
-              setView("folder");
-            } else {
-              const dirEntry = await workspace.getFileEntry(
-                workingFile?.dirname
-              );
-              setCurrentFolder(dirEntry);
-              setView("folder");
-            }
+        <div
+          onDoubleClickCapture={(e) => {
+            console.log("double click capture on button wrapper");
+          }}
+          onDoubleClick={(e) => {
+            console.log("double click on button wrapper");
+          }}
+          onClickCapture={(e) => {
+            console.log("click capture on button wrapper");
+          }}
+          onClick={(e) => {
+            console.log("click on button wrapper");
           }}
         >
-          <ChevronLeftIcon size={16} />
-        </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            title="Back"
+            onDoubleClickCapture={(e) => {
+              console.log("double click capture on button");
+            }}
+            onDoubleClick={(e) => {
+              console.log("double click on button");
+            }}
+            onClick={async (e) => {
+              if (!workingFile) return;
+              if (currentFolder?.fullPath === workingFile.dirname) {
+                setView("folder");
+              } else {
+                const dirEntry = await workspace.getFileEntry(
+                  workingFile?.dirname
+                );
+                setCurrentFolder(dirEntry);
+                setView("folder");
+              }
+            }}
+          >
+            <ChevronLeftIcon size={16} />
+          </Button>
+        </div>
         <div
           className={cn(
             "flex items-center gap-2 text-sm pointer-events-auto",
@@ -105,7 +132,6 @@ export function EditorViewHeader({
         <Button
           size="icon-sm"
           variant="ghost"
-          onMouseDownCapture={(e) => e.stopPropagation()}
           onClick={handleNewFile}
           title="New File"
         >
@@ -117,12 +143,12 @@ export function EditorViewHeader({
           align="end"
           open={openMenu === "view"}
           onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
-          className="w-54"
+          className="w-46"
           render={
             <Button
               size="sm"
               variant="ghost"
-              title={`Zoom/view options`}
+              title={`Zoom`}
               className="font-normal flex gap-1 items-center"
             />
           }

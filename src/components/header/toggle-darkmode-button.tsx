@@ -29,7 +29,6 @@ export function ToggleDarkModeButton({
     <Button
       size="icon-sm"
       variant="ghost"
-      onMouseDownCapture={(e) => e.stopPropagation()}
       onClick={handleToggleDarkMode}
       title="Toggle Dark Mode"
       {...props}

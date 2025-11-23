@@ -45,10 +45,11 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
       setCurrentValue(e.target.value);
     };
 
-    const handleDoubleClickCapture = (e: React.MouseEvent<HTMLSpanElement>) => {
+    const handleDoubleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+      console.log("double click on editable text");
       startEdit();
-      e.stopPropagation();
-      e.preventDefault();
+      // e.stopPropagation();
+      // e.preventDefault();
     };
 
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -95,7 +96,10 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
             className,
             editable && "hidden"
           )}
-          onDoubleClickCapture={handleDoubleClickCapture}
+          onDoubleClick={handleDoubleClick}
+          onDoubleClickCapture={(e) => {
+            console.log("double click capture on editable text");
+          }}
           {...props}
         >
           {value}

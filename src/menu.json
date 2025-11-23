@@ -27,25 +27,21 @@
     {
       "label": "Zoom In",
       "id": "view.zoom-in",
-      "inset": true,
       "command": "view:zoom-in"
     },
     {
       "label": "Zoom Out",
       "id": "view.zoom-out",
-      "inset": true,
       "command": "view:zoom-out"
     },
     {
       "label": "Zoom to 100%",
       "id": "view.actual-size",
-      "inset": true,
       "command": "view:actual-size"
     },
     {
       "label": "Fit to Screen",
       "id": "view.fit-to-screen",
-      "inset": true,
       "command": "view:fit-to-screen"
     }
   ],

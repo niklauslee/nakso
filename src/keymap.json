@@ -1,6 +1,5 @@
 {
   "mod-n": "file:new",
-  "mod-o": "file:open",
   "mod-s": "file:save",
   "mod-q": "file:quit",
 
@@ -17,6 +16,14 @@
   "]": "align:send-backward",
   "mod-[": "align:bring-to-front",
   "mod-]": "align:send-to-back",
+  "alt-w": "align:align-top",
+  "alt-s": "align:align-bottom",
+  "alt-a": "align:align-left",
+  "alt-d": "align:align-right",
+  "alt-h": "align:align-center",
+  "alt-v": "align:align-middle",
+  "alt-shift-h": "align:distribute-horizontally",
+  "alt-shift-v": "align:distribute-vertically",
 
   "mod-g": "shape:group",
   "mod-shift-g": "shape:ungroup",
@@ -29,6 +36,7 @@
   "shift-left": "shape:move-left",
   "shift-right": "shape:move-right",
   "mod-shift-l": "shape:toggle-lock",
+  "mod-shift-h": "shape:toggle-hide",
   "mod-shift-t": "shape:toggle-container",
 
   "v": "tool:select",
@@ -46,6 +54,7 @@
 
   "mod-b": "view:toggle-sidebar",
   "mod-'": "view:snap-to-grid",
+  "mod-shift-'": "view:snap-to-objects",
   "mod-=": "view:zoom-in",
   "mod-plus": "view:zoom-in",
   "mod-minus": "view:zoom-out",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PanelLeftIcon, XIcon } from "lucide-react";
 import { MaximizeWindowIcon } from "../icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { TauriDragRegion } from "../common/tauri-drag-region";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -13,8 +14,7 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
   const showSidebar = useSettingStore((state) => state.showSidebar);
 
   return (
-    <header
-      data-manual-window-drag-region
+    <TauriDragRegion
       className={cn("flex items-center w-full h-12", className)}
       {...others}
     >
@@ -29,7 +29,6 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
             variant="ghost"
             size="icon-sm"
             title="Open Sidebar"
-            onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
           >
             <PanelLeftIcon size={16} />
@@ -44,7 +43,6 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
             variant="ghost"
             title="Minimize"
             className="rounded-none h-full"
-            onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => {
               getCurrentWindow().minimize();
             }}
@@ -56,7 +54,6 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
             variant="ghost"
             title="Maximize"
             className="rounded-none h-full"
-            onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => {
               getCurrentWindow().toggleMaximize();
             }}
@@ -68,7 +65,6 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
             variant="ghost"
             title="Close"
             className="rounded-none h-full"
-            onMouseDownCapture={(e) => e.stopPropagation()}
             onClick={() => {
               getCurrentWindow().close();
             }}
@@ -77,6 +73,6 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
           </Button>
         </div>
       )}
-    </header>
+    </TauriDragRegion>
   );
 }

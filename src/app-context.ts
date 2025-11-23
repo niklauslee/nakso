@@ -69,7 +69,6 @@ export class AppContext {
     this.editor = editor;
     this.editor.newDoc();
     this.editor.fitToScreen();
-    this.initDragArea();
     this.updateMenu();
     await this.loadWorkingState();
     useAppStore.getState().setAppReady(true);
@@ -180,24 +179,6 @@ export class AppContext {
     }
   }
 
-  initDragArea() {
-    const appWindow = getCurrentWindow();
-    const dragRegions = document.querySelectorAll(
-      "[data-manual-window-drag-region]"
-    );
-    dragRegions.forEach((region) => {
-      region.addEventListener("mousedown", (e) => {
-        const mouseEvent = e as MouseEvent;
-        if (mouseEvent.buttons === 1 && mouseEvent.detail !== 2) {
-          appWindow.startDragging();
-        }
-      });
-      region.addEventListener("dblclick", (e) => {
-        appWindow.toggleMaximize();
-      });
-    });
-  }
-
   async loadWorkingState() {
     try {
       const workingFile = useEditorStore.getState().workingFile;
@@ -258,7 +239,6 @@ export class AppContext {
       let menuStates: Record<string, MenuItemState> = {};
       // update general menu states
       menuStates = {
-        "view.show-grid": { checked: state.snapToGrid },
         "view.snap-to-grid": { checked: state.snapToGrid },
         "view.snap-to-objects": { checked: state.snapToObjects },
         "view.dark-mode": { checked: darkMode },

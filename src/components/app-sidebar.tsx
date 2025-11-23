@@ -38,6 +38,7 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { workspace } from "@/api/workspace";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
+import { TauriDragRegion } from "./common/tauri-drag-region";
 
 export function AppSidebar() {
   const showSidebar = useSettingStore((state) => state.showSidebar);
@@ -78,8 +79,8 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-none">
-      <SidebarHeader data-manual-window-drag-region className="w-full h-12">
-        <div className="w-full h-full flex items-center justify-between">
+      <SidebarHeader className="w-full h-12">
+        <TauriDragRegion className="w-full h-full flex items-center justify-between">
           <div className="flex items-center"></div>
           <div className="flex items-center gap-0">
             <Button
@@ -87,7 +88,6 @@ export function AppSidebar() {
               size="icon-sm"
               className="cursor-pointer"
               title="Close Sidebar"
-              onMouseDownCapture={(e) => e.stopPropagation()}
               onClick={() =>
                 window.app?.commands.execute("view:toggle-sidebar")
               }
@@ -95,7 +95,7 @@ export function AppSidebar() {
               <PanelLeftCloseIcon size={16} />
             </Button>
           </div>
-        </div>
+        </TauriDragRegion>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

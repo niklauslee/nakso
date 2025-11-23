@@ -24,8 +24,9 @@ import { useRecentsStore } from "@/store/recents-store";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { useAppStore } from "@/store/app-store";
 import { join } from "@tauri-apps/api/path";
-import { useAboutDialog } from "./components/dialogs/about-dialog";
+import { useAboutDialog } from "@/components/dialogs/about-dialog";
 import { invoke } from "@tauri-apps/api/core";
+import { useKeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shorcuts-dialog";
 
 /**
  * Find the shapes by the given id array.
@@ -866,6 +867,15 @@ export function registerCommands() {
 
   app.commands.register("help:about", "Show about dialog", {}, async () =>
     useAboutDialog.getState().show(true)
+  );
+
+  app.commands.register(
+    "help:keyboard-shortcuts",
+    "Show keyboard shortcuts",
+    {},
+    async () => {
+      useKeyboardShortcutsDialog.getState().show(true);
+    }
   );
 
   app.commands.register(
