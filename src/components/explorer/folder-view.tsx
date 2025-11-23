@@ -18,7 +18,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
   return (
     <InfiniteScrollArea
       className={cn("w-full h-full", className)}
-      innerClassName="grid gap-4 w-full px-4 py-1 2xs:grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8"
+      innerClassName="grid gap-4 w-full px-4 pt-0 pb-4 2xs:grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8"
       count={loadedFiles.length}
       totalCount={files.length}
       fetchFirstDeps={[folder]}
