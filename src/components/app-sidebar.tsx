@@ -22,7 +22,6 @@ import {
   PanelLeftCloseIcon,
   SearchIcon,
   SettingsIcon,
-  SquarePenIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Button } from "./ui/button";

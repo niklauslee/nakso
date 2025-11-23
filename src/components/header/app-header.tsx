@@ -7,15 +7,26 @@ import { MaximizeWindowIcon } from "../icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { TauriDragRegion } from "../common/tauri-drag-region";
 
-interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  rightArea?: React.ReactNode;
+  propagateEvents?: boolean;
+  rightAreaPropagateEvents?: boolean;
+}
 
-export function AppHeader({ children, className, ...others }: HeaderProps) {
+export function AppHeader({
+  children,
+  className,
+  rightArea,
+  propagateEvents = false,
+  rightAreaPropagateEvents = false,
+  ...others
+}: HeaderProps) {
   const platform = useAppStore((state) => state.platform);
   const showSidebar = useSettingStore((state) => state.showSidebar);
 
   return (
     <TauriDragRegion
-      className={cn("flex items-center w-full h-12", className)}
+      className={cn("flex items-center w-full h-full", className)}
       {...others}
     >
       <div
@@ -34,7 +45,34 @@ export function AppHeader({ children, className, ...others }: HeaderProps) {
             <PanelLeftIcon size={16} />
           </Button>
         )}
-        {children}
+        <div className="w-full h-full flex items-center justify-between">
+          <div
+            className="flex items-center"
+            onDoubleClick={(e) => {
+              // don't propagate to tauri drag region
+              if (!propagateEvents) e.stopPropagation();
+            }}
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              if (!propagateEvents) e.stopPropagation();
+            }}
+          >
+            {children}
+          </div>
+          <div
+            className="flex items-center"
+            onDoubleClick={(e) => {
+              // don't propagate to tauri drag region
+              if (!rightAreaPropagateEvents) e.stopPropagation();
+            }}
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              if (!rightAreaPropagateEvents) e.stopPropagation();
+            }}
+          >
+            {rightArea}
+          </div>
+        </div>
       </div>
       {platform !== "darwin" && (
         <div className="h-full flex items-center">

@@ -69,16 +69,15 @@ function App() {
           <AppSidebar />
           <SidebarInset>
             <div className="absolute inset-0">
-              <AppHeader>
+              <header className="absolute top-0 left-0 right-0 h-12">
                 <EditorViewHeader
                   className={view === "editor" ? "" : "hidden"}
                 />
-
                 <FolderViewHeader
                   folder={currentFolder}
                   className={view === "folder" ? "" : "hidden"}
                 />
-              </AppHeader>
+              </header>
               <article
                 ref={articleRef}
                 className={cn(

@@ -15,13 +15,11 @@ import { workspace } from "@/api/workspace";
 import { useExplorerStore } from "@/store/explorer-store";
 import { ToggleDarkModeButton } from "./toggle-darkmode-button";
 import { MainMenu } from "./main-menu";
+import { AppHeader } from "./app-header";
 
 interface EditorViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function EditorViewHeader({
-  className,
-  ...others
-}: EditorViewHeaderProps) {
+export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
   const [fileName, setFileName] = useState<string>("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const setView = useExplorerStore((state) => state.setView);
@@ -58,50 +56,54 @@ export function EditorViewHeader({
   };
 
   return (
-    <div
-      className={cn(
-        "w-full h-full flex items-center justify-between",
-        className
-      )}
+    <AppHeader
+      rightArea={
+        <div className="flex items-center gap-0">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onClick={handleNewFile}
+            title="New File"
+          >
+            <SquarePenIcon size={16} />
+          </Button>
+          <ToggleDarkModeButton />
+          <ApplicationMenu
+            menu={menus.view}
+            align="end"
+            open={openMenu === "view"}
+            onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
+            className="w-46"
+            render={
+              <Button
+                size="sm"
+                variant="ghost"
+                title={`Zoom`}
+                className="font-normal flex gap-1 items-center"
+              />
+            }
+          >
+            {Math.round(scale * 100) + "%"}
+            <ChevronDownIcon className="size-3.5" />
+          </ApplicationMenu>
+          <MainMenu />
+        </div>
+      }
       {...others}
     >
       <div
         className={cn(
-          "flex items-center gap-2 text-sm pointer-events-auto -ml-2",
+          "flex items-center gap-2 text-sm -ml-2",
           readonly && "opacity-50"
         )}
-        onDoubleClickCapture={(e) => {
-          console.log("double click capture on header");
-        }}
-        onDoubleClick={(e) => {
-          console.log("double click on header");
-        }}
       >
-        <div
-          onDoubleClickCapture={(e) => {
-            console.log("double click capture on button wrapper");
-          }}
-          onDoubleClick={(e) => {
-            console.log("double click on button wrapper");
-          }}
-          onClickCapture={(e) => {
-            console.log("click capture on button wrapper");
-          }}
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          title="Back"
           onClick={(e) => {
-            console.log("click on button wrapper");
-          }}
-        >
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            title="Back"
-            onDoubleClickCapture={(e) => {
-              console.log("double click capture on button");
-            }}
-            onDoubleClick={(e) => {
-              console.log("double click on button");
-            }}
-            onClick={async (e) => {
+            // use a timeout to allow all double click events to propagate first
+            setTimeout(async () => {
               if (!workingFile) return;
               if (currentFolder?.fullPath === workingFile.dirname) {
                 setView("folder");
@@ -112,14 +114,14 @@ export function EditorViewHeader({
                 setCurrentFolder(dirEntry);
                 setView("folder");
               }
-            }}
-          >
-            <ChevronLeftIcon size={16} />
-          </Button>
-        </div>
+            }, 300);
+          }}
+        >
+          <ChevronLeftIcon size={16} />
+        </Button>
         <div
           className={cn(
-            "flex items-center gap-2 text-sm pointer-events-auto",
+            "flex items-center gap-2 text-sm",
             readonly && "opacity-50"
           )}
         >
@@ -128,36 +130,6 @@ export function EditorViewHeader({
           {modified && <span> •</span>}
         </div>
       </div>
-      <div className="flex items-center gap-0 pointer-events-auto">
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          onClick={handleNewFile}
-          title="New File"
-        >
-          <SquarePenIcon size={16} />
-        </Button>
-        <ToggleDarkModeButton />
-        <ApplicationMenu
-          menu={menus.view}
-          align="end"
-          open={openMenu === "view"}
-          onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
-          className="w-46"
-          render={
-            <Button
-              size="sm"
-              variant="ghost"
-              title={`Zoom`}
-              className="font-normal flex gap-1 items-center"
-            />
-          }
-        >
-          {Math.round(scale * 100) + "%"}
-          <ChevronDownIcon className="size-3.5" />
-        </ApplicationMenu>
-        <MainMenu />
-      </div>
-    </div>
+    </AppHeader>
   );
 }

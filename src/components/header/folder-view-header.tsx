@@ -27,17 +27,13 @@ import {
 import { ApplicationMenu } from "../menu/menu";
 import { useMenuStore } from "@/store/menu-store";
 import { MainMenu } from "./main-menu";
-import { cn } from "@/lib/utils";
+import { AppHeader } from "./app-header";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
 }
 
-export function FolderViewHeader({
-  folder,
-  className,
-  ...others
-}: FolderViewHeaderProps) {
+export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
   if (!folder) return null;
 
   const menus = useMenuStore((state) => state.menus);
@@ -56,11 +52,29 @@ export function FolderViewHeader({
   };
 
   return (
-    <div
-      className={cn(
-        "w-full h-full flex items-center justify-between",
-        className
-      )}
+    <AppHeader
+      propagateEvents={true}
+      rightArea={
+        <div className="flex items-center gap-0">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            title="New File"
+            onClick={handleNewFile}
+          >
+            <SquarePenIcon size={16} />
+          </Button>
+          <ApplicationMenu
+            menu={menus.sort}
+            className="w-52"
+            align="end"
+            render={<Button size="icon-sm" variant="ghost" title="Sort By" />}
+          >
+            <ArrowUpDownIcon size={16} />
+          </ApplicationMenu>
+          <MainMenu />
+        </div>
+      }
       {...others}
     >
       <div>
@@ -109,25 +123,6 @@ export function FolderViewHeader({
           </div>
         )}
       </div>
-      <div className="flex items-center gap-0 pointer-events-auto">
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          title="New File"
-          onClick={handleNewFile}
-        >
-          <SquarePenIcon size={16} />
-        </Button>
-        <ApplicationMenu
-          menu={menus.sort}
-          className="w-52"
-          align="end"
-          render={<Button size="icon-sm" variant="ghost" title="Sort By" />}
-        >
-          <ArrowUpDownIcon size={16} />
-        </ApplicationMenu>
-        <MainMenu />
-      </div>
-    </div>
+    </AppHeader>
   );
 }

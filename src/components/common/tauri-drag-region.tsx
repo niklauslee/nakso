@@ -11,11 +11,7 @@ export function TauriDragRegion({ children, ...others }: TauriDragRegionProps) {
           appWindow.startDragging();
         }
       }}
-      onDoubleClickCapture={(e) => {
-        console.log("double click capture on tauri drag region");
-      }}
       onDoubleClick={(e) => {
-        console.log("double click on tauri drag region");
         const appWindow = getCurrentWindow();
         appWindow.toggleMaximize();
       }}
