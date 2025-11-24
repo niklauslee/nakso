@@ -37,11 +37,13 @@ async function load(path: string): Promise<Page | null> {
 interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
   file: FileEntry;
   selected?: boolean;
+  disabled?: boolean;
 }
 
 export function FileCard({
   file,
   selected = false,
+  disabled = false,
   className,
   ...others
 }: FileCardProps) {
@@ -52,10 +54,6 @@ export function FileCard({
 
   const darkMode = useSettingStore((state) => state.darkMode);
   const favorites = useFavoritesStore((state) => state.files);
-  const addToFavorites = useFavoritesStore((state) => state.addToFavorites);
-  const removeFromFavorites = useFavoritesStore(
-    (state) => state.removeFromFavorites
-  );
   const isFavorite = favorites.includes(file.fullPath);
 
   const fetchFile = async () => {
@@ -73,11 +71,15 @@ export function FileCard({
     fetchFile();
   }, [file.fullPath, file.mtime, file.size]);
 
-  const handleToggleFavorite = () => {
+  const handleToggleFavorite = async () => {
     if (isFavorite) {
-      removeFromFavorites(file.fullPath);
+      await window.app.commands.execute("file:remove-from-favorites", {
+        filePath: file.fullPath,
+      });
     } else {
-      addToFavorites(file.fullPath);
+      await window.app.commands.execute("file:add-to-favorites", {
+        filePath: file.fullPath,
+      });
     }
   };
 
@@ -90,6 +92,7 @@ export function FileCard({
 
   const handleOpenClick = async () => {
     try {
+      if (disabled) return;
       if (broken) return;
       await window.app.commands.execute("file:open", {
         filePath: file.fullPath,
@@ -131,14 +134,19 @@ export function FileCard({
   return (
     <div
       className={cn(
-        "group relative border border-border/65 w-full rounded-lg overflow-clip",
+        "group relative border border-border/75 hover:border-accent-foreground/25 w-full rounded-lg overflow-clip",
         selected && "ring-2 ring-primary/75"
       )}
       {...others}
     >
       <div className="" onDoubleClick={handleOpenClick}>
         {page && !broken && (
-          <div className="w-full aspect-4/3 flex items-center justify-center">
+          <div
+            className={cn(
+              "w-full aspect-4/3 flex items-center justify-center",
+              (disabled || file.readonly) && "opacity-50"
+            )}
+          >
             <DGMPageView
               ref={pageViewRef}
               className={cn("w-full", className)}
@@ -164,60 +172,67 @@ export function FileCard({
           <div
             className={cn(
               "flex items-center gap-1 min-h-6 w-full max-w-full",
-              file.readonly && "opacity-50"
+              (disabled || file.readonly) && "opacity-50"
             )}
           >
-            {file.readonly && <LockIcon size={16} />}
+            {file.readonly && <LockIcon size={12} strokeWidth={2.4} />}
             <EditableText
+              editable={!disabled}
               ref={editableTextRef}
-              className="text-sm text-accent-foreground truncate max-w-full"
+              className={cn(
+                "text-sm text-accent-foreground truncate max-w-full"
+              )}
               value={file.name}
               onValueChange={handleFileRename}
             />
           </div>
           <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button size="icon-sm" variant="ghost" />}
-              >
-                <EllipsisIcon size={16} />
-              </DropdownMenuTrigger>
-              <DropdownMenuPositioner align="end">
-                <DropdownMenuContent className="w-fit p-1.5 shadow-lg">
-                  <DropdownMenuItem
-                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                    onClick={handleOpenClick}
-                  >
-                    Open
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                    onClick={handleRenameClick}
-                  >
-                    Rename
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                    onClick={handleDuplicateClick}
-                  >
-                    Duplicate
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                    onClick={handleToggleFavorite}
-                  >
-                    {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="my-1.5" />
-                  <DropdownMenuItem
-                    className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                    onClick={handleMoveToTrashClick}
-                  >
-                    Move to Trash
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenuPositioner>
-            </DropdownMenu>
+            {!disabled && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<Button size="icon-sm" variant="ghost" />}
+                >
+                  <EllipsisIcon size={16} />
+                </DropdownMenuTrigger>
+                <DropdownMenuPositioner align="end">
+                  <DropdownMenuContent className="w-fit p-1.5 shadow-lg">
+                    <DropdownMenuItem
+                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                      onClick={handleOpenClick}
+                    >
+                      Open
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                      onClick={handleRenameClick}
+                    >
+                      Rename
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                      onClick={handleDuplicateClick}
+                    >
+                      Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                      onClick={handleToggleFavorite}
+                    >
+                      {isFavorite
+                        ? "Remove from Favorites"
+                        : "Add to Favorites"}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="my-1.5" />
+                    <DropdownMenuItem
+                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+                      onClick={handleMoveToTrashClick}
+                    >
+                      Move to Trash
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenuPositioner>
+              </DropdownMenu>
+            )}
           </div>
         </div>
         <div className="flex items-center text-nowrap text-xs text-muted-foreground/75 px-3">
@@ -226,7 +241,7 @@ export function FileCard({
       </div>
 
       <div className="absolute right-0 top-0 p-2">
-        {!broken && (
+        {!broken && !disabled && (
           <Button
             size="icon-sm"
             variant="ghost"

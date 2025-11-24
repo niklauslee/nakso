@@ -3,6 +3,7 @@ import { useExplorerStore } from "@/store/explorer-store";
 import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileEntry } from "@/api/workspace";
 import { cn } from "@/lib/utils";
+import { TRASH_TAG } from "@/const";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -33,7 +34,11 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
       {loadedFiles.length > 0 && (
         <>
           {loadedFiles.map((file) => (
-            <FileCard key={file.fullPath} file={file} />
+            <FileCard
+              key={file.fullPath}
+              file={file}
+              disabled={folder.tag === TRASH_TAG}
+            />
           ))}
         </>
       )}

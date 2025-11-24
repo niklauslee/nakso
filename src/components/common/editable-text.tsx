@@ -8,6 +8,7 @@ import {
 } from "react";
 
 interface EditableTextProps extends React.HTMLProps<HTMLDivElement> {
+  editable?: boolean;
   value: string;
   onValueChange?: (value: string) => Promise<void>;
 }
@@ -17,9 +18,9 @@ export interface EditableTextHandle {
 }
 
 export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
-  ({ value, onValueChange, className, ...props }, ref) => {
+  ({ editable = true, value, onValueChange, className, ...props }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [editable, setEditable] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     const [currentValue, setCurrentValue] = useState(value);
     const commitedRef = useRef(false);
 
@@ -28,8 +29,9 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
     }, [value]);
 
     const startEdit = () => {
+      if (!editable) return;
       commitedRef.current = true; // ignore blur events
-      setEditable(true);
+      setEditMode(true);
       setTimeout(() => {
         commitedRef.current = false; // care blur events
         inputRef.current?.focus();
@@ -55,11 +57,11 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
         commitedRef.current = true;
         if (currentValue !== value) await onValueChange?.(currentValue);
         setTimeout(() => {
-          setEditable(false);
+          setEditMode(false);
         }, 10);
       } else if (e.key === "Escape") {
         commitedRef.current = true;
-        setEditable(false);
+        setEditMode(false);
         setCurrentValue(value);
       }
     };
@@ -69,7 +71,7 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
         commitedRef.current = false;
         return;
       }
-      setEditable(false);
+      setEditMode(false);
       if (currentValue !== value) onValueChange?.(currentValue);
     };
 
@@ -80,7 +82,7 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
           className={cn(
             "inline-block border-none outline-0",
             className,
-            !editable && "hidden"
+            !editMode && "hidden"
           )}
           value={currentValue}
           onChange={handleValueChange}
@@ -91,7 +93,7 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
           className={cn(
             "inline-block text-nowrap",
             className,
-            editable && "hidden"
+            editMode && "hidden"
           )}
           onDoubleClick={handleDoubleClick}
           {...props}

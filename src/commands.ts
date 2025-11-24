@@ -199,6 +199,38 @@ export function registerCommands() {
   );
 
   app.commands.register(
+    "file:add-to-favorites",
+    "Add a file to favorites.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      try {
+        useFavoritesStore.getState().addToFavorites(filePath);
+      } catch (err) {
+        toast.error("Failed to add file to favorites.");
+        console.error("Failed to add file to favorites:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:remove-from-favorites",
+    "Remove a file from favorites.",
+    {
+      filePath: z.string(),
+    },
+    async ({ filePath }) => {
+      try {
+        useFavoritesStore.getState().removeFromFavorites(filePath);
+      } catch (err) {
+        toast.error("Failed to remove file from favorites.");
+        console.error("Failed to remove file from favorites:", err);
+      }
+    }
+  );
+
+  app.commands.register(
     "file:move-to-trash",
     "Move a file to trash.",
     {
