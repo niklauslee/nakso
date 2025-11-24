@@ -38,6 +38,7 @@ import { workspace } from "@/api/workspace";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
 import { TauriDragRegion } from "./common/tauri-drag-region";
+import { FolderTree, FolderTreeNode } from "./common/folder-tree";
 
 export function AppSidebar() {
   const showSidebar = useSettingStore((state) => state.showSidebar);
@@ -184,7 +185,8 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
+
+        {/* <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/40">
             Folders
           </SidebarGroupLabel>
@@ -222,7 +224,33 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
+        </SidebarGroup> */}
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-sidebar-foreground/40">
+            Folders
+          </SidebarGroupLabel>
+          <SidebarGroupAction
+            className="text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-transparent cursor-pointer"
+            title="Add Folder"
+            onClick={handleAddFolder}
+          >
+            <FolderPlusIcon size={16} />
+            <span className="sr-only">Add Folder</span>
+          </SidebarGroupAction>
+          <SidebarGroupContent>
+            <FolderTree
+              folders={folders}
+              selection={currentFolder?.fullPath ?? null}
+              onFolderSelect={(folder) => {
+                setCurrentFolder(folder);
+                setView("folder");
+              }}
+            />
+          </SidebarGroupContent>
         </SidebarGroup>
+
+        <div></div>
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center justify-between">

@@ -45,6 +45,7 @@ export type FileEntry = {
   birthtime: Date | null;
   readonly: boolean;
   tag?: string;
+  children?: FileEntry[];
 };
 
 /**
@@ -75,9 +76,12 @@ async function ensureWorkspace(dirPath: string): Promise<string> {
 }
 
 /**
- * Read all folders in the workspace (only one level deep).
+ * Read all folders in the workspace.
  */
-async function getFolders(workspaceDir: string): Promise<FileEntry[]> {
+async function getFolders(
+  workspaceDir: string,
+  recursive: boolean = false
+): Promise<FileEntry[]> {
   const entries = await readDir(workspaceDir);
   // map to FileEntry
   const dirEntries = [];
@@ -96,6 +100,12 @@ async function getFolders(workspaceDir: string): Promise<FileEntry[]> {
   if (draftsFolderIndex > 0) {
     const [drafts] = sorted.splice(draftsFolderIndex, 1);
     sorted.unshift({ ...drafts, tag: DRAFTS_TAG });
+  }
+  // if recursive, get children
+  if (recursive) {
+    for (const dirEntry of sorted) {
+      dirEntry.children = await getFolders(dirEntry.fullPath, true);
+    }
   }
   return sorted;
 }

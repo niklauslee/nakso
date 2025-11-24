@@ -47,7 +47,7 @@ export const useExplorerStore = create<ExplorerState>()(
       },
       setFolders: (folders) => set({ folders }),
       fetchFolders: async (workspaceDir) => {
-        const folders = await workspace.getFolders(workspaceDir);
+        const folders = await workspace.getFolders(workspaceDir, true);
         set({ folders });
       },
       setCurrentFolder: async (folder) => {
