@@ -177,6 +177,13 @@ function createFileEntry(fileEntry: Partial<FileEntry>): FileEntry {
 }
 
 /**
+ * Create a directory at the specified path
+ */
+async function makeDir(path: string): Promise<void> {
+  await mkdir(path, { recursive: true });
+}
+
+/**
  * Check if a file exists
  */
 async function existsFile(path: string): Promise<boolean> {
@@ -294,7 +301,8 @@ async function parsePath(
  */
 async function generateUniqueFileName(
   baseDir: string,
-  baseName?: string
+  baseName?: string,
+  extName: string = EXT_NAME
 ): Promise<string> {
   if (!baseName) {
     const now = new Date();
@@ -304,11 +312,11 @@ async function generateUniqueFileName(
       String(now.getDate()).padStart(2, "0"),
     ].join("-");
   }
-  let candidate = `${baseName}${EXT_NAME}`;
+  let candidate = `${baseName}${extName}`;
   let candidatePath = await join(baseDir, candidate);
   let suffix = 1;
   while (await exists(candidatePath)) {
-    candidate = `${baseName} (${suffix})${EXT_NAME}`;
+    candidate = `${baseName} (${suffix})${extName}`;
     candidatePath = await join(baseDir, candidate);
     suffix += 1;
   }
@@ -343,6 +351,7 @@ export const workspace = {
   getFileEntry,
   getFileEntries,
   createFileEntry,
+  makeDir,
   existsFile,
   renameFile,
   readFile,

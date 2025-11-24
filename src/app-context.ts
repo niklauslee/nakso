@@ -172,8 +172,7 @@ export class AppContext {
       await useRecentsStore.persist.rehydrate();
       await useFavoritesStore.persist.rehydrate();
       // load workspace folders
-      const folders = await workspace.getFolders(workspaceDir);
-      useExplorerStore.getState().setFolders(folders);
+      useExplorerStore.getState().fetchFolders(workspaceDir);
     } catch (err) {
       console.error("Failed to load workspace", err);
     }

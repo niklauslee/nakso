@@ -231,6 +231,36 @@ export function registerCommands() {
   );
 
   app.commands.register(
+    "file:new-folder",
+    "Create a new folder in the specified base directory.",
+    {
+      basePath: z.string().optional(),
+      dirName: z.string(),
+    },
+    async ({ basePath, dirName }) => {
+      const app = window.app;
+      try {
+        const workspaceDir = app.getWorkspaceDir();
+        let dir = workspaceDir;
+        if (basePath) dir = basePath;
+        const newFolderPath = await workspace.generateUniqueFileName(
+          dir,
+          dirName,
+          ""
+        );
+        await workspace.makeDir(newFolderPath);
+        useExplorerStore.getState().fetchFolders(workspaceDir);
+        const dirEntry = await workspace.getFileEntry(newFolderPath);
+        useExplorerStore.getState().setCurrentFolder(dirEntry);
+        useExplorerStore.getState().setView("folder");
+      } catch (err) {
+        toast.error("Failed to create new folder.");
+        console.error("Failed to create new folder:", err);
+      }
+    }
+  );
+
+  app.commands.register(
     "file:move-to-trash",
     "Move a file to trash.",
     {

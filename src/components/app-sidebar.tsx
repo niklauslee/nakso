@@ -62,8 +62,15 @@ export function AppSidebar() {
     }
   }, [isMobile, openMobile]);
 
-  const handleNewFile = () => {
-    window.app?.commands.execute("file:new");
+  const handleAddFolder = async () => {
+    const app = window.app;
+    try {
+      await window.app.commands.execute("file:new-folder", {
+        dirName: "New Folder",
+      });
+    } catch (error) {
+      console.error("Error calling greet:", error);
+    }
   };
 
   const handleTestGreet = async () => {
@@ -184,9 +191,7 @@ export function AppSidebar() {
           <SidebarGroupAction
             className="text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-transparent cursor-pointer"
             title="Add Folder"
-            onClick={() => {
-              console.log("new folder");
-            }}
+            onClick={handleAddFolder}
           >
             <FolderPlusIcon size={16} />
             <span className="sr-only">Add Folder</span>

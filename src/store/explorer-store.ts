@@ -18,6 +18,7 @@ export interface ExplorerState {
   sortBy: FileSortType;
   getDraftsFolder: () => FileEntry | null;
   setView(view: ViewType): void;
+  fetchFolders: (workspaceDir: string) => Promise<void>;
   setFolders: (folders: FileEntry[]) => void;
   setCurrentFolder: (folder: FileEntry | null) => Promise<void>;
   fetchMoreFiles: () => Promise<void>;
@@ -45,6 +46,10 @@ export const useExplorerStore = create<ExplorerState>()(
         set({ view });
       },
       setFolders: (folders) => set({ folders }),
+      fetchFolders: async (workspaceDir) => {
+        const folders = await workspace.getFolders(workspaceDir);
+        set({ folders });
+      },
       setCurrentFolder: async (folder) => {
         if (folder) {
           const sortBy = get().sortBy;
