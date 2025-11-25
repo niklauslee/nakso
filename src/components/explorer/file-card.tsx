@@ -135,7 +135,7 @@ export function FileCard({
     <div
       className={cn(
         "group relative border border-border/75 hover:border-accent-foreground/25 w-full rounded-lg overflow-clip",
-        selected && "ring-2 ring-primary/75"
+        selected && "ring-2 ring-accent-foreground/25"
       )}
       {...others}
     >
@@ -239,7 +239,6 @@ export function FileCard({
           {dateFromNow(new Date(file.mtime!))}
         </div>
       </div>
-
       <div className="absolute right-0 top-0 p-2">
         {!broken && !disabled && (
           <Button

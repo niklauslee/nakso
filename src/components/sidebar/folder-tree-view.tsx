@@ -12,7 +12,7 @@ import { useState } from "react";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { DRAFTS_TAG } from "@/const";
 
-export function FoldersView() {
+export function FolderTreeView() {
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const setView = useExplorerStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);

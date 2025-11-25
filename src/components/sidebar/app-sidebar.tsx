@@ -30,7 +30,7 @@ import { workspace } from "@/api/workspace";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
 import { TauriDragRegion } from "../common/tauri-drag-region";
-import { FoldersView } from "./folders-view";
+import { FolderTreeView } from "./folder-tree-view";
 
 export function AppSidebar() {
   const showSidebar = useSettingStore((state) => state.showSidebar);
@@ -218,7 +218,7 @@ export function AppSidebar() {
             <span className="sr-only">New Folder</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
-            <FoldersView />
+            <FolderTreeView />
           </SidebarGroupContent>
         </SidebarGroup>
 
