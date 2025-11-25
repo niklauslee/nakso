@@ -4,22 +4,13 @@ import { useFavoritesStore } from "@/store/favorites-store";
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, shapeInstantiator, Store } from "@dgmjs/core";
 import { DGMPageView, DGMPageViewHandle } from "@dgmjs/react";
-import { BanIcon, EllipsisIcon, HeartIcon, LockIcon } from "lucide-react";
+import { BanIcon, HeartIcon, LockIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   EditableText,
   EditableTextHandle,
 } from "@/components/common/editable-text";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPositioner,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useExplorerStore } from "@/store/explorer-store";
 import { Button } from "../ui/button";
 
 async function load(path: string): Promise<Page | null> {
@@ -35,13 +26,13 @@ async function load(path: string): Promise<Page | null> {
 }
 
 interface FileCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  file: FileEntry;
+  fileEntry: FileEntry;
   selected?: boolean;
   disabled?: boolean;
 }
 
 export function FileCard({
-  file,
+  fileEntry,
   selected = false,
   disabled = false,
   className,
@@ -54,48 +45,48 @@ export function FileCard({
 
   const darkMode = useSettingStore((state) => state.darkMode);
   const favorites = useFavoritesStore((state) => state.files);
-  const isFavorite = favorites.includes(file.fullPath);
+  const isFavorite = favorites.includes(fileEntry.fullPath);
 
   const fetchFile = async () => {
     try {
-      const page = await load(file.fullPath);
+      const page = await load(fileEntry.fullPath);
       setPage(page);
       if (!(page instanceof Page)) setBroken(true);
     } catch (error) {
       setBroken(true);
-      console.error("Failed to load file:", file.fullPath, error);
+      console.error("Failed to load file:", fileEntry.fullPath, error);
     }
   };
 
   useEffect(() => {
     fetchFile();
-  }, [file.fullPath, file.mtime, file.size]);
+  }, [fileEntry.fullPath, fileEntry.mtime, fileEntry.size]);
 
   const handleToggleFavorite = async () => {
     if (isFavorite) {
       await window.app.commands.execute("file:remove-from-favorites", {
-        filePath: file.fullPath,
+        filePath: fileEntry.fullPath,
       });
     } else {
       await window.app.commands.execute("file:add-to-favorites", {
-        filePath: file.fullPath,
+        filePath: fileEntry.fullPath,
       });
     }
   };
 
   const handleFileRename = async (newName: string) => {
     await window.app.commands.execute("file:rename", {
-      filePath: file.fullPath,
+      filePath: fileEntry.fullPath,
       newName,
     });
   };
 
-  const handleOpenClick = async () => {
+  const handleDoubleClick = async () => {
     try {
       if (disabled) return;
       if (broken) return;
       await window.app.commands.execute("file:open", {
-        filePath: file.fullPath,
+        filePath: fileEntry.fullPath,
       });
     } catch (err) {
       toast.error("Failed to open file");
@@ -103,48 +94,21 @@ export function FileCard({
     }
   };
 
-  const handleRenameClick = () => {
-    console.log("Rename clicked");
-    setTimeout(() => {
-      editableTextRef.current?.startEdit();
-    }, 200);
-  };
-
-  const handleDuplicateClick = async () => {
-    try {
-      const newPath = await window.app.commands.execute("file:duplicate", {
-        filePath: file.fullPath,
-      });
-      useExplorerStore.getState().addFile(newPath);
-    } catch (err) {
-      console.error("Failed to duplicate file:", err);
-    }
-  };
-
-  const handleMoveToTrashClick = async () => {
-    try {
-      await window.app.commands.execute("file:move-to-trash", {
-        filePath: file.fullPath,
-      });
-    } catch (err) {
-      console.error("Failed to move file to trash:", err);
-    }
-  };
-
   return (
     <div
+      data-id={fileEntry.fullPath}
       className={cn(
-        "group relative border border-border/75 hover:border-accent-foreground/25 w-full rounded-lg overflow-clip",
+        "file-card group relative border border-border/75 hover:border-accent-foreground/25 w-full rounded-lg overflow-clip",
         selected && "ring-2 ring-accent-foreground/25"
       )}
       {...others}
     >
-      <div className="" onDoubleClick={handleOpenClick}>
+      <div className="" onDoubleClick={handleDoubleClick}>
         {page && !broken && (
           <div
             className={cn(
               "w-full aspect-4/3 flex items-center justify-center",
-              (disabled || file.readonly) && "opacity-50"
+              (disabled || fileEntry.readonly) && "opacity-50"
             )}
           >
             <DGMPageView
@@ -172,71 +136,23 @@ export function FileCard({
           <div
             className={cn(
               "flex items-center gap-1 min-h-6 w-full max-w-full",
-              (disabled || file.readonly) && "opacity-50"
+              (disabled || fileEntry.readonly) && "opacity-50"
             )}
           >
-            {file.readonly && <LockIcon size={12} strokeWidth={2.4} />}
+            {fileEntry.readonly && <LockIcon size={12} strokeWidth={2.4} />}
             <EditableText
               editable={!disabled}
               ref={editableTextRef}
               className={cn(
-                "text-sm text-accent-foreground truncate max-w-full"
+                "file-card-name text-sm text-accent-foreground truncate max-w-full"
               )}
-              value={file.name}
+              value={fileEntry.name}
               onValueChange={handleFileRename}
             />
           </div>
-          <div className="absolute right-0 top-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 pr-2">
-            {!disabled && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={<Button size="icon-sm" variant="ghost" />}
-                >
-                  <EllipsisIcon size={16} />
-                </DropdownMenuTrigger>
-                <DropdownMenuPositioner align="end">
-                  <DropdownMenuContent className="w-fit p-1.5 shadow-lg">
-                    <DropdownMenuItem
-                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                      onClick={handleOpenClick}
-                    >
-                      Open
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                      onClick={handleRenameClick}
-                    >
-                      Rename
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                      onClick={handleDuplicateClick}
-                    >
-                      Duplicate
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                      onClick={handleToggleFavorite}
-                    >
-                      {isFavorite
-                        ? "Remove from Favorites"
-                        : "Add to Favorites"}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="my-1.5" />
-                    <DropdownMenuItem
-                      className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-                      onClick={handleMoveToTrashClick}
-                    >
-                      Move to Trash
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenuPositioner>
-              </DropdownMenu>
-            )}
-          </div>
         </div>
         <div className="flex items-center text-nowrap text-xs text-muted-foreground/75 px-3">
-          {dateFromNow(new Date(file.mtime!))}
+          {dateFromNow(new Date(fileEntry.mtime!))}
         </div>
       </div>
       <div className="absolute right-0 top-0 p-2">

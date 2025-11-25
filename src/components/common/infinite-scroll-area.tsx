@@ -21,6 +21,7 @@ export function InfiniteScrollArea({
   fetchFirst,
   fetchMore,
   children,
+  ...others
 }: InfiniteScrollAreaProps) {
   const observeTargetRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +54,7 @@ export function InfiniteScrollArea({
   };
 
   return (
-    <ScrollArea className={className}>
+    <ScrollArea className={className} {...others}>
       <div className={innerClassName}>
         {children}
         <div ref={observeTargetRef} />

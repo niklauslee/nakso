@@ -48,6 +48,8 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
     };
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (!editable) return;
+      if (editMode) return;
       startEdit();
     };
 
@@ -88,6 +90,7 @@ export const EditableText = forwardRef<EditableTextHandle, EditableTextProps>(
           onChange={handleValueChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
+          onDoubleClick={handleDoubleClick}
         />
         <span
           className={cn(
