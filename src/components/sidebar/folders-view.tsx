@@ -12,16 +12,15 @@ import { useState } from "react";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { DRAFTS_TAG } from "@/const";
 
-export function FolderTreeView() {
+export function FoldersView() {
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const setView = useExplorerStore((state) => state.setView);
   const folders = useExplorerStore((state) => state.folders);
   const currentFolder = useExplorerStore((state) => state.currentFolder);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
-  const focusedFolder = folders.find((f) => f.fullPath === focusedId);
+  const findFolder = useExplorerStore((state) => state.findFolder);
+  const focusedFolder = findFolder(focusedId || "") || null;
   const isDraftsFolderFocused = focusedFolder?.tag === DRAFTS_TAG;
-
-  console.log("isDraftsFolderFocused", isDraftsFolderFocused);
 
   const handleOpenChange = (open: boolean, eventDetails: any) => {
     if (open) {
@@ -49,6 +48,19 @@ export function FolderTreeView() {
         dirPath: folder.fullPath,
         newName: text,
       });
+    }
+  };
+
+  const handleNewFolder = async () => {
+    try {
+      if (focusedFolder && focusedFolder.fullPath) {
+        await window.app.commands.execute("file:new-folder", {
+          basePath: focusedFolder.fullPath,
+          dirName: "New Folder",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create new folder", error);
     }
   };
 
@@ -100,9 +112,7 @@ export function FolderTreeView() {
           <ContextMenuItem
             className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             disabled={isDraftsFolderFocused}
-            onClick={(e) => {
-              console.log("new folder", currentFolder);
-            }}
+            onClick={handleNewFolder}
           >
             New Folder
           </ContextMenuItem>

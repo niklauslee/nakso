@@ -30,7 +30,7 @@ import { workspace } from "@/api/workspace";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
 import { TauriDragRegion } from "../common/tauri-drag-region";
-import { FolderTreeView } from "./folder-tree-view";
+import { FoldersView } from "./folders-view";
 
 export function AppSidebar() {
   const showSidebar = useSettingStore((state) => state.showSidebar);
@@ -53,24 +53,13 @@ export function AppSidebar() {
     }
   }, [isMobile, openMobile]);
 
-  const handleAddFolder = async () => {
-    const app = window.app;
+  const handleNewFolder = async () => {
     try {
       await window.app.commands.execute("file:new-folder", {
         dirName: "New Folder",
       });
     } catch (error) {
-      console.error("Error calling greet:", error);
-    }
-  };
-
-  const handleTestGreet = async () => {
-    try {
-      // const result = await invoke<string>("greet", { name: "Niklaus" });
-      const result = await window.api.system.getSystemFonts();
-      console.log(result);
-    } catch (error) {
-      console.error("Error calling greet:", error);
+      console.error("Failed to create new folder", error);
     }
   };
 
@@ -222,14 +211,14 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupAction
             className="text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-transparent cursor-pointer"
-            title="Add Folder"
-            onClick={handleAddFolder}
+            title="New Folder"
+            onClick={handleNewFolder}
           >
             <FolderPlusIcon size={16} />
-            <span className="sr-only">Add Folder</span>
+            <span className="sr-only">New Folder</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
-            <FolderTreeView />
+            <FoldersView />
           </SidebarGroupContent>
         </SidebarGroup>
 

@@ -4,6 +4,7 @@ import { FileSortType, workspace } from "@/api/workspace";
 import { useFavoritesStore } from "./favorites-store";
 import { useRecentsStore } from "./recents-store";
 import { persist } from "zustand/middleware";
+import { DRAFTS_TAG } from "@/const";
 
 const PAGE_SIZE = 50; // set to 30, 50, or 100?
 
@@ -40,7 +41,7 @@ export const useExplorerStore = create<ExplorerState>()(
       sortBy: { field: "mtime", direction: "desc" },
       getDraftsFolder: () => {
         const folders = get().folders;
-        return folders.find((f) => f.tag === "drafts") || null;
+        return folders.find((f) => f.tag === DRAFTS_TAG) || null;
       },
       setView: (view) => {
         set({ view });
@@ -88,8 +89,23 @@ export const useExplorerStore = create<ExplorerState>()(
         }
       },
       findFolder: (folderPath) => {
+        const findRecursive = (
+          folders: FileEntry[],
+          targetPath: string
+        ): FileEntry | null => {
+          for (const folder of folders) {
+            if (folder.fullPath === targetPath) {
+              return folder;
+            }
+            if (folder.children && folder.children.length > 0) {
+              const found = findRecursive(folder.children, targetPath);
+              if (found) return found;
+            }
+          }
+          return null;
+        };
         const folders = get().folders;
-        return folders.find((f) => f.fullPath === folderPath) || null;
+        return findRecursive(folders, folderPath);
       },
       fetchMoreFiles: async () => {
         set((state) => {
