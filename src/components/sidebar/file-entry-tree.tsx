@@ -13,51 +13,43 @@
 
 import React, { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  ChevronDownIcon,
-  EllipsisIcon,
-  FolderCheckIcon,
-  FolderIcon,
-} from "lucide-react";
+import { ChevronDownIcon, FolderCheckIcon, FolderIcon } from "lucide-react";
 import { FileEntry } from "@/api/workspace";
 import { DRAFTS_TAG } from "@/const";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPositioner,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
-interface FolderTreeProps {
-  folders: FileEntry[];
-  selection: string | null;
-  onFolderSelect?: (folder: FileEntry) => void;
+interface FileEntryTreeProps extends React.HTMLProps<HTMLUListElement> {
+  fileEntries: FileEntry[];
+  selectedId: string | null;
+  focusedId: string | null;
+  onFileEntrySelect?: (fileEntry: FileEntry) => void;
+  onNameChange?: (fileEntry: FileEntry, text: string) => void;
 }
 
-interface FolderTreeNodeProps extends React.HTMLProps<HTMLLIElement> {
+interface FileEntryTreeNodeProps extends React.HTMLProps<HTMLLIElement> {
   id: string;
   fileEntry: FileEntry;
   level?: number;
   levelIndent?: number;
   defaultIndent?: number;
-  selection?: string | null;
-  onFolderSelect?: (folder: FileEntry) => void;
-  onNameChange?: (text: string) => void;
+  selectedId?: string | null;
+  focusedId?: string | null;
+  onFileEntrySelect?: (fileEntry: FileEntry) => void;
+  onNameChange?: (fileEntry: FileEntry, text: string) => void;
 }
 
-export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
+export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
   id,
   fileEntry,
   level = 0,
   levelIndent = 16,
   defaultIndent = 8,
-  selection = null,
+  selectedId = null,
+  focusedId = null,
   draggable,
   onDragStart,
   onDragEnd,
-  onFolderSelect,
+  onFileEntrySelect,
   onNameChange,
   className,
   ...others
@@ -66,10 +58,11 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [editing, setEditing] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>(fileEntry.name);
-  const selected = selection === id;
+  const selected = selectedId === id;
+  const focused = focusedId === id;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (onFolderSelect) onFolderSelect(fileEntry);
+    if (onFileEntrySelect) onFileEntrySelect(fileEntry);
     e.stopPropagation();
   };
 
@@ -97,15 +90,17 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
   const handleInputBlur = () => {
     setEditing(false);
     if (onNameChange && inputValue !== fileEntry.name) {
-      onNameChange(inputValue);
+      onNameChange(fileEntry, inputValue);
     }
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (editing && typeof inputValue === "string" && onNameChange) {
-        inputRef.current?.blur();
-        onNameChange(inputValue);
+        e.stopPropagation();
+        setTimeout(() => {
+          inputRef.current?.blur();
+        }, 0);
       }
     }
   };
@@ -116,20 +111,21 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
       data-state={collapsed}
       data-level={level}
       data-selected={selected ? "on" : "off"}
-      className=""
+      className="file-entry-tree-node"
       {...others}
     >
       <div
         className={cn(
-          "group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
-          selected && "font-medium bg-sidebar-accent",
+          "file-entry-tree-node-item group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
+          selected && !editing && "font-medium bg-sidebar-accent",
+          (focused || editing) && "ring-2 ring-accent-foreground/25",
           className
         )}
         style={{ paddingLeft: defaultIndent + level * levelIndent }}
         onClick={handleClick}
       >
         <div
-          className="cursor-default select-none px-0 w-full"
+          className="file-entry-tree-node-item-name cursor-default select-none px-0 w-full"
           onDoubleClick={handleDoubleClick}
           draggable={draggable}
           onDragStart={onDragStart as any}
@@ -176,13 +172,14 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
             </div>
           </div>
         </div>
-        <div className="hidden group-hover/item:flex text-sidebar-foreground/40 h-4 cursor-pointer justify-end items-center gap-2 -mr-0.5">
-          <div>
-            <EllipsisIcon
-              className={cn("hover:text-sidebar-accent-foreground")}
-              size={16}
-            />
-          </div>
+        <div
+          className={cn(
+            "flex text-sidebar-foreground/40 h-4 cursor-pointer justify-end items-center gap-2 -mr-0.5",
+            !(
+              Array.isArray(fileEntry.children) && fileEntry.children.length > 0
+            ) && "hidden"
+          )}
+        >
           <div onClick={handleToggleCollapse}>
             <ChevronDownIcon
               className={cn(
@@ -196,17 +193,20 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
       </div>
       <ul
         className={cn(
-          "m-0 list-none p-0 flex flex-col gap-1",
+          "file-entry-tree-node-children m-0 list-none p-0 flex flex-col gap-1",
           collapsed && "hidden"
         )}
       >
         {fileEntry.children?.toReversed().map((child) => (
-          <FolderTreeNode
+          <FileEntryTreeNode
             id={child.fullPath}
             key={child.fullPath}
             fileEntry={child}
+            selectedId={selectedId}
+            focusedId={focusedId}
             level={level + 1}
-            onFolderSelect={onFolderSelect}
+            onFileEntrySelect={onFileEntrySelect}
+            onNameChange={onNameChange}
           />
         ))}
       </ul>
@@ -214,24 +214,32 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
   );
 };
 
-export const FolderTree: React.FC<FolderTreeProps> = ({
-  folders,
-  selection,
-  onFolderSelect,
+export const FileEntryTree: React.FC<FileEntryTreeProps> = ({
+  fileEntries,
+  selectedId,
+  focusedId,
+  onFileEntrySelect,
+  onNameChange,
+  className,
+  ...others
 }) => {
   return (
     <ul
       className={cn(
-        "m-0 list-none text-sm w-full max-w-full relative flex flex-col gap-1"
+        "m-0 list-none text-sm w-full max-w-full relative flex flex-col gap-1",
+        className
       )}
+      {...others}
     >
-      {folders.map((folder) => (
-        <FolderTreeNode
-          key={folder.fullPath}
-          id={folder.fullPath}
-          fileEntry={folder}
-          selection={selection}
-          onFolderSelect={onFolderSelect}
+      {fileEntries.map((entry) => (
+        <FileEntryTreeNode
+          key={entry.fullPath}
+          id={entry.fullPath}
+          fileEntry={entry}
+          selectedId={selectedId}
+          focusedId={focusedId}
+          onFileEntrySelect={onFileEntrySelect}
+          onNameChange={onNameChange}
         />
       ))}
     </ul>

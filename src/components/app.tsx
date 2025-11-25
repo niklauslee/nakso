@@ -6,7 +6,7 @@ import { Editor as EditorType } from "@dgmjs/core";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect, useRef } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "./app-sidebar";
+import { AppSidebar } from "./sidebar/app-sidebar";
 import { EditorView } from "./editor/editor-view";
 import { FolderView } from "./explorer/folder-view";
 import { Toaster } from "@/components/ui/sonner";

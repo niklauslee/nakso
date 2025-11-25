@@ -27,6 +27,7 @@ import { join } from "@tauri-apps/api/path";
 import { useAboutDialog } from "@/components/dialogs/about-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useKeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shorcuts-dialog";
+import { readDir, exists, remove } from "@tauri-apps/plugin-fs";
 
 /**
  * Find the shapes by the given id array.
@@ -169,6 +170,84 @@ export function registerCommands() {
       } catch (err) {
         toast.error("Failed to rename file.");
         console.error("Failed to rename file:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:rename-folder",
+    "Rename a folder.",
+    {
+      dirPath: z.string(),
+      newName: z.string(),
+    },
+    async ({ dirPath, newName }) => {
+      const app = window.app;
+      try {
+        const oldPath = dirPath;
+        const { dir: baseDir } = await workspace.parsePath(oldPath, true);
+        const newPath = await join(baseDir, newName);
+
+        console.log("try to rename folder", dirPath, newPath);
+
+        if (oldPath === newPath) return;
+        // check new name already exists
+        if (await workspace.existsFile(newPath)) {
+          toast.error("Folder already exists.");
+          return;
+        }
+        // rename folder in workspace
+        await workspace.renameFile(dirPath, newPath);
+        // update all states
+        const workspaceDir = app.getWorkspaceDir();
+        useExplorerStore.getState().fetchFolders(workspaceDir);
+        setTimeout(() => {
+          const newFolder = useExplorerStore.getState().findFolder(newPath);
+          useExplorerStore.getState().setCurrentFolder(newFolder);
+        }, 100);
+      } catch (err) {
+        toast.error("Failed to rename folder.");
+        console.error("Failed to rename folder:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:delete-folder",
+    "Delete a folder permanently.",
+    {
+      dirPath: z.string(),
+    },
+    async ({ dirPath }) => {
+      const app = window.app;
+      try {
+        // check directory exists
+        if (!(await exists(dirPath))) {
+          toast.error("Folder does not exist.");
+          return;
+        }
+        // check directory is empty
+        const files = await readDir(dirPath);
+        console.log("files in dir to delete:", files);
+        if (files.length > 0) {
+          toast.error("Folder is not empty.");
+          return;
+        }
+        // delete folder
+        await remove(dirPath);
+        // update all states
+        const workspaceDir = app.getWorkspaceDir();
+        useExplorerStore.getState().fetchFolders(workspaceDir);
+        // select draft folder after deletion
+        setTimeout(() => {
+          const draftFolder = useExplorerStore
+            .getState()
+            .findFolder(app.getDraftsDir());
+          useExplorerStore.getState().setCurrentFolder(draftFolder);
+        }, 100);
+      } catch (err) {
+        toast.error("Failed to delete folder.");
+        console.error("Failed to delete folder:", err);
       }
     }
   );

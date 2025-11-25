@@ -22,21 +22,20 @@ import {
   SettingsIcon,
   Trash2Icon,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useExplorerStore } from "@/store/explorer-store";
 import { FAVORITES_TAG, RECENTS_TAG, SEARCH_TAG, TRASH_TAG } from "@/const";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { workspace } from "@/api/workspace";
 import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
-import { TauriDragRegion } from "./common/tauri-drag-region";
-import { FolderTree } from "./common/folder-tree";
+import { TauriDragRegion } from "../common/tauri-drag-region";
+import { FolderTreeView } from "./folder-tree-view";
 
 export function AppSidebar() {
   const showSidebar = useSettingStore((state) => state.showSidebar);
   const setShowSidebar = useSettingStore((state) => state.setShowSidebar);
   const setView = useExplorerStore((state) => state.setView);
-  const folders = useExplorerStore((state) => state.folders);
   const favoriteFiles = useFavoritesStore((state) => state.files);
   const currentFolder = useExplorerStore((state) => state.currentFolder);
   const setCurrentFolder = useExplorerStore((state) => state.setCurrentFolder);
@@ -230,14 +229,7 @@ export function AppSidebar() {
             <span className="sr-only">Add Folder</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
-            <FolderTree
-              folders={folders}
-              selection={currentFolder?.fullPath ?? null}
-              onFolderSelect={(folder) => {
-                setCurrentFolder(folder);
-                setView("folder");
-              }}
-            />
+            <FolderTreeView />
           </SidebarGroupContent>
         </SidebarGroup>
 
