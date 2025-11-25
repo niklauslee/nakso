@@ -21,7 +21,14 @@ import {
 } from "lucide-react";
 import { FileEntry } from "@/api/workspace";
 import { DRAFTS_TAG } from "@/const";
-import { file } from "zod";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPositioner,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface FolderTreeProps {
   folders: FileEntry[];
@@ -105,7 +112,6 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
 
   return (
     <li
-      title={fileEntry.name}
       data-id={id}
       data-state={collapsed}
       data-level={level}
@@ -115,7 +121,7 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
     >
       <div
         className={cn(
-          "flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
+          "group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
           selected && "font-medium bg-sidebar-accent",
           className
         )}
@@ -142,6 +148,7 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
             </div>
             <div className="flex items-center relative h-full w-full text-xs">
               <div
+                title={fileEntry.name}
                 className={cn(
                   "absolute left-0 top-0 bottom-0 w-full truncate flex items-center",
                   editing && "hidden"
@@ -169,28 +176,22 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
             </div>
           </div>
         </div>
-        <div
-          className="text-sidebar-foreground/40 hover:text-sidebar-accent-foreground h-4 cursor-pointer flex justify-end items-center gap-2 -mr-0.5"
-          onClick={handleToggleCollapse}
-        >
-          {/* <ChevronDownIcon
-            className={cn(
-              "transition-transform duration-200",
-              collapsed && "rotate-90"
-            )}
-            size={16}
-          /> */}
-
-          {Array.isArray(fileEntry.children) &&
-            fileEntry.children.length > 0 && (
-              <ChevronDownIcon
-                className={cn(
-                  "transition-transform duration-200",
-                  collapsed && "rotate-90"
-                )}
-                size={16}
-              />
-            )}
+        <div className="hidden group-hover/item:flex text-sidebar-foreground/40 h-4 cursor-pointer justify-end items-center gap-2 -mr-0.5">
+          <div>
+            <EllipsisIcon
+              className={cn("hover:text-sidebar-accent-foreground")}
+              size={16}
+            />
+          </div>
+          <div onClick={handleToggleCollapse}>
+            <ChevronDownIcon
+              className={cn(
+                "transition-transform duration-200 hover:text-sidebar-accent-foreground",
+                collapsed && "rotate-90"
+              )}
+              size={16}
+            />
+          </div>
         </div>
       </div>
       <ul

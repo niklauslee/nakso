@@ -13,7 +13,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@base-ui-components/react": "^1.0.0-beta.4",
+    "@base-ui-components/react": "^1.0.0-beta.6",
     "@dgmjs/core": "^1.5.0",
     "@dgmjs/export": "^1.1.0",
     "@dgmjs/react": "^1.5.0",
