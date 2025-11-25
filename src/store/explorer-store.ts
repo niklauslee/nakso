@@ -52,24 +52,35 @@ export const useExplorerStore = create<ExplorerState>()(
       },
       setCurrentFolder: async (folder) => {
         if (folder) {
-          const sortBy = get().sortBy;
-          if (folder.tag === "favorites") {
-            const favorites = useFavoritesStore.getState().files;
-            const allFiles = await workspace.getFileEntries(favorites);
-            const files = workspace.sortFiles(allFiles, sortBy);
-            set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
-          } else if (folder.tag === "recents") {
-            const recents = useRecentsStore.getState().files;
-            const allFiles = await workspace.getFileEntries(recents);
-            const files = workspace.sortFiles(allFiles, sortBy);
-            set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
-          } else {
-            const allFiles = await workspace.getFiles(folder?.fullPath || "/");
-            const files = workspace.sortFiles(allFiles, sortBy);
-            set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+          if (get().currentFolder?.fullPath !== folder.fullPath) {
+            const sortBy = get().sortBy;
+            if (folder.tag === "favorites") {
+              const favorites = useFavoritesStore.getState().files;
+              const allFiles = await workspace.getFileEntries(favorites);
+              const files = workspace.sortFiles(allFiles, sortBy);
+              set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+            } else if (folder.tag === "recents") {
+              const recents = useRecentsStore.getState().files;
+              const allFiles = await workspace.getFileEntries(recents);
+              const files = workspace.sortFiles(allFiles, sortBy);
+              set({ currentFolder: folder, files, sortBy, loadedFiles: [] });
+            } else {
+              const allFiles = await workspace.getFiles(
+                folder?.fullPath || "/"
+              );
+              const files = workspace.sortFiles(allFiles, sortBy);
+              set({
+                view: "folder",
+                currentFolder: folder,
+                files,
+                sortBy,
+                loadedFiles: [],
+              });
+            }
           }
         } else {
           set({
+            view: "editor",
             currentFolder: null,
             files: [],
             sortBy: { field: "mtime", direction: "desc" },

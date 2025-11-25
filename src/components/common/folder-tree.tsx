@@ -173,6 +173,14 @@ export const FolderTreeNode: React.FC<FolderTreeNodeProps> = ({
           className="text-sidebar-foreground/40 hover:text-sidebar-accent-foreground h-4 cursor-pointer flex justify-end items-center gap-2 -mr-0.5"
           onClick={handleToggleCollapse}
         >
+          {/* <ChevronDownIcon
+            className={cn(
+              "transition-transform duration-200",
+              collapsed && "rotate-90"
+            )}
+            size={16}
+          /> */}
+
           {Array.isArray(fileEntry.children) &&
             fileEntry.children.length > 0 && (
               <ChevronDownIcon

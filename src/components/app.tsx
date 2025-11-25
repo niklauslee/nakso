@@ -14,7 +14,6 @@ import { apiContext } from "@/api";
 import { useExplorerStore } from "@/store/explorer-store";
 import { SettingsDialog } from "./settings/settings-dialog";
 import { AboutDialog } from "./dialogs/about-dialog";
-import { AppHeader } from "./header/app-header";
 import { cn } from "@/lib/utils";
 import { EditorViewHeader } from "./header/editor-view-header";
 import { FolderViewHeader } from "./header/folder-view-header";
