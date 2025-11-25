@@ -341,17 +341,19 @@ export function registerCommands() {
 
   app.commands.register(
     "file:move-to-trash",
-    "Move a file to trash.",
+    "Move files to trash.",
     {
-      filePath: z.string(),
+      filePaths: z.array(z.string()),
     },
-    async ({ filePath }) => {
+    async ({ filePaths }) => {
       try {
         let workspaceDir = app.getWorkspaceDir();
-        await workspace.moveToTrash(workspaceDir, filePath);
-        useRecentsStore.getState().removeFromRecents(filePath);
-        useFavoritesStore.getState().removeFromFavorites(filePath);
-        useExplorerStore.getState().removeFile(filePath);
+        for (const filePath of filePaths) {
+          await workspace.moveToTrash(workspaceDir, filePath);
+          useRecentsStore.getState().removeFromRecents(filePath);
+          useFavoritesStore.getState().removeFromFavorites(filePath);
+          useExplorerStore.getState().removeFile(filePath);
+        }
       } catch (err) {
         toast.error("Failed to move file to trash.");
         console.error("Failed to move file to trash:", err);

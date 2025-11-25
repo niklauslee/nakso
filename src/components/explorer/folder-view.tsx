@@ -119,9 +119,9 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
 
   const handleMoveToTrash = async () => {
     try {
-      if (selectedId) {
+      if (selection.length > 0) {
         await window.app.commands.execute("file:move-to-trash", {
-          filePath: selectedId,
+          filePaths: selection,
         });
       }
     } catch (err) {
