@@ -158,7 +158,7 @@ export function FileCard({
           {dateFromNow(new Date(fileEntry.mtime!))}
         </div>
       </div>
-      <div className="absolute right-0 top-0 p-2">
+      <div className="absolute right-0 top-0 p-1">
         {!broken && !disabled && (
           <Button
             size="icon-sm"

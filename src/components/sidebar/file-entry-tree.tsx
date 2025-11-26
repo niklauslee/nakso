@@ -72,6 +72,7 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
   };
 
   const handleDoubleClick = () => {
+    if (fileEntry.tag === DRAFTS_TAG) return;
     setInputValue(fileEntry.name);
     setEditing(true);
     setTimeout(() => {
@@ -102,6 +103,9 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
           inputRef.current?.blur();
         }, 0);
       }
+    } else if (e.key === "Escape") {
+      setEditing(false);
+      setInputValue(fileEntry.name);
     }
   };
 

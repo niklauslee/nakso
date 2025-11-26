@@ -167,11 +167,6 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
     }
   };
 
-  const handleSelectAll = () => {
-    const allIds = files.map((file) => file.fullPath);
-    setSelection(allIds);
-  };
-
   const handleMoveToTrash = async () => {
     try {
       if (selection.length > 0) {
@@ -258,12 +253,6 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
             disabled={!selectedId || isTrashFolder}
           >
             Duplicate
-          </ContextMenuItem>
-          <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-            onClick={handleSelectAll}
-          >
-            Select All
           </ContextMenuItem>
           <ContextMenuSeparator className="my-1.5" />
           <ContextMenuItem
