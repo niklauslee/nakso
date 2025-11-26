@@ -130,6 +130,9 @@ export function FileCard({
             <BanIcon size={32} strokeWidth={1.5} />
           </div>
         )}
+        {!page && !broken && (
+          <div className="w-full aspect-4/3 flex items-center justify-center bg-sidebar animate-pulse" />
+        )}
       </div>
       <div className="flex flex-col w-full max-w-full text-sm py-2 bg-sidebar">
         <div className="relative flex items-center justify-between px-3 w-full max-w-full">
