@@ -4,7 +4,7 @@ import { InfiniteScrollArea } from "@/components/common/infinite-scroll-area";
 import { FileEntry } from "@/api/workspace";
 import { cn } from "@/lib/utils";
 import { TRASH_TAG } from "@/const";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -22,10 +22,26 @@ interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
 export function FolderView({ folder, className, ...others }: FolderViewProps) {
   if (!folder) return;
 
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const [selection, setSelection] = useState<string[]>([]);
+  const [dragState, setDragState] = useState<{
+    dragging: boolean;
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+  }>({
+    dragging: false,
+    x0: 0,
+    y0: 0,
+    x1: 0,
+    y1: 0,
+  });
+
   const files = useExplorerStore((state) => state.files);
   const loadedFiles = useExplorerStore((state) => state.loadedFiles);
   const fetchMoreFiles = useExplorerStore((state) => state.fetchMoreFiles);
+  const isTrashFolder = folder.tag === TRASH_TAG;
   const selectedId = selection.length === 1 ? selection[0] : null;
 
   const select = (id: string, addToSelection: boolean) => {
@@ -52,7 +68,41 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
       if (selection.includes(id)) return;
       select(id, e.shiftKey);
     } else {
+      const rect = scrollAreaRef.current?.getBoundingClientRect();
+      const x = rect ? e.clientX - rect.left : e.clientX;
+      const y = rect ? e.clientY - rect.top : e.clientY;
+      setDragState({
+        dragging: true,
+        x0: x,
+        y0: y,
+        x1: x,
+        y1: y,
+      });
       setSelection([]);
+    }
+  };
+
+  const handleScrollViewPointerMove = (
+    e: React.PointerEvent<HTMLDivElement>
+  ) => {
+    if (e.buttons !== 1) return;
+    if (!dragState.dragging) return;
+    const rect = scrollAreaRef.current?.getBoundingClientRect();
+    const x = rect ? e.clientX - rect.left : e.clientX;
+    const y = rect ? e.clientY - rect.top : e.clientY;
+    setDragState({
+      dragging: true,
+      x0: dragState.x0,
+      y0: dragState.y0,
+      x1: x,
+      y1: y,
+    });
+    console.log(dragState);
+  };
+
+  const handleScrollViewPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragState.dragging) {
+      setDragState({ dragging: false, x0: 0, y0: 0, x1: 0, y1: 0 });
     }
   };
 
@@ -117,6 +167,11 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
     }
   };
 
+  const handleSelectAll = () => {
+    const allIds = files.map((file) => file.fullPath);
+    setSelection(allIds);
+  };
+
   const handleMoveToTrash = async () => {
     try {
       if (selection.length > 0) {
@@ -134,6 +189,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
     <ContextMenu onOpenChange={handleOpenChange}>
       <ContextMenuTrigger className="w-full h-full">
         <InfiniteScrollArea
+          ref={scrollAreaRef}
           className={cn("w-full h-full", className)}
           innerClassName="grid gap-4 w-full px-4 pt-1 pb-4 2xs:grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8"
           count={loadedFiles.length}
@@ -146,6 +202,8 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
             await fetchMoreFiles();
           }}
           onPointerDown={handleScrollViewPointerDown}
+          onPointerMove={handleScrollViewPointerMove}
+          onPointerUp={handleScrollViewPointerUp}
           {...others}
         >
           {loadedFiles.length > 0 && (
@@ -165,6 +223,17 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
               No files
             </div>
           )}
+          {dragState.dragging && (
+            <div
+              className="absolute border-2 border-blue-500 bg-blue-500/20 z-10"
+              style={{
+                left: Math.min(dragState.x0, dragState.x1),
+                top: Math.min(dragState.y0, dragState.y1),
+                width: Math.abs(dragState.x1 - dragState.x0),
+                height: Math.abs(dragState.y1 - dragState.y0),
+              }}
+            ></div>
+          )}
         </InfiniteScrollArea>
       </ContextMenuTrigger>
       <ContextMenuPositioner>
@@ -172,29 +241,35 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           <ContextMenuItem
             className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             onClick={handleOpen}
-            disabled={!selectedId}
+            disabled={!selectedId || isTrashFolder}
           >
             Open
           </ContextMenuItem>
           <ContextMenuItem
             className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             onClick={handleRename}
-            disabled={!selectedId}
+            disabled={!selectedId || isTrashFolder}
           >
             Rename
           </ContextMenuItem>
           <ContextMenuItem
             className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             onClick={handleDuplicate}
-            disabled={!selectedId}
+            disabled={!selectedId || isTrashFolder}
           >
             Duplicate
+          </ContextMenuItem>
+          <ContextMenuItem
+            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+            onClick={handleSelectAll}
+          >
+            Select All
           </ContextMenuItem>
           <ContextMenuSeparator className="my-1.5" />
           <ContextMenuItem
             className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             onClick={handleMoveToTrash}
-            disabled={selection.length === 0}
+            disabled={selection.length === 0 || isTrashFolder}
           >
             Move to Trash
           </ContextMenuItem>
