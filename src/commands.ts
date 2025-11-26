@@ -14,7 +14,7 @@
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
 import { z } from "zod";
-import { EXT_NAME, ZOOMS } from "./const";
+import { EXT_NAME, TRASH_TAG, ZOOMS } from "./const";
 import { useEditorStore } from "@/store/editor-store";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
@@ -357,6 +357,28 @@ export function registerCommands() {
       } catch (err) {
         toast.error("Failed to move file to trash.");
         console.error("Failed to move file to trash:", err);
+      }
+    }
+  );
+
+  app.commands.register(
+    "file:empty-trash",
+    "Empty the trash folder.",
+    {},
+    async () => {
+      try {
+        const app = window.app;
+        const trashFolder = app.getTrashFolder();
+        const files = await workspace.getFiles(trashFolder.fullPath);
+        for (const file of files) {
+          await workspace.removeFile(file.fullPath);
+        }
+        setTimeout(() => {
+          useExplorerStore.getState().setCurrentFolder(trashFolder, true);
+        }, 100);
+      } catch (err) {
+        toast.error("Failed to empty trash.");
+        console.error("Failed to empty trash:", err);
       }
     }
   );

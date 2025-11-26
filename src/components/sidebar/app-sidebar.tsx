@@ -108,11 +108,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   isActive={folderTag === RECENTS_TAG}
                   onClick={() => {
-                    const folder = workspace.createFileEntry({
-                      fullPath: window.app.getRecentsPath(),
-                      isDirectory: true,
-                      tag: RECENTS_TAG,
-                    });
+                    const folder = window.app.getRecentsFolder();
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
@@ -126,11 +122,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   isActive={folderTag === FAVORITES_TAG}
                   onClick={() => {
-                    const folder = workspace.createFileEntry({
-                      fullPath: window.app.getFavoritesPath(),
-                      isDirectory: true,
-                      tag: FAVORITES_TAG,
-                    });
+                    const folder = window.app.getFavoritesFolder();
                     setCurrentFolder(folder);
                     setView("folder");
                   }}
@@ -147,11 +139,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   isActive={folderTag === TRASH_TAG}
                   onClick={() => {
-                    const folder = workspace.createFileEntry({
-                      fullPath: window.app.getTrashDir(),
-                      isDirectory: true,
-                      tag: TRASH_TAG,
-                    });
+                    const folder = window.app.getTrashFolder();
                     setCurrentFolder(folder);
                     setView("folder");
                   }}

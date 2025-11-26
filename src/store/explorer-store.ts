@@ -4,7 +4,8 @@ import { FileSortType, workspace } from "@/api/workspace";
 import { useFavoritesStore } from "./favorites-store";
 import { useRecentsStore } from "./recents-store";
 import { persist } from "zustand/middleware";
-import { DRAFTS_TAG } from "@/const";
+import { DRAFTS_TAG, TRASH_TAG } from "@/const";
+import { en } from "zod/v4/locales";
 
 const PAGE_SIZE = 50; // set to 30, 50, or 100?
 
@@ -17,11 +18,14 @@ export interface ExplorerState {
   files: FileEntry[];
   loadedFiles: FileEntry[];
   sortBy: FileSortType;
-  getDraftsFolder: () => FileEntry | null;
   setView(view: ViewType): void;
   fetchFolders: (workspaceDir: string) => Promise<void>;
-  setCurrentFolder: (folder: FileEntry | null) => Promise<void>;
+  setCurrentFolder: (
+    folder: FileEntry | null,
+    enforceLoad?: boolean
+  ) => Promise<void>;
   findFolder: (folderPath: string) => FileEntry | null;
+  getTrashFolder: () => FileEntry | null;
   fetchMoreFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
   addFile: (filePath: string) => void;
@@ -39,10 +43,6 @@ export const useExplorerStore = create<ExplorerState>()(
       files: [],
       loadedFiles: [],
       sortBy: { field: "mtime", direction: "desc" },
-      getDraftsFolder: () => {
-        const folders = get().folders;
-        return folders.find((f) => f.tag === DRAFTS_TAG) || null;
-      },
       setView: (view) => {
         set({ view });
       },
@@ -50,9 +50,12 @@ export const useExplorerStore = create<ExplorerState>()(
         const folders = await workspace.getFolders(workspaceDir, true);
         set({ folders });
       },
-      setCurrentFolder: async (folder) => {
+      setCurrentFolder: async (folder, enforceLoad = false) => {
         if (folder) {
-          if (get().currentFolder?.fullPath !== folder.fullPath) {
+          if (
+            get().currentFolder?.fullPath !== folder.fullPath ||
+            enforceLoad
+          ) {
             const sortBy = get().sortBy;
             if (folder.tag === "favorites") {
               const favorites = useFavoritesStore.getState().files;
@@ -106,6 +109,14 @@ export const useExplorerStore = create<ExplorerState>()(
         };
         const folders = get().folders;
         return findRecursive(folders, folderPath);
+      },
+      getTrashFolder: () => {
+        const folder = workspace.createFileEntry({
+          fullPath: window.app.getTrashDir(),
+          isDirectory: true,
+          tag: TRASH_TAG,
+        });
+        return folder;
       },
       fetchMoreFiles: async () => {
         set((state) => {

@@ -20,8 +20,12 @@ import { join, documentDir } from "@tauri-apps/api/path";
 import {
   CONFIG_FOLDER_NAME,
   DRAFTS_FOLDER_NAME,
+  DRAFTS_TAG,
+  FAVORITES_TAG,
   RECENTS_FILE_NAME,
+  RECENTS_TAG,
   TRASH_FOLDER_NAME,
+  TRASH_TAG,
   WORKSPACE_NAME,
 } from "./const";
 import { useRecentsStore } from "./store/recents-store";
@@ -186,11 +190,13 @@ export class AppContext {
           await this.commands.execute("file:open", {
             filePath: workingFile.fullPath,
           });
-        }, 0);
+        }, 100);
       } else {
-        const draftFolder = useExplorerStore.getState().getDraftsFolder();
-        useExplorerStore.getState().setCurrentFolder(draftFolder);
-        useExplorerStore.getState().setView("folder");
+        setTimeout(() => {
+          const draftFolder = this.getDraftsFolder();
+          useExplorerStore.getState().setCurrentFolder(draftFolder);
+          useExplorerStore.getState().setView("folder");
+        }, 100);
       }
     } catch (err) {
       console.error("Failed to load working state", err);
@@ -210,9 +216,27 @@ export class AppContext {
     return [this.getWorkspaceDir(), DRAFTS_FOLDER_NAME].join(sep);
   }
 
+  getDraftsFolder() {
+    const folder = workspace.createFileEntry({
+      fullPath: this.getDraftsDir(),
+      isDirectory: true,
+      tag: DRAFTS_TAG,
+    });
+    return folder;
+  }
+
   getTrashDir() {
     const sep = workspace.getSeparator();
     return [this.getWorkspaceDir(), TRASH_FOLDER_NAME].join(sep);
+  }
+
+  getTrashFolder() {
+    const folder = workspace.createFileEntry({
+      fullPath: this.getTrashDir(),
+      isDirectory: true,
+      tag: TRASH_TAG,
+    });
+    return folder;
   }
 
   getRecentsPath() {
@@ -222,11 +246,29 @@ export class AppContext {
     );
   }
 
+  getRecentsFolder() {
+    const folder = workspace.createFileEntry({
+      fullPath: this.getRecentsPath(),
+      isDirectory: true,
+      tag: RECENTS_TAG,
+    });
+    return folder;
+  }
+
   getFavoritesPath() {
     const sep = workspace.getSeparator();
     return [this.getWorkspaceDir(), CONFIG_FOLDER_NAME, "favorites.json"].join(
       sep
     );
+  }
+
+  getFavoritesFolder() {
+    const folder = workspace.createFileEntry({
+      fullPath: this.getFavoritesPath(),
+      isDirectory: true,
+      tag: FAVORITES_TAG,
+    });
+    return folder;
   }
 
   updateMenu() {

@@ -28,6 +28,7 @@ import { ApplicationMenu } from "../menu/menu";
 import { useMenuStore } from "@/store/menu-store";
 import { MainMenu } from "./main-menu";
 import { AppHeader } from "./app-header";
+import { confirm } from "@tauri-apps/plugin-dialog";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -51,11 +52,31 @@ export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
     window.app?.commands.execute("file:new", { basePath: folder?.fullPath });
   };
 
+  const handleEmptyTrash = async () => {
+    const result = await confirm(`Remove all files in trash permanently?`, {
+      title: "Empty Trash",
+    });
+    if (result) {
+      await window.app.commands.execute("file:empty-trash");
+    }
+  };
+
   return (
     <AppHeader
       propagateEvents={true}
       rightArea={
-        <div className="flex items-center gap-0">
+        <div className="flex items-center gap-2">
+          {folderTag === TRASH_TAG && (
+            <Button
+              size="sm"
+              variant="outline"
+              className=""
+              onClick={handleEmptyTrash}
+            >
+              <Trash2Icon size={16} className="mr-1" />
+              Empty Trash
+            </Button>
+          )}
           <Button
             size="icon-sm"
             variant="ghost"
