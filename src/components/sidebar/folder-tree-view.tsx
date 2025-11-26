@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { DRAFTS_TAG } from "@/const";
+import { FileEntry } from "@/api/workspace";
 
 export function FolderTreeView() {
   const [focusedId, setFocusedId] = useState<string | null>(null);
@@ -49,6 +50,16 @@ export function FolderTreeView() {
         newName: text,
       });
     }
+  };
+
+  const handleFileEntrySelect = (folder: FileEntry) => {
+    setCurrentFolder(folder);
+    setView("folder");
+  };
+
+  const handleFileEntryDrop = (folder: FileEntry, droppedFiles: string[]) => {
+    console.log("Dropped", droppedFiles, "into", folder);
+    // TODO: Implement moving files into the folder
   };
 
   const handleNewFolder = async () => {
@@ -100,11 +111,9 @@ export function FolderTreeView() {
           fileEntries={folders}
           selectedId={currentFolder?.fullPath ?? null}
           focusedId={focusedId}
-          onFileEntrySelect={(folder) => {
-            setCurrentFolder(folder);
-            setView("folder");
-          }}
           onNameChange={handleNameChange}
+          onFileEntrySelect={handleFileEntrySelect}
+          onFileEntryDrop={handleFileEntryDrop}
         />
       </ContextMenuTrigger>
       <ContextMenuPositioner>

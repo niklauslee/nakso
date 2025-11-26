@@ -340,6 +340,23 @@ export function registerCommands() {
   );
 
   app.commands.register(
+    "file:move",
+    "Move files to a new location.",
+    {
+      filePaths: z.array(z.string()),
+      newPath: z.string(),
+    },
+    async ({ filePaths, newPath }) => {
+      try {
+        // TODO: Implement move logic with proper checks
+      } catch (err) {
+        toast.error("Failed to move file.");
+        console.error("Failed to move file:", err);
+      }
+    }
+  );
+
+  app.commands.register(
     "file:move-to-trash",
     "Move files to trash.",
     {

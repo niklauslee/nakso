@@ -131,6 +131,16 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
     }
   };
 
+  const handleFileCardDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const id = target.dataset.id || "";
+    if (id && id.length > 0) {
+      if (!selection.includes(id)) select(id, e.shiftKey);
+      e.dataTransfer.setData("application/json", JSON.stringify(selection));
+      e.dataTransfer.effectAllowed = "move";
+    }
+  };
+
   return (
     <ContextMenu onOpenChange={handleOpenChange}>
       <ContextMenuTrigger className="w-full h-full">
@@ -157,6 +167,8 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
                   fileEntry={file}
                   disabled={folder.tag === TRASH_TAG}
                   selected={selection.includes(file.fullPath)}
+                  draggable={true}
+                  onDragStart={handleFileCardDragStart}
                 />
               ))}
             </>

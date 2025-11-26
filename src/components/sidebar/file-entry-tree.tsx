@@ -16,13 +16,13 @@ import { cn } from "@/lib/utils";
 import { ChevronDownIcon, FolderCheckIcon, FolderIcon } from "lucide-react";
 import { FileEntry } from "@/api/workspace";
 import { DRAFTS_TAG } from "@/const";
-import { toast } from "sonner";
 
 interface FileEntryTreeProps extends React.HTMLProps<HTMLUListElement> {
   fileEntries: FileEntry[];
   selectedId: string | null;
   focusedId: string | null;
   onFileEntrySelect?: (fileEntry: FileEntry) => void;
+  onFileEntryDrop?: (fileEntry: FileEntry, droppedFiles: string[]) => void;
   onNameChange?: (fileEntry: FileEntry, text: string) => void;
 }
 
@@ -35,6 +35,7 @@ interface FileEntryTreeNodeProps extends React.HTMLProps<HTMLLIElement> {
   selectedId?: string | null;
   focusedId?: string | null;
   onFileEntrySelect?: (fileEntry: FileEntry) => void;
+  onFileEntryDrop?: (fileEntry: FileEntry, droppedFiles: string[]) => void;
   onNameChange?: (fileEntry: FileEntry, text: string) => void;
 }
 
@@ -46,10 +47,8 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
   defaultIndent = 8,
   selectedId = null,
   focusedId = null,
-  draggable,
-  onDragStart,
-  onDragEnd,
   onFileEntrySelect,
+  onFileEntryDrop,
   onNameChange,
   className,
   ...others
@@ -58,6 +57,7 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [editing, setEditing] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>(fileEntry.name);
+  const [isDragOver, setIsDragOver] = React.useState(false);
   const selected = selectedId === id;
   const focused = focusedId === id;
 
@@ -109,6 +109,32 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
     }
   };
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (
+      e.currentTarget instanceof HTMLElement &&
+      e.currentTarget.classList.contains("file-entry-tree-node-item")
+    ) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const data = e.dataTransfer.getData("application/json");
+    if (data) {
+      const droppedFiles = JSON.parse(data) as string[];
+      if (onFileEntryDrop) {
+        onFileEntryDrop(fileEntry, droppedFiles);
+      }
+    }
+  };
+
   return (
     <li
       data-id={id}
@@ -122,18 +148,19 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
         className={cn(
           "file-entry-tree-node-item group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
           selected && !editing && "font-medium bg-sidebar-accent",
-          (focused || editing) && "ring-2 ring-accent-foreground/25",
+          (focused || editing || isDragOver) &&
+            "ring-2 ring-accent-foreground/25",
           className
         )}
         style={{ paddingLeft: defaultIndent + level * levelIndent }}
         onClick={handleClick}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         <div
           className="file-entry-tree-node-item-name cursor-default select-none px-0 w-full"
           onDoubleClick={handleDoubleClick}
-          draggable={draggable}
-          onDragStart={onDragStart as any}
-          onDragEnd={onDragEnd as any}
         >
           <div className="flex flex-row gap-2 items-center h-4 w-full relative">
             <div className="">
@@ -223,6 +250,7 @@ export const FileEntryTree: React.FC<FileEntryTreeProps> = ({
   selectedId,
   focusedId,
   onFileEntrySelect,
+  onFileEntryDrop,
   onNameChange,
   className,
   ...others
@@ -243,6 +271,7 @@ export const FileEntryTree: React.FC<FileEntryTreeProps> = ({
           selectedId={selectedId}
           focusedId={focusedId}
           onFileEntrySelect={onFileEntrySelect}
+          onFileEntryDrop={onFileEntryDrop}
           onNameChange={onNameChange}
         />
       ))}

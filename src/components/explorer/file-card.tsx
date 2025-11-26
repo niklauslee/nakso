@@ -107,7 +107,7 @@ export function FileCard({
         {page && !broken && (
           <div
             className={cn(
-              "w-full aspect-4/3 flex items-center justify-center",
+              "w-full aspect-4/3 flex items-center justify-center bg-background",
               (disabled || fileEntry.readonly) && "opacity-50"
             )}
           >
