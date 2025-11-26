@@ -4,8 +4,7 @@ import { FileSortType, workspace } from "@/api/workspace";
 import { useFavoritesStore } from "./favorites-store";
 import { useRecentsStore } from "./recents-store";
 import { persist } from "zustand/middleware";
-import { DRAFTS_TAG, TRASH_TAG } from "@/const";
-import { en } from "zod/v4/locales";
+import { TRASH_TAG } from "@/const";
 
 const PAGE_SIZE = 50; // set to 30, 50, or 100?
 
@@ -22,7 +21,7 @@ export interface ExplorerState {
   fetchFolders: (workspaceDir: string) => Promise<void>;
   setCurrentFolder: (
     folder: FileEntry | null,
-    enforceLoad?: boolean
+    refresh?: boolean
   ) => Promise<void>;
   findFolder: (folderPath: string) => FileEntry | null;
   getTrashFolder: () => FileEntry | null;
