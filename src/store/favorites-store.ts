@@ -8,6 +8,7 @@ export interface FavoritesState {
   addToFavorites(path: string): void;
   removeFromFavorites(path: string): void;
   updateFavoriteItem(oldPath: string, newPath: string): void;
+  replaceFavoriteItem(oldPath: string, newPath: string): void;
 }
 
 export const useFavoritesStore = create<FavoritesState>()(
@@ -25,6 +26,11 @@ export const useFavoritesStore = create<FavoritesState>()(
           files: state.files.filter((p) => p !== path),
         })),
       updateFavoriteItem: (oldPath: string, newPath: string) =>
+        set((state) => {
+          const files = state.files.map((p) => (p === oldPath ? newPath : p));
+          return { files };
+        }),
+      replaceFavoriteItem: (oldPath: string, newPath: string) =>
         set((state) => {
           const files = state.files.map((p) => (p === oldPath ? newPath : p));
           return { files };

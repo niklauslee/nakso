@@ -230,13 +230,6 @@ async function removeFile(path: string): Promise<void> {
 }
 
 /**
- * Move a file from path to newPath
- */
-async function moveFile(path: string, newPath: string): Promise<void> {
-  await rename(path, newPath);
-}
-
-/**
  * Move a file to the trash folder within the workspace
  */
 async function moveToTrash(
@@ -381,7 +374,6 @@ export const workspace = {
   readFile,
   writeFile,
   removeFile,
-  moveFile,
   moveToTrash,
   readConfigFile,
   writeConfigFile,

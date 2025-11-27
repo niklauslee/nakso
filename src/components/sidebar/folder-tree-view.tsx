@@ -57,9 +57,19 @@ export function FolderTreeView() {
     setView("folder");
   };
 
-  const handleFileEntryDrop = (folder: FileEntry, droppedFiles: string[]) => {
+  const handleFileEntryDrop = async (
+    folder: FileEntry,
+    droppedFiles: string[]
+  ) => {
     console.log("Dropped", droppedFiles, "into", folder);
-    // TODO: Implement moving files into the folder
+    try {
+      await window.app.commands.execute("file:move", {
+        filePaths: droppedFiles,
+        newPath: folder.fullPath,
+      });
+    } catch (error) {
+      console.error("Failed to move files", error);
+    }
   };
 
   const handleNewFolder = async () => {

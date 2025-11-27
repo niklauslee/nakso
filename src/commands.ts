@@ -14,7 +14,7 @@
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
 import { z } from "zod";
-import { EXT_NAME, TRASH_TAG, ZOOMS } from "./const";
+import { EXT_NAME, ZOOMS } from "./const";
 import { useEditorStore } from "@/store/editor-store";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
@@ -341,14 +341,30 @@ export function registerCommands() {
 
   app.commands.register(
     "file:move",
-    "Move files to a new location.",
+    "Move files to a folder.",
     {
       filePaths: z.array(z.string()),
       newPath: z.string(),
     },
     async ({ filePaths, newPath }) => {
       try {
-        // TODO: Implement move logic with proper checks
+        for (const filePath of filePaths) {
+          const { base } = await workspace.parsePath(filePath);
+          const newFilePath = await workspace.generateUniqueFileName(
+            newPath,
+            base.replace(EXT_NAME, "")
+          );
+
+          console.log("Moving file:", filePath, "to", newFilePath);
+
+          if (filePath === newFilePath) continue;
+          await workspace.renameFile(filePath, newFilePath);
+          useExplorerStore.getState().removeFile(filePath);
+          useRecentsStore.getState().replaceRecentItem(filePath, newFilePath);
+          useFavoritesStore
+            .getState()
+            .replaceFavoriteItem(filePath, newFilePath);
+        }
       } catch (err) {
         toast.error("Failed to move file.");
         console.error("Failed to move file:", err);
