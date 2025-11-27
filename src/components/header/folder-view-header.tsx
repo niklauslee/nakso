@@ -30,6 +30,8 @@ import { MainMenu } from "./main-menu";
 import { AppHeader } from "./app-header";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { ToggleDarkModeButton } from "./toggle-darkmode-button";
+import { Input } from "../ui/input";
+import { SearchInput } from "./search-input";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -101,12 +103,7 @@ export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
       {...others}
     >
       <div>
-        {folderTag === SEARCH_TAG && (
-          <div className="flex items-center gap-2 text-sm">
-            <SearchIcon size={16} />
-            Search
-          </div>
-        )}
+        {folderTag === SEARCH_TAG && <SearchInput />}
         {folderTag === RECENTS_TAG && (
           <div className="flex items-center gap-2 text-sm">
             <ClockIcon size={16} />

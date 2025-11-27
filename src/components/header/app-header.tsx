@@ -47,7 +47,7 @@ export function AppHeader({
         )}
         <div className="w-full h-full flex items-center justify-between">
           <div
-            className="flex items-center"
+            className="w-full flex items-center"
             onDoubleClick={(e) => {
               // don't propagate to tauri drag region
               if (!propagateEvents) e.stopPropagation();

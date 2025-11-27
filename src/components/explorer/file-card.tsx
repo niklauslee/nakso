@@ -46,6 +46,10 @@ export function FileCard({
   const darkMode = useSettingStore((state) => state.darkMode);
   const favorites = useFavoritesStore((state) => state.files);
   const isFavorite = favorites.includes(fileEntry.fullPath);
+  const relPath = workspace.getRelPath(
+    window.app.getWorkspaceDir(),
+    fileEntry.dirname
+  );
 
   const fetchFile = async () => {
     try {
@@ -134,7 +138,10 @@ export function FileCard({
           <div className="w-full aspect-4/3 flex items-center justify-center bg-sidebar animate-pulse" />
         )}
       </div>
-      <div className="flex flex-col w-full max-w-full text-sm py-2 bg-sidebar">
+      <div
+        title={relPath}
+        className="flex flex-col w-full max-w-full text-sm py-2 bg-sidebar"
+      >
         <div className="relative flex items-center justify-between px-3 w-full max-w-full">
           <div
             className={cn(

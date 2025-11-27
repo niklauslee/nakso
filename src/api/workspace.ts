@@ -242,6 +242,33 @@ async function moveToTrash(
 }
 
 /**
+ * Search files by keyword in their names within a directory
+ */
+async function searchFiles(
+  dirPath: string,
+  keyword: string
+): Promise<FileEntry[]> {
+  const result: FileEntry[] = [];
+  const entries = await readDir(dirPath);
+  for (const entry of entries) {
+    const fullPath = await join(dirPath, entry.name);
+    if (entry.isDirectory) {
+      const subResults = await searchFiles(fullPath, keyword);
+      result.push(...subResults);
+    } else {
+      if (
+        entry.name.toLowerCase().includes(keyword.toLowerCase()) &&
+        entry.name.endsWith(EXT_NAME)
+      ) {
+        const fileEntry = await getFileEntry(fullPath);
+        result.push(fileEntry);
+      }
+    }
+  }
+  return result;
+}
+
+/**
  * Read a config file from the workspace's config directory
  */
 async function readConfigFile(
@@ -373,6 +400,7 @@ export const workspace = {
   writeFile,
   removeFile,
   moveToTrash,
+  searchFiles,
   readConfigFile,
   writeConfigFile,
   deleteConfigFile,

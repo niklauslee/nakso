@@ -23,8 +23,8 @@ export interface ExplorerState {
     folder: FileEntry | null,
     refresh?: boolean
   ) => Promise<void>;
+  setFiles: (files: FileEntry[]) => void;
   findFolder: (folderPath: string) => FileEntry | null;
-  getTrashFolder: () => FileEntry | null;
   fetchMoreFiles: () => Promise<void>;
   setSortBy: (sortBy: FileSortType) => void;
   addFile: (filePath: string) => void;
@@ -90,6 +90,9 @@ export const useExplorerStore = create<ExplorerState>()(
           });
         }
       },
+      setFiles: (files) => {
+        set({ files, loadedFiles: [] });
+      },
       findFolder: (folderPath) => {
         const findRecursive = (
           folders: FileEntry[],
@@ -108,14 +111,6 @@ export const useExplorerStore = create<ExplorerState>()(
         };
         const folders = get().folders;
         return findRecursive(folders, folderPath);
-      },
-      getTrashFolder: () => {
-        const folder = workspace.createFileEntry({
-          fullPath: window.app.getTrashDir(),
-          isDirectory: true,
-          tag: TRASH_TAG,
-        });
-        return folder;
       },
       fetchMoreFiles: async () => {
         set((state) => {
