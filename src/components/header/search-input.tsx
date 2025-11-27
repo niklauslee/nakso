@@ -14,17 +14,18 @@ export function SearchInput({ ...others }: SearchInputProps) {
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setLoading(true);
-      console.log("Searching for:", value);
       const workspaceDir = window.app.getWorkspaceDir();
       const searchResult = await workspace.searchFiles(workspaceDir, value);
-      console.log("Search results:", searchResult);
       setFiles(searchResult);
       setLoading(false);
     }
   };
 
   return (
-    <div {...others} className="flex items-center gap-2 text-sm">
+    <div
+      {...others}
+      className="flex items-center gap-2 text-sm h-8 border rounded-md px-2"
+    >
       {loading ? (
         <LoaderCircleIcon size={16} className="animate-spin" />
       ) : (

@@ -43,6 +43,10 @@ export function AppHeader({
             variant="ghost"
             size="icon-sm"
             title="Open Sidebar"
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              e.stopPropagation();
+            }}
             onClick={() => window.app?.commands.execute("view:toggle-sidebar")}
           >
             <PanelLeftIcon size={16} />
@@ -50,7 +54,7 @@ export function AppHeader({
         )}
         <div className="w-full h-full flex items-center justify-between">
           <div
-            className="w-full flex items-center"
+            className="w-fit flex items-center"
             onDoubleClick={(e) => {
               // don't propagate to tauri drag region
               if (!propagateEvents) e.stopPropagation();
@@ -84,7 +88,10 @@ export function AppHeader({
             size="icon-sm"
             variant="ghost"
             title="Minimize"
-            className=""
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              e.stopPropagation();
+            }}
             onClick={() => {
               getCurrentWindow().minimize();
             }}
@@ -95,7 +102,10 @@ export function AppHeader({
             size="icon-sm"
             variant="ghost"
             title="Maximize"
-            className=""
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              e.stopPropagation();
+            }}
             onClick={() => {
               getCurrentWindow().toggleMaximize();
             }}
@@ -106,7 +116,10 @@ export function AppHeader({
             size="icon-sm"
             variant="ghost"
             title="Close"
-            className=""
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              e.stopPropagation();
+            }}
             onClick={() => {
               console.log("close window", getCurrentWindow());
               getCurrentWindow().close();
