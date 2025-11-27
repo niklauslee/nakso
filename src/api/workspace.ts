@@ -158,9 +158,7 @@ async function getFileEntries(paths: string[]): Promise<FileEntry[]> {
     try {
       const entry = await getFileEntry(path);
       entries.push(entry);
-    } catch (e) {
-      console.error("Failed to get file entry for path:", path, e);
-    }
+    } catch (e) {}
   }
   return entries;
 }

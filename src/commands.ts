@@ -201,6 +201,8 @@ export function registerCommands() {
         // update all states
         const workspaceDir = app.getWorkspaceDir();
         useExplorerStore.getState().fetchFolders(workspaceDir);
+        useRecentsStore.getState().replacePath(oldPath, newPath);
+        useFavoritesStore.getState().replacePath(oldPath, newPath);
         setTimeout(() => {
           const newFolder = useExplorerStore.getState().findFolder(newPath);
           useExplorerStore.getState().setCurrentFolder(newFolder);
@@ -354,9 +356,6 @@ export function registerCommands() {
             newPath,
             base.replace(EXT_NAME, "")
           );
-
-          console.log("Moving file:", filePath, "to", newFilePath);
-
           if (filePath === newFilePath) continue;
           await workspace.renameFile(filePath, newFilePath);
           useExplorerStore.getState().removeFile(filePath);

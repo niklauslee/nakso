@@ -29,6 +29,7 @@ import { useMenuStore } from "@/store/menu-store";
 import { MainMenu } from "./main-menu";
 import { AppHeader } from "./app-header";
 import { confirm } from "@tauri-apps/plugin-dialog";
+import { ToggleDarkModeButton } from "./toggle-darkmode-button";
 
 interface FolderViewHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -93,6 +94,7 @@ export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
           >
             <ArrowUpDownIcon size={16} />
           </ApplicationMenu>
+          <ToggleDarkModeButton />
           <MainMenu />
         </div>
       }

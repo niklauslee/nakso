@@ -67,7 +67,6 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
           >
             <SquarePenIcon size={16} />
           </Button>
-          <ToggleDarkModeButton />
           <ApplicationMenu
             menu={menus.view}
             align="end"
@@ -86,6 +85,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
             {Math.round(scale * 100) + "%"}
             <ChevronDownIcon className="size-3.5" />
           </ApplicationMenu>
+          <ToggleDarkModeButton />
           <MainMenu />
         </div>
       }

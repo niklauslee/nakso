@@ -10,6 +10,7 @@ export interface RecentsState {
   addToRecents(path: string): void;
   removeFromRecents(path: string): void;
   replaceRecentItem(oldPath: string, newPath: string): void;
+  replacePath(oldPath: string, newPath: string): void;
 }
 
 export const useRecentsStore = create<RecentsState>()(
@@ -29,6 +30,13 @@ export const useRecentsStore = create<RecentsState>()(
       replaceRecentItem: (oldPath: string, newPath: string) =>
         set((state) => {
           const files = state.files.map((p) => (p === oldPath ? newPath : p));
+          return { files };
+        }),
+      replacePath: (oldPath: string, newPath: string) =>
+        set((state) => {
+          const files = state.files.map((p) =>
+            p.startsWith(oldPath) ? p.replace(oldPath, newPath) : p
+          );
           return { files };
         }),
     }),
