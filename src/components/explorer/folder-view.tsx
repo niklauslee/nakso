@@ -136,8 +136,23 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
     const id = target.dataset.id || "";
     if (id && id.length > 0) {
       if (!selection.includes(id)) select(id, e.shiftKey);
+      // create custom drag image
+      const customImage = document.createElement("div");
+      customImage.innerHTML = `Moving ${selection.length} file(s)`;
+      customImage.className =
+        "custom-drag-image text-sm bg-background border rounded-lg px-6 py-3 absolute top-0 left-0";
+      document.body.appendChild(customImage);
+      // set drag image and data
+      e.dataTransfer.setDragImage(customImage, 0, 0);
       e.dataTransfer.setData("application/json", JSON.stringify(selection));
       e.dataTransfer.effectAllowed = "move";
+    }
+  };
+
+  const handleFileCardDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    const customImage = document.querySelector(".custom-drag-image");
+    if (customImage) {
+      document.body.removeChild(customImage);
     }
   };
 
@@ -169,6 +184,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
                   selected={selection.includes(file.fullPath)}
                   draggable={true}
                   onDragStart={handleFileCardDragStart}
+                  onDragEnd={handleFileCardDragEnd}
                 />
               ))}
             </>
