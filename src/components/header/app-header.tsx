@@ -6,6 +6,7 @@ import { MinusIcon, PanelLeftIcon, XIcon } from "lucide-react";
 import { MaximizeWindowIcon } from "../icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { TauriDragRegion } from "../common/tauri-drag-region";
+import { Separator } from "../ui/separator";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
@@ -32,7 +33,8 @@ export function AppHeader({
       <div
         className={cn(
           "w-full h-full flex items-center gap-2 px-4",
-          !showSidebar && platform === "darwin" && "pl-22"
+          !showSidebar && platform === "darwin" && "pl-22",
+          platform !== "darwin" && "pr-0"
         )}
       >
         {!showSidebar && (
@@ -75,39 +77,40 @@ export function AppHeader({
         </div>
       </div>
       {platform !== "darwin" && (
-        <div className="h-full flex items-center">
+        <div className="h-full flex items-center pr-2">
+          <Separator orientation="vertical" className="!h-6 mx-2" />
           <Button
-            size="icon"
+            size="icon-sm"
             variant="ghost"
             title="Minimize"
-            className="rounded-none h-full"
+            className=""
             onClick={() => {
               getCurrentWindow().minimize();
             }}
           >
-            <MinusIcon className="!size-3" />
+            <MinusIcon size={16} />
           </Button>
           <Button
-            size="icon"
+            size="icon-sm"
             variant="ghost"
             title="Maximize"
-            className="rounded-none h-full"
+            className=""
             onClick={() => {
               getCurrentWindow().toggleMaximize();
             }}
           >
-            <MaximizeWindowIcon className="!size-3" />
+            <MaximizeWindowIcon size={16} />
           </Button>
           <Button
-            size="icon"
+            size="icon-sm"
             variant="ghost"
             title="Close"
-            className="rounded-none h-full"
+            className=""
             onClick={() => {
               getCurrentWindow().close();
             }}
           >
-            <XIcon className="!size-3" />
+            <XIcon size={16} />
           </Button>
         </div>
       )}

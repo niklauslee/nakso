@@ -31,8 +31,11 @@ import { useSettingStore } from "@/store/setting-store";
 import { useEffect } from "react";
 import { TauriDragRegion } from "../common/tauri-drag-region";
 import { FolderTreeView } from "./folder-tree-view";
+import { useAppStore } from "@/store/app-store";
+import { LogoIcon } from "../icons";
 
 export function AppSidebar() {
+  const platform = useAppStore((state) => state.platform);
   const showSidebar = useSettingStore((state) => state.showSidebar);
   const setShowSidebar = useSettingStore((state) => state.setShowSidebar);
   const setView = useExplorerStore((state) => state.setView);
@@ -67,7 +70,13 @@ export function AppSidebar() {
     <Sidebar className="border-none">
       <SidebarHeader className="w-full h-12">
         <TauriDragRegion className="w-full h-full flex items-center justify-between">
-          <div className="flex items-center"></div>
+          <div className="flex items-center">
+            {platform !== "darwin" && (
+              <div className="size-8 flex items-center justify-center">
+                <LogoIcon className="" size={20} />
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-0">
             <Button
               variant="ghost"
