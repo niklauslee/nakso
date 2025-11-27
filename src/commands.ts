@@ -175,6 +175,25 @@ export function registerCommands() {
   );
 
   app.commands.register(
+    "file:delete",
+    "Delete files.",
+    {
+      filePaths: z.array(z.string()),
+    },
+    async ({ filePaths }) => {
+      try {
+        for (const filePath of filePaths) {
+          await workspace.removeFile(filePath);
+          useExplorerStore.getState().removeFile(filePath);
+        }
+      } catch (err) {
+        toast.error("Failed to delete files.");
+        console.error("Failed to delete files:", err);
+      }
+    }
+  );
+
+  app.commands.register(
     "file:rename-folder",
     "Rename a folder.",
     {
@@ -187,9 +206,6 @@ export function registerCommands() {
         const oldPath = dirPath;
         const { dir: baseDir } = await workspace.parsePath(oldPath, true);
         const newPath = await join(baseDir, newName);
-
-        console.log("try to rename folder", dirPath, newPath);
-
         if (oldPath === newPath) return;
         // check new name already exists
         if (await workspace.existsFile(newPath)) {
@@ -230,7 +246,6 @@ export function registerCommands() {
         }
         // check directory is empty
         const files = await readDir(dirPath);
-        console.log("files in dir to delete:", files);
         if (files.length > 0) {
           toast.error("Folder is not empty.");
           return;

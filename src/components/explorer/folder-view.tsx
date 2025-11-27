@@ -14,6 +14,7 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { toast } from "sonner";
+import { is } from "zod/v4/locales";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -114,7 +115,8 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
         useExplorerStore.getState().addFile(newPath);
       }
     } catch (err) {
-      console.error("Failed to duplicate file:", err);
+      toast.error("Failed to duplicate files");
+      console.error("Failed to duplicate files:", err);
     }
   };
 
@@ -126,8 +128,37 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
         });
       }
     } catch (err) {
-      toast.error("Failed to move file to trash");
-      console.error("Failed to move file to trash:", err);
+      toast.error("Failed to move files to trash");
+      console.error("Failed to move files to trash:", err);
+    }
+  };
+
+  const handleRestoreToDrafts = async () => {
+    try {
+      if (selection.length > 0) {
+        await window.app.commands.execute("file:move", {
+          filePaths: selection,
+          newPath: window.app.getDraftsDir(),
+        });
+        toast.success(`${selection.length} file(s) restored to Drafts`);
+      }
+    } catch (err) {
+      toast.error("Failed to restore files to drafts");
+      console.error("Failed to restore files to drafts:", err);
+    }
+  };
+
+  const handleDeletePermanently = async () => {
+    try {
+      if (selection.length > 0) {
+        await window.app.commands.execute("file:delete", {
+          filePaths: selection,
+        });
+        toast.success(`${selection.length} file(s) deleted permanently`);
+      }
+    } catch (err) {
+      toast.error("Failed to delete files permanently");
+      console.error("Failed to delete files permanently:", err);
     }
   };
 
@@ -197,36 +228,62 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
         </InfiniteScrollArea>
       </ContextMenuTrigger>
       <ContextMenuPositioner>
-        <ContextMenuContent className="w-32 p-1.5 shadow-lg focus:outline-none">
-          <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-            onClick={handleOpen}
-            disabled={!selectedId || isTrashFolder}
-          >
-            Open
-          </ContextMenuItem>
-          <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-            onClick={handleRename}
-            disabled={!selectedId || isTrashFolder}
-          >
-            Rename
-          </ContextMenuItem>
-          <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-            onClick={handleDuplicate}
-            disabled={!selectedId || isTrashFolder}
-          >
-            Duplicate
-          </ContextMenuItem>
+        <ContextMenuContent className="w-fit p-1.5 shadow-lg focus:outline-none">
+          {!isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleOpen}
+              disabled={!selectedId || isTrashFolder}
+            >
+              Open
+            </ContextMenuItem>
+          )}
+          {!isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleRename}
+              disabled={!selectedId || isTrashFolder}
+            >
+              Rename
+            </ContextMenuItem>
+          )}
+          {!isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleDuplicate}
+              disabled={!selectedId || isTrashFolder}
+            >
+              Duplicate
+            </ContextMenuItem>
+          )}
+          {isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleRestoreToDrafts}
+              disabled={selection.length === 0}
+            >
+              Restore to Drafts
+            </ContextMenuItem>
+          )}
           <ContextMenuSeparator className="my-1.5" />
-          <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
-            onClick={handleMoveToTrash}
-            disabled={selection.length === 0 || isTrashFolder}
-          >
-            Move to Trash
-          </ContextMenuItem>
+          {!isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleMoveToTrash}
+              disabled={selection.length === 0 || isTrashFolder}
+            >
+              Move to Trash
+            </ContextMenuItem>
+          )}
+          {isTrashFolder && (
+            <ContextMenuItem
+              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              onClick={handleDeletePermanently}
+              disabled={selection.length === 0}
+            >
+              Delete Permanently
+            </ContextMenuItem>
+          )}
         </ContextMenuContent>
       </ContextMenuPositioner>
     </ContextMenu>
