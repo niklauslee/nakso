@@ -211,7 +211,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
     >
       <ApplicationContextMenu
         menu={menus.context}
-        className="w-56 outline-none"
+        className="w-60 outline-none"
       >
         <div className="absolute inset-0">
           <DGMEditor

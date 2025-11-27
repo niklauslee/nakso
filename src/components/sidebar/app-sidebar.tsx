@@ -77,7 +77,13 @@ export function AppSidebar() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-0">
+          <div
+            className="flex items-center gap-0"
+            onMouseDown={(e) => {
+              // don't propagate to tauri drag region
+              e.stopPropagation();
+            }}
+          >
             <Button
               variant="ghost"
               size="icon-sm"
