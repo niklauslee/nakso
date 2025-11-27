@@ -71,7 +71,7 @@ export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
             <Button
               size="sm"
               variant="outline"
-              className=""
+              className="font-normal shadow-none"
               onClick={handleEmptyTrash}
             >
               <Trash2Icon size={16} className="mr-1" />

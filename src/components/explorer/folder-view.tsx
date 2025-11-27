@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/context-menu";
 import { toast } from "sonner";
 import { is } from "zod/v4/locales";
+import { confirm } from "@tauri-apps/plugin-dialog";
 
 interface FolderViewProps extends React.HTMLAttributes<HTMLDivElement> {
   folder: FileEntry | null;
@@ -151,10 +152,15 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
   const handleDeletePermanently = async () => {
     try {
       if (selection.length > 0) {
-        await window.app.commands.execute("file:delete", {
-          filePaths: selection,
+        const result = await confirm(`Delete all selected files permanently?`, {
+          title: "Delete Permanently",
         });
-        toast.success(`${selection.length} file(s) deleted permanently`);
+        if (result) {
+          await window.app.commands.execute("file:delete", {
+            filePaths: selection,
+          });
+          toast.success(`${selection.length} file(s) deleted permanently`);
+        }
       }
     } catch (err) {
       toast.error("Failed to delete files permanently");
