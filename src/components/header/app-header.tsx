@@ -7,6 +7,7 @@ import { MaximizeWindowIcon } from "../icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { TauriDragRegion } from "../common/tauri-drag-region";
 import { Separator } from "../ui/separator";
+import { get } from "http";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   rightArea?: React.ReactNode;
@@ -88,7 +89,7 @@ export function AppHeader({
               getCurrentWindow().minimize();
             }}
           >
-            <MinusIcon size={16} />
+            <MinusIcon size={16} strokeWidth={1.5} />
           </Button>
           <Button
             size="icon-sm"
@@ -99,7 +100,7 @@ export function AppHeader({
               getCurrentWindow().toggleMaximize();
             }}
           >
-            <MaximizeWindowIcon size={16} />
+            <MaximizeWindowIcon size={16} strokeWidth={1.5} />
           </Button>
           <Button
             size="icon-sm"
@@ -107,10 +108,11 @@ export function AppHeader({
             title="Close"
             className=""
             onClick={() => {
+              console.log("close window", getCurrentWindow());
               getCurrentWindow().close();
             }}
           >
-            <XIcon size={16} />
+            <XIcon size={16} strokeWidth={1.5} />
           </Button>
         </div>
       )}

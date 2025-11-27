@@ -9,7 +9,7 @@ export function MainMenu() {
   return (
     <ApplicationMenu
       menu={menus.main}
-      className="w-52"
+      className="w-60"
       align="end"
       render={<Button size="icon-sm" variant="ghost" title="Menu" />}
     >

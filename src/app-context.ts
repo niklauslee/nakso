@@ -273,7 +273,7 @@ export class AppContext {
 
   updateMenu() {
     try {
-      const editor = window.app?.editor;
+      const editor = this.editor;
       const state = useSettingStore.getState();
       const { darkMode } = useSettingStore.getState();
       const sortBy = useExplorerStore.getState().sortBy;
