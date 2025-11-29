@@ -7,6 +7,7 @@ import { ApplicationMenu } from "../menu/menu";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
+  DownloadIcon,
   LockIcon,
   SquarePenIcon,
 } from "lucide-react";
@@ -48,6 +49,10 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
     window.app?.commands.execute("file:new");
   };
 
+  const handleExportImage = () => {
+    window.app?.commands.execute("view:show-export-image-dialog");
+  };
+
   const handleRenameFile = async (newName: string) => {
     await window.app.commands.execute("file:rename", {
       filePath: workingFile!.fullPath,
@@ -58,7 +63,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
   return (
     <AppHeader
       rightArea={
-        <div className="flex items-center gap-0">
+        <div className="flex items-center gap-2">
           <Button
             size="icon-sm"
             variant="ghost"
@@ -66,6 +71,14 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
             title="New File"
           >
             <SquarePenIcon size={16} />
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onClick={handleExportImage}
+            title="Export Image"
+          >
+            <DownloadIcon size={16} />
           </Button>
           <ApplicationMenu
             menu={menus.view}

@@ -23,6 +23,8 @@
     "fs:allow-app-write",
     "dialog:default",
     "updater:default",
+    "clipboard-manager:allow-write-text",
+    "clipboard-manager:allow-write-image",
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "**/*" }]

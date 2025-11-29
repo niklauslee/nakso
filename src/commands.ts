@@ -13,9 +13,16 @@
 
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
+import {
+  copyToClipboard,
+  getImageBlob,
+  getSVGImageData,
+  type ExportImageOptions,
+} from "@dgmjs/export";
 import { z } from "zod";
-import { EXT_NAME, ZOOMS } from "./const";
+import { EXT_NAME, SITE_URL, ZOOMS } from "./const";
 import { useEditorStore } from "@/store/editor-store";
+import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -28,6 +35,8 @@ import { useAboutDialog } from "@/components/dialogs/about-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useKeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shorcuts-dialog";
 import { readDir, exists, remove } from "@tauri-apps/plugin-fs";
+import { getFontsInStyle, useFontStore } from "./store/font-store";
+import { useExportImageDialog } from "./components/dialogs/export-image-dialog";
 
 /**
  * Find the shapes by the given id array.
@@ -430,6 +439,65 @@ export function registerCommands() {
     }
   );
 
+  app.commands.register(
+    "file:export-image",
+    "Export as an image",
+    {
+      shapeIdArray: z.array(z.string()).optional().default([]),
+      format: z
+        .enum(["image/png", "image/jpeg", "image/webp", "image/svg+xml"])
+        .optional()
+        .default("image/png"),
+      scale: z.number().optional().default(1),
+      dark: z.boolean().optional(),
+      fillBackground: z.boolean().optional().default(true),
+      margin: z.number().optional().default(4),
+    },
+    async ({ shapeIdArray, format, scale, dark, fillBackground, margin }) => {
+      const app = window.app;
+      const canvas = app.editor.canvas;
+      const page = app.editor.getCurrentPage();
+      if (!page) {
+        throw new Error("No page found");
+      }
+      const shapes = findShapeIdArray(shapeIdArray);
+      const darkMode = useSettingStore.getState().darkMode;
+      const fonts = useFontStore.getState().fonts;
+      const exportOptions = {
+        format,
+        scale,
+        dark: dark ?? darkMode,
+        fillBackground,
+        margin,
+      };
+      switch (format) {
+        case "image/png":
+        case "image/jpeg":
+        case "image/webp": {
+          const data = await getImageBlob(canvas, page, shapes, exportOptions);
+          const base64DataUri = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(data!);
+          });
+          const base64 = base64DataUri.split(",")[1]; // strip the data-uri prefix
+          return base64;
+        }
+        case "image/svg+xml": {
+          const data = await getSVGImageData(
+            canvas,
+            page,
+            shapes,
+            exportOptions,
+            getFontsInStyle(fonts, SITE_URL)
+          );
+          const base64 = btoa(unescape(encodeURIComponent(data)));
+          return base64;
+        }
+      }
+    }
+  );
+
   app.commands.register("file:quit", "Quit the application", {}, async () => {
     const app = window.app;
     await app.ensureSave();
@@ -538,6 +606,65 @@ export function registerCommands() {
 
   app.commands.register("edit:select-all", "Select all shapes", {}, async () =>
     window.app.editor.selection.selectAll()
+  );
+
+  app.commands.register(
+    "edit:copy-image-to-clipboard",
+    "Copy the current page image to clipboard",
+    {
+      shapeIdArray: z.array(z.string()).optional().default([]),
+      format: z
+        .enum(["image/png", "image/jpeg", "image/webp", "image/svg+xml"])
+        .optional()
+        .default("image/png"),
+      scale: z.number().optional().default(1),
+      dark: z.boolean().optional(),
+      fillBackground: z.boolean().optional().default(true),
+      margin: z.number().optional().default(4),
+    },
+    async ({ shapeIdArray, format, scale, dark, fillBackground, margin }) => {
+      const app = window.app;
+      const canvas = app.editor.canvas;
+      const page = app.editor.getCurrentPage();
+      if (!page) {
+        throw new Error("No page found");
+      }
+      const shapes = findShapeIdArray(shapeIdArray);
+      const darkMode = useSettingStore.getState().darkMode;
+      const fonts = useFontStore.getState().fonts;
+      const exportOptions = {
+        format,
+        scale,
+        dark: dark ?? darkMode,
+        fillBackground,
+        margin,
+      };
+      switch (format) {
+        case "image/png":
+        case "image/jpeg":
+        case "image/webp": {
+          const data = await getImageBlob(canvas, page, shapes, exportOptions);
+          const base64DataUri = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(data!);
+          });
+          const base64 = base64DataUri.split(",")[1]; // strip the data-uri prefix
+          return base64;
+        }
+        case "image/svg+xml": {
+          const data = await getSVGImageData(
+            canvas,
+            page,
+            shapes,
+            exportOptions,
+            getFontsInStyle(fonts, SITE_URL)
+          );
+          const base64 = btoa(unescape(encodeURIComponent(data)));
+          return base64;
+        }
+      }
+    }
   );
 
   // shape commands ------------------------------------------------------------
@@ -1074,6 +1201,17 @@ export function registerCommands() {
     },
     async ({ sortBy }) => {
       useExplorerStore.getState().setSortBy(sortBy);
+    }
+  );
+
+  app.commands.register(
+    "view:show-export-image-dialog",
+    "Show the export image dialog",
+    {
+      show: z.boolean().optional().default(true),
+    },
+    async ({ show }) => {
+      useExportImageDialog.getState().show(show);
     }
   );
 

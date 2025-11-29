@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { EditorViewHeader } from "./header/editor-view-header";
 import { FolderViewHeader } from "./header/folder-view-header";
 import { KeyboardShortcutsDialog } from "./dialogs/keyboard-shorcuts-dialog";
+import { ExportImageDialog } from "./dialogs/export-image-dialog";
 
 declare global {
   interface Window {
@@ -99,6 +100,7 @@ function App() {
       <AboutDialog />
       <SettingsDialog />
       <KeyboardShortcutsDialog />
+      <ExportImageDialog />
       <Toaster position="top-center" />
     </>
   );

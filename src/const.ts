@@ -1,3 +1,4 @@
+export const SITE_URL = "https://nakso.app";
 export const WORKSPACE_NAME = "Nakso";
 export const CONFIG_FOLDER_NAME = ".nakso";
 export const DRAFTS_FOLDER_NAME = "Drafts";
