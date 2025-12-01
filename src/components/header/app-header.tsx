@@ -121,8 +121,7 @@ export function AppHeader({
               e.stopPropagation();
             }}
             onClick={() => {
-              console.log("close window", getCurrentWindow());
-              getCurrentWindow().close();
+              window.app?.commands.execute("file:quit");
             }}
           >
             <XIcon size={16} strokeWidth={1.5} />
