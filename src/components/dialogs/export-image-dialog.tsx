@@ -167,7 +167,7 @@ export function ExportImageDialog({}) {
           <DialogDescription />
         </DialogHeader>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between h-9">
             <Label htmlFor="export-image-fill-background">
               Fill background
             </Label>
@@ -179,7 +179,7 @@ export function ExportImageDialog({}) {
               }
             ></Switch>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between h-9">
             <Label>Format</Label>
             <Tabs
               value={exportOptions.format}
@@ -197,7 +197,7 @@ export function ExportImageDialog({}) {
               </TabsList>
             </Tabs>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between h-9">
             <Label>Scale</Label>
             <Tabs
               value={exportOptions.scale.toString()}
@@ -211,7 +211,7 @@ export function ExportImageDialog({}) {
               </TabsList>
             </Tabs>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between h-9">
             <Label>Margin</Label>
             <div className="w-40">
               <Slider
