@@ -92,6 +92,14 @@ export class AppContext {
       this.editor?.fit();
     });
 
+    window.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    window.addEventListener("drop", (e) => {
+      e.preventDefault();
+    });
+
     this.commands.onCommandExecuted.addListener((id) => {
       this.updateMenu();
     });

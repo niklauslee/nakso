@@ -132,9 +132,10 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
 
   const handleFileDrop = async ({ event, dataTransfer }: FileDropEvent) => {
     try {
+      const editor = window.app.editor;
       if (!editor) return;
       const p = editor.canvas.globalCoordTransformRev([event.x, event.y]);
-      const files = await getFilesFromDataTransferItems(dataTransfer.items);
+      const files = Array.from(dataTransfer.files);
       if (files.length === 1) {
         const file = files[0];
         switch (file.type) {
@@ -213,7 +214,10 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
         menu={menus.context}
         className="w-60 outline-none"
       >
-        <div className="absolute inset-0">
+        <div
+          className="absolute inset-0"
+          // onDrop={handleFileDropOnEditorWrapper}
+        >
           <DGMEditor
             options={{
               showDOM: false,

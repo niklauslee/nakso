@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-beta.6",
-    "@dgmjs/core": "^1.5.0",
+    "@dgmjs/core": "^1.5.3",
     "@dgmjs/export": "^1.1.0",
-    "@dgmjs/react": "^1.5.0",
+    "@dgmjs/react": "^1.5.2",
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
     "@tauri-apps/plugin-dialog": "^2.4.0",
