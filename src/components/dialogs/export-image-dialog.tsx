@@ -11,12 +11,7 @@
  * from MKLabs (niklaus.lee@gmail.com).
  */
 
-import {
-  CheckIcon,
-  ClipboardCopyIcon,
-  DownloadIcon,
-  LoaderCircleIcon,
-} from "lucide-react";
+import { CheckIcon, ClipboardCopyIcon, DownloadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,19 +28,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSettingStore } from "../../store/setting-store";
 import { useState } from "react";
-import {
-  ExportImageOptions,
-  getImageBlob,
-  getSVGImageData,
-  type ExportImageFormat,
-} from "@dgmjs/export";
-import { getFontsInStyle, useFontStore } from "@/store/font-store";
-import { SITE_URL } from "@/const";
+import { type ExportImageFormat } from "@dgmjs/export";
 import { Slider } from "@/components/ui/slider";
-import { toast } from "sonner";
-// import { extractFileName, findUniqueFilePath } from "./dialog-utils";
-// import { Info } from "@/components/ui/info";
-// import { postrenderWatermark } from "@/shape-utils";
 
 export interface ExportImageDialogState {
   open: boolean;
@@ -71,28 +55,25 @@ export function ExportImageDialog({}) {
     (state) => state.setExportImageOptions
   );
   const { open, show } = useExportImageDialog();
-  // const filePath = useDocStore((state) => state.filePath);
-  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const fonts = useFontStore((state) => state.fonts);
-  const builtinFonts = fonts.filter((font) => font.builtin);
+  const [exported, setExported] = useState(false);
 
   const handleDownload = async () => {
     const app = window.app;
-    await app.commands.execute("file:export-image", {
-      shapeIdArray: app.editor.selection.getShapes().map((shape) => shape.id),
-      format: exportOptions.format,
-      scale: exportOptions.scale,
-      dark: dark,
-      fillBackground: exportOptions.fillBackground,
-      margin: exportOptions.margin,
-    });
-    toast("Exported to the downloads folder", {
-      // action: {
-      //   label: "Open",
-      //   onClick: () => api.window.openPath(downloadsPath),
-      // },
-    });
+    if (!exported) {
+      await app.commands.execute("file:export-image", {
+        shapeIdArray: app.editor.selection.getShapes().map((shape) => shape.id),
+        format: exportOptions.format,
+        scale: exportOptions.scale,
+        dark: dark,
+        fillBackground: exportOptions.fillBackground,
+        margin: exportOptions.margin,
+      });
+      setExported(true);
+      setTimeout(() => {
+        setExported(false);
+      }, 3000);
+    }
   };
 
   const handleCopyImageToClipboard = () => {
@@ -184,16 +165,25 @@ export function ExportImageDialog({}) {
               Non-builtin fonts may not display correctly.
             </div>
           )} */}
-          {/* {copied && (
-            <div className="text-sm flex justify-start items-center">
-              Copied to clipboard!
-            </div>
-          )} */}
+          <div className="h-9">
+            {copied && (
+              <div className="bg-green-100 dark:bg-green-900 text-green-500 rounded-md px-3 py-2 text-sm flex justify-start items-center">
+                <CheckIcon size={16} className="mr-2" />
+                Copied to clipboard!
+              </div>
+            )}
+            {exported && (
+              <div className="bg-green-100 dark:bg-green-900 text-green-500 rounded-md px-3 py-2 text-sm flex justify-start items-center">
+                <CheckIcon size={16} className="mr-2" />
+                Exported to the downloads folder!
+              </div>
+            )}
+          </div>
         </div>
-        <DialogFooter className="grid grid-cols-2 mt-2">
+        <DialogFooter className="grid grid-cols-2">
           <Button size="sm" onClick={handleDownload}>
-            {loading ? (
-              <LoaderCircleIcon className="animate-spin" />
+            {exported ? (
+              <CheckIcon size={16} className="" />
             ) : (
               <DownloadIcon size={16} className="" />
             )}
