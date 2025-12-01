@@ -78,67 +78,21 @@ export function ExportImageDialog({}) {
   const builtinFonts = fonts.filter((font) => font.builtin);
 
   const handleDownload = async () => {
-    // const app = window.app;
-    // const api = window.api;
-    // const canvas = app.editor.canvas;
-    // const page = app.editor.getCurrentPage()!;
-    // const shapes = app.editor.selection.getShapes();
-    // // Find unique export file name in download folder
-    // const downloadsPath = await api.fs.getPath("downloads");
-    // const fileName = await extractFileName(filePath);
-    // const exportPath = await findUniqueFilePath(
-    //   downloadsPath,
-    //   fileName,
-    //   getExt(exportOptions)
-    // );
-    // if (exportPath) {
-    //   try {
-    //     setLoading(true);
-    //     switch (exportOptions.format) {
-    //       case "image/png":
-    //       case "image/jpeg":
-    //       case "image/webp": {
-    //         const data = await getImageBlob(canvas, page, shapes, {
-    //           ...exportOptions,
-    //           dark: dark,
-    //           postrender: postrenderWatermark,
-    //         });
-    //         const arrayBuffer = await data.arrayBuffer();
-    //         api.fs.writeArrayBuffer(exportPath, arrayBuffer);
-    //         toast("Exported to the downloads folder", {
-    //           action: {
-    //             label: "Open",
-    //             onClick: () => api.window.openPath(downloadsPath),
-    //           },
-    //         });
-    //         setLoading(false);
-    //         break;
-    //       }
-    //       case "image/svg+xml": {
-    //         const data = await getSVGImageData(
-    //           canvas,
-    //           page,
-    //           shapes,
-    //           { ...exportOptions, dark: dark, postrender: postrenderWatermark },
-    //           getFontsInStyle(builtinFonts, SITE_URL)
-    //         );
-    //         api.fs.write(exportPath, data);
-    //         toast("Exported to the downloads folder", {
-    //           action: {
-    //             label: "Open",
-    //             onClick: () => api.window.openPath(downloadsPath),
-    //           },
-    //         });
-    //         setLoading(false);
-    //         break;
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.error(err);
-    //     toast.error("Failed to export image");
-    //     setLoading(false);
-    //   }
-    // }
+    const app = window.app;
+    await app.commands.execute("file:export-image", {
+      shapeIdArray: app.editor.selection.getShapes().map((shape) => shape.id),
+      format: exportOptions.format,
+      scale: exportOptions.scale,
+      dark: dark,
+      fillBackground: exportOptions.fillBackground,
+      margin: exportOptions.margin,
+    });
+    toast("Exported to the downloads folder", {
+      // action: {
+      //   label: "Open",
+      //   onClick: () => api.window.openPath(downloadsPath),
+      // },
+    });
   };
 
   const handleCopyImageToClipboard = () => {
@@ -155,7 +109,7 @@ export function ExportImageDialog({}) {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -225,13 +179,16 @@ export function ExportImageDialog({}) {
               />
             </div>
           </div>
-          {exportOptions.format === "image/svg+xml" && (
-            <div className="text-xs flex justify-end items-center">
-              {/* <Info className="w-full flex justify-start">
-                Non-builtin fonts may not display correctly.
-              </Info> */}
+          {/* {exportOptions.format === "image/svg+xml" && (
+            <div className="text-sm flex justify-start items-center">
+              Non-builtin fonts may not display correctly.
             </div>
-          )}
+          )} */}
+          {/* {copied && (
+            <div className="text-sm flex justify-start items-center">
+              Copied to clipboard!
+            </div>
+          )} */}
         </div>
         <DialogFooter className="grid grid-cols-2 mt-2">
           <Button size="sm" onClick={handleDownload}>
@@ -258,24 +215,4 @@ export function ExportImageDialog({}) {
       </DialogContent>
     </Dialog>
   );
-}
-
-function getExt(exportOptions: ExportImageOptions): string {
-  switch (exportOptions.format) {
-    case "image/png": {
-      return "png";
-    }
-    case "image/jpeg": {
-      return "jpg";
-    }
-    case "image/webp": {
-      return "webp";
-    }
-    case "image/svg+xml": {
-      return "svg";
-    }
-    default: {
-      return "unknown";
-    }
-  }
 }

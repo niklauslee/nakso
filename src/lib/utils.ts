@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { HorzAlign, Text } from "@dgmjs/core";
+import { ExportImageOptions } from "@dgmjs/export";
 dayjs.extend(relativeTime);
 
 export function cn(...inputs: ClassValue[]) {
@@ -105,6 +106,26 @@ export function applyTextHorzAlign(shape: Text) {
           }
         });
         break;
+    }
+  }
+}
+
+export function getImageExt(exportOptions: ExportImageOptions): string {
+  switch (exportOptions.format) {
+    case "image/png": {
+      return "png";
+    }
+    case "image/jpeg": {
+      return "jpg";
+    }
+    case "image/webp": {
+      return "webp";
+    }
+    case "image/svg+xml": {
+      return "svg";
+    }
+    default: {
+      return "unknown";
     }
   }
 }

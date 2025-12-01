@@ -20,9 +20,10 @@ import {
   type ExportImageOptions,
 } from "@dgmjs/export";
 import { z } from "zod";
-import { EXT_NAME, SITE_URL, ZOOMS } from "./const";
+import { APP_NAME, EXT_NAME, SITE_URL, ZOOMS } from "./const";
 import { useEditorStore } from "@/store/editor-store";
-import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
+import { writeImage } from "@tauri-apps/plugin-clipboard-manager";
+import { Image } from "@tauri-apps/api/image";
 import { toast } from "sonner";
 import { workspace } from "@/api/workspace";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -30,13 +31,20 @@ import { useExplorerStore } from "@/store/explorer-store";
 import { useRecentsStore } from "@/store/recents-store";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { useAppStore } from "@/store/app-store";
-import { join } from "@tauri-apps/api/path";
+import { BaseDirectory, downloadDir, join } from "@tauri-apps/api/path";
 import { useAboutDialog } from "@/components/dialogs/about-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useKeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shorcuts-dialog";
-import { readDir, exists, remove } from "@tauri-apps/plugin-fs";
+import {
+  readDir,
+  exists,
+  remove,
+  writeFile,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 import { getFontsInStyle, useFontStore } from "./store/font-store";
 import { useExportImageDialog } from "./components/dialogs/export-image-dialog";
+import { getImageExt } from "./lib/utils";
 
 /**
  * Find the shapes by the given id array.
@@ -475,13 +483,19 @@ export function registerCommands() {
         case "image/jpeg":
         case "image/webp": {
           const data = await getImageBlob(canvas, page, shapes, exportOptions);
-          const base64DataUri = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(data!);
-          });
-          const base64 = base64DataUri.split(",")[1]; // strip the data-uri prefix
-          return base64;
+          const arrayBuffer = await data!.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const workingFile = useEditorStore.getState().workingFile;
+          const fileName = workingFile?.name ?? APP_NAME;
+          const fileExt = "." + getImageExt(exportOptions);
+          const downloadFolder = await downloadDir();
+          const filePath = await workspace.generateUniqueFileName(
+            downloadFolder,
+            fileName,
+            fileExt
+          );
+          await writeFile(filePath, uint8Array);
+          return data;
         }
         case "image/svg+xml": {
           const data = await getSVGImageData(
@@ -491,8 +505,17 @@ export function registerCommands() {
             exportOptions,
             getFontsInStyle(fonts, SITE_URL)
           );
-          const base64 = btoa(unescape(encodeURIComponent(data)));
-          return base64;
+          const workingFile = useEditorStore.getState().workingFile;
+          const fileName = workingFile?.name ?? APP_NAME;
+          const fileExt = "." + getImageExt(exportOptions);
+          const downloadFolder = await downloadDir();
+          const filePath = await workspace.generateUniqueFileName(
+            downloadFolder,
+            fileName,
+            fileExt
+          );
+          await writeTextFile(filePath, data);
+          return data;
         }
       }
     }
@@ -644,13 +667,11 @@ export function registerCommands() {
         case "image/jpeg":
         case "image/webp": {
           const data = await getImageBlob(canvas, page, shapes, exportOptions);
-          const base64DataUri = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(data!);
-          });
-          const base64 = base64DataUri.split(",")[1]; // strip the data-uri prefix
-          return base64;
+          const arrayBuffer = await data!.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const image = await Image.fromBytes(uint8Array);
+          writeImage(image);
+          return data;
         }
         case "image/svg+xml": {
           const data = await getSVGImageData(
@@ -660,8 +681,8 @@ export function registerCommands() {
             exportOptions,
             getFontsInStyle(fonts, SITE_URL)
           );
-          const base64 = btoa(unescape(encodeURIComponent(data)));
-          return base64;
+          // const base64 = btoa(unescape(encodeURIComponent(data)));
+          return data;
         }
       }
     }
