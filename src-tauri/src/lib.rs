@@ -1,4 +1,5 @@
 use font_kit::source::SystemSource;
+use tauri::Manager;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -40,6 +41,15 @@ pub fn run() {
       get_system_fonts,
       open_devtools
     ])
+    .setup(|app| {
+      if let Some(window) = app.get_webview_window("main") {
+        #[cfg(target_os = "linux")]
+        {
+          window.set_decorations(false)?;
+        }
+      }
+      Ok(())
+    })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "titleBarStyle": "Overlay",
         "trafficLightPosition": {
           "x": 16,
