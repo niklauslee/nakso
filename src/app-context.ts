@@ -1,4 +1,9 @@
-import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
+import {
+  Menu,
+  MenuItem,
+  PredefinedMenuItem,
+  Submenu,
+} from "@tauri-apps/api/menu";
 import { open as openExternalLink } from "@tauri-apps/plugin-shell";
 import { Editor, Group } from "@dgmjs/core";
 import { CommandManager } from "@/engine/command-manager";
@@ -123,7 +128,39 @@ export class AppContext {
           }),
         ],
       });
-      const menu = await Menu.new({ items: [aboutSubmenu] });
+      const editSubmenu = await Submenu.new({
+        text: "Edit",
+        items: [
+          await PredefinedMenuItem.new({
+            text: "Undo",
+            item: "Undo",
+          }),
+          await PredefinedMenuItem.new({
+            text: "Redo",
+            item: "Redo",
+          }),
+          await PredefinedMenuItem.new({
+            item: "Separator",
+          }),
+          await PredefinedMenuItem.new({
+            text: "Cut",
+            item: "Cut",
+          }),
+          await PredefinedMenuItem.new({
+            text: "Copy",
+            item: "Copy",
+          }),
+          await PredefinedMenuItem.new({
+            text: "Paste",
+            item: "Paste",
+          }),
+          await PredefinedMenuItem.new({
+            text: "Select All",
+            item: "SelectAll",
+          }),
+        ],
+      });
+      const menu = await Menu.new({ items: [aboutSubmenu, editSubmenu] });
       await menu.setAsAppMenu();
     }
   }
