@@ -38,7 +38,7 @@ async function start() {
   checkForUpdates();
 }
 
-await start();
+start();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
