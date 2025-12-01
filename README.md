@@ -12,24 +12,11 @@
 ### Build and publish
 
 ```sh
-# macOS (aarch64)
-source .env
-npm run tauri build -- --target=aarch64-apple-darwin
-node build/publish -- --arch=aarch64
+# build
+npm run release:build
 
-# macOS (x86_64)
-source .env
-npm run tauri build -- --target=x86_64-apple-darwin
-node build/publish -- --arch=x86_64
-
-# Windows (x86_64)
-npx dotenv "npm run tauri build -- --target=x86_64-pc-windows-msvc"
-npx dotenv "node build/publish -- --arch=x86_64"
-
-# Linux (x86_64)
-source .env
-npm run tauri build -- --target=x86_64-unknown-linux-gnu
-node build/publish -- --arch=x86_64
+# publish (build + upload)
+npm run release:publish
 ```
 
 ## Setup for Build
