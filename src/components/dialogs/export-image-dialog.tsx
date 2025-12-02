@@ -67,7 +67,7 @@ export function ExportImageDialog({}) {
         scale: exportOptions.scale,
         dark: dark,
         fillBackground: exportOptions.fillBackground,
-        margin: exportOptions.margin,
+        margin: exportOptions.margin ?? 0,
       });
       setExported(true);
       setTimeout(() => {
@@ -85,7 +85,7 @@ export function ExportImageDialog({}) {
         scale: exportOptions.scale,
         dark: dark,
         fillBackground: exportOptions.fillBackground,
-        margin: exportOptions.margin,
+        margin: exportOptions.margin ?? 0,
       });
       setCopied(true);
       setTimeout(() => {
@@ -150,12 +150,12 @@ export function ExportImageDialog({}) {
             <Label>Margin</Label>
             <div className="w-40">
               <Slider
-                value={[exportOptions.margin]}
+                value={exportOptions.margin ?? 0}
                 min={0}
                 max={32}
                 step={4}
                 onValueChange={(value) => {
-                  setExportOptions({ margin: (value as number[])[0] });
+                  setExportOptions({ margin: value as number });
                 }}
               />
             </div>
