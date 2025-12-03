@@ -212,7 +212,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
     >
       <ApplicationContextMenu
         menu={menus.context}
-        className="w-60 outline-none"
+        className="w-fit outline-none"
       >
         <div
           className="absolute inset-0"

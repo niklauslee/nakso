@@ -237,7 +237,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
         <ContextMenuContent className="w-fit p-1.5 shadow-lg focus:outline-none">
           {!isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleOpen}
               disabled={!selectedId || isTrashFolder}
             >
@@ -246,7 +246,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           )}
           {!isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleRename}
               disabled={!selectedId || isTrashFolder}
             >
@@ -255,7 +255,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           )}
           {!isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleDuplicate}
               disabled={!selectedId || isTrashFolder}
             >
@@ -264,7 +264,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           )}
           {isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleRestoreToDrafts}
               disabled={selection.length === 0}
             >
@@ -274,7 +274,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           <ContextMenuSeparator className="my-1.5" />
           {!isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleMoveToTrash}
               disabled={selection.length === 0 || isTrashFolder}
             >
@@ -283,7 +283,7 @@ export function FolderView({ folder, className, ...others }: FolderViewProps) {
           )}
           {isTrashFolder && (
             <ContextMenuItem
-              className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+              className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
               onClick={handleDeletePermanently}
               disabled={selection.length === 0}
             >

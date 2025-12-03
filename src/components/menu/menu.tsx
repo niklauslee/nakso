@@ -96,7 +96,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         onClick={onClick}
         disabled={!item.enabled}
         checked={item.checked}
-        className="text-[13px] py-1 pl-6 pr-3 [&_span]:left-1"
+        className="gap-4 text-[13px] py-1 pl-6 pr-3 [&_span]:left-1"
       >
         {item.label}
         {item.subtext && (
@@ -114,14 +114,14 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         data-command-args={JSON.stringify(item["command-args"])}
         onClick={onClick}
         disabled={!item.enabled}
-        className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+        className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
       >
         {item.label}
         {item.subtext && (
           <DropdownMenuShortcut>{item.subtext}</DropdownMenuShortcut>
         )}
         {!item.subtext && item.external && (
-          <DropdownMenuShortcut>
+          <DropdownMenuShortcut className="pl-4">
             <ExternalLinkIcon
               size={16}
               strokeWidth={1.5}

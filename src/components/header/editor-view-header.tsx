@@ -85,7 +85,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
             align="end"
             open={openMenu === "view"}
             onOpenChange={(open) => setOpenMenu(open ? "view" : null)}
-            className="w-46"
+            className="w-fit"
             render={
               <Button
                 size="sm"

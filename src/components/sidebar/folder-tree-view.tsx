@@ -127,16 +127,16 @@ export function FolderTreeView() {
         />
       </ContextMenuTrigger>
       <ContextMenuPositioner>
-        <ContextMenuContent className="w-32 p-1.5 shadow-lg focus:outline-none">
+        <ContextMenuContent className="w-fit p-1.5 shadow-lg focus:outline-none">
           <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+            className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             disabled={isDraftsFolderFocused}
             onClick={handleNewFolder}
           >
             New Folder
           </ContextMenuItem>
           <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+            className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             disabled={isDraftsFolderFocused}
             onClick={handleRename}
           >
@@ -144,7 +144,7 @@ export function FolderTreeView() {
           </ContextMenuItem>
           <ContextMenuSeparator className="my-1.5" />
           <ContextMenuItem
-            className="text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+            className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
             disabled={isDraftsFolderFocused}
             onClick={handleDelete}
           >
