@@ -100,6 +100,10 @@ export class AppContext {
       e.preventDefault();
     });
 
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
     this.commands.onCommandExecuted.addListener((id) => {
       this.updateMenu();
     });
