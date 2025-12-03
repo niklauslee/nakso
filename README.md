@@ -7,7 +7,7 @@
 - [ ] Update version
 - `package.json`
 - `tauri.conf.json`
-- `src-tauri/Cargo/toml`
+- `src-tauri/Cargo.toml`
 
 ### Build and publish
 
