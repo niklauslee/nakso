@@ -146,9 +146,6 @@ export function AppSidebar() {
                   <HeartIcon size={16} />
                   <span>Favorites</span>
                 </SidebarMenuButton>
-                <SidebarMenuBadge className="text-sidebar-foreground/40">
-                  {favoriteFiles.length}
-                </SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
