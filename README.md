@@ -19,6 +19,17 @@ npm run release:build
 npm run release:publish
 ```
 
+### Update Github
+
+- Create a release
+- Close milestone
+
+### Update website
+
+- Update version and changelog `config.json` in website
+
+---
+
 ## Setup for Build
 
 ```sh
