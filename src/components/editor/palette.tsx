@@ -763,11 +763,14 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
               />
             }
           >
-            {stringifiedCorners === "0,0,0,0" && <RoundedNoneIcon size={16} />}
-            {stringifiedCorners === "8,8,8,8" && <RoundedSmallIcon size={16} />}
-            {stringifiedCorners === "16,16,16,16" && <RoundedIcon size={16} />}
-            {stringifiedCorners === "-50,-50,-50,-50" && (
+            {stringifiedCorners === "0,0,0,0" ? (
+              <RoundedNoneIcon size={16} />
+            ) : stringifiedCorners === "8,8,8,8" ? (
+              <RoundedSmallIcon size={16} />
+            ) : stringifiedCorners === "-50,-50,-50,-50" ? (
               <RoundedLargeIcon size={16} />
+            ) : (
+              <RoundedIcon size={16} />
             )}
           </PopoverTrigger>
           <PopoverPositioner align="end">

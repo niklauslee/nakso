@@ -1,5 +1,7 @@
 # Nakso
 
+Nakso is a lightweight, offline-first desktop whiteboard designed for instant idea visualization.
+
 ## Release
 
 ### Checklist
