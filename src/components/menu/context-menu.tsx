@@ -76,7 +76,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         onClick={onClick}
         disabled={!item.enabled}
         checked={item.checked}
-        className="gap-4 text-[13px] py-1 pl-6 pr-3 [&_span]:left-1"
+        className="gap-4 text-xs py-1.5 pl-5 pr-2 [&_span]:left-0.5"
       >
         {item.label}
         {item.subtext && (
@@ -94,7 +94,7 @@ export const MenuItem: React.FC<MenuItemProp> = ({ item, onClick }) => {
         data-command-args={JSON.stringify(item["command-args"])}
         onClick={onClick}
         disabled={!item.enabled}
-        className="gap-4 text-[13px] py-1 pl-3 pr-3 data-[inset]:pl-6"
+        className="gap-4 text-xs py-1.5 pl-3 pr-2 data-[inset]:pl-5"
       >
         {item.label}
         {item.subtext && (
@@ -146,7 +146,7 @@ export const ApplicationContextMenu: React.FC<MenuProps> = ({
         // Use setTimeout to avoid react-remove-scroll-bar error
         setTimeout(
           async () => await window.app.commands.execute(command, commandArgs),
-          0
+          0,
         );
       }
     }

@@ -1322,7 +1322,7 @@ function OpacityTool({ selection, onChange }: ToolProps) {
   const opacity = merge(selection.map((s) => s.opacity));
 
   return (
-    <div className="flex items-center gap-1 py-2 px-2.5">
+    <div className="flex items-center gap-1 py-2 px-2">
       <Slider
         title={`Opacity`}
         value={[opacity || 1]}
