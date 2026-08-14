@@ -10,10 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://nakso.app">Website</a> ·
-  <a href="https://nakso.app/#download">Download</a> ·
-  <a href="https://discord.gg/dHkQr3UAJ5">Discord</a> ·
-  <a href="https://x.com/niklauslee">X</a>
+  <a href="https://nakso.app">https://nakso.app</a>
 </p>
 
 <p align="center">
@@ -22,9 +19,9 @@
 
 ## Features
 
-- **Open source** — Open source and built on the open source canvas library [DGM.js](https://dgmjs.dev)
+- **Open source** — Nakso is open source, built on the [DGM.js](https://dgmjs.dev)
 - **Local-first** — all your files are stored locally on your device; no cloud, no third-party servers
-- **Cloud sync, your way** — keep files in sync across devices with Dropbox, Google Drive, OneDrive, or similar services
+- **Cloud sync, your way** — keep files in sync across devices with Dropbox, iCloud, Google Drive, OneDrive, or similar services
 - **Fast** — millisecond-level responses since everything is stored and read on your local device
 - **Familiar UX** — file preview and folder management similar to modern SaaS apps
 - **Cross-platform** — available on macOS, Windows, and Linux
@@ -37,7 +34,7 @@ Grab the latest build for your platform from [nakso.app/#download](https://nakso
 | ----------------------------- | ------------- |
 | macOS (Apple Silicon / Intel) | macOS 15+     |
 | Windows (x86)                 | Windows 10+   |
-| Linux (AppImage, x86)         | Ubuntu 22.04+ |
+| Linux (AppImage, x86)         | Ubuntu 24.04+ |
 
 ## Tech stack
 
