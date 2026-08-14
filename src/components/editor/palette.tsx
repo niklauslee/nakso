@@ -241,12 +241,12 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {/* {hasSelection && (
+          {hasSelection && (
             <>
-              <Separator className="opacity-50" />
-              <AdditionalTools selection={selection} onChange={onChange} />
+              {/* <Separator className="opacity-50" />
+              <AdditionalTools selection={selection} onChange={onChange} /> */}
             </>
-          )} */}
+          )}
         </div>
       </ScrollArea>
     </div>
@@ -636,7 +636,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
         <PopoverTrigger
           render={
             <Button
-              size="icon-sm"
+              size="icon-xs"
               variant="ghost"
               title={`Roughness ⎯ ${
                 roughness <= 0 ? "None" : roughness <= 1 ? "Low" : "High"
