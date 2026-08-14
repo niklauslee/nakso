@@ -14,15 +14,14 @@ import {
   AlignBringToFrontIcon,
   AlignSendBackwardIcon,
   AlignSendToBackIcon,
-  RoundedLargeIcon,
   LineStraightIcon,
   LineCurveIcon,
   RoundedIcon,
-  RoundedNoneIcon,
-  RoundedSmallIcon,
   RoughnessLowIcon,
   RoughnessNoneIcon,
   RoughnessHighIcon,
+  PaddingIndependentIcon,
+  StrokeWidthIcon,
 } from "@/components/icons";
 import {
   PenLineIcon,
@@ -40,7 +39,8 @@ import {
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
   Settings2Icon,
-  SettingsIcon,
+  MaximizeIcon,
+  SquareDashedTopSolidIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -54,10 +54,19 @@ import {
   LineEndTypeEnum,
   LineType,
   Path,
+  BorderPosition,
+  BorderPositionEnum,
 } from "@dgmjs/core";
-import { cn, merge } from "@/lib/utils";
+import { cn, merge, toPascalCaseWithSpace } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -78,6 +87,10 @@ import {
 } from "@/const";
 import { ColorPanel } from "@/components/common/color-panel";
 import { ColorItem } from "@/components/common/color-palette";
+import { NumberField } from "@/components/ui/number-field";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -92,7 +105,7 @@ interface PaletteProps {
 function hasShapeType(
   tool: string | null,
   selection: ShapeProps[],
-  type: string
+  type: string,
 ) {
   return tool === type || selection.some((s) => s.type === type);
 }
@@ -132,7 +145,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
   const hasFrame = hasShapeType(tool, selection, "Frame");
   const hasLine = hasShapeType(tool, selection, "Line");
   const hasClosedPath = selection.some(
-    (s) => s instanceof Path && s.isClosed()
+    (s) => s instanceof Path && s.isClosed(),
   );
   const hasConnector = hasShapeType(tool, selection, "Connector");
   const hasFreehand = hasShapeType(tool, selection, "Freehand");
@@ -164,15 +177,15 @@ export function Palette({ selection, onChange }: PaletteProps) {
     <div
       ref={outerRef}
       className={cn(
-        "absolute top-4 bottom-4 right-4 w-40 z-10 pointer-events-none",
-        !isVisible && "hidden"
+        "absolute top-4 bottom-4 right-4 w-fit z-10 pointer-events-none",
+        !isVisible && "hidden",
       )}
     >
       <ScrollArea
         ref={scrollRef}
         className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg pointer-events-auto"
       >
-        <div ref={innerRef} className="flex flex-col gap-2 w-full h-fit p-2">
+        <div ref={innerRef} className="flex flex-col gap-1.5 w-full h-fit p-2">
           {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
               <FillColorTool selection={selection} onChange={onChange} />
@@ -191,11 +204,16 @@ export function Palette({ selection, onChange }: PaletteProps) {
             hasLine ||
             hasConnector) && (
             <>
-              <StrokeWidthAndRoughTool
+              <StrokeWidthTool selection={selection} onChange={onChange} />
+              <StrokePatternAndRoughTool
                 selection={selection}
                 onChange={onChange}
               />
-              <StrokePatternAndCornerTool
+            </>
+          )}
+          {(hasRectangle || hasFrame) && (
+            <>
+              <StrokeCornerAndBorderTool
                 selection={selection}
                 onChange={onChange}
               />
@@ -241,12 +259,19 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {/* {hasSelection && (
+          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
               <Separator className="opacity-50" />
-              <AdditionalTools selection={selection} onChange={onChange} />
+              <PositionAndSizeTool selection={selection} onChange={onChange} />
             </>
-          )} */}
+          )}
+
+          {hasSelection && (
+            <>
+              {/* <Separator className="opacity-50" />
+              <AdditionalTools selection={selection} onChange={onChange} /> */}
+            </>
+          )}
         </div>
       </ScrollArea>
     </div>
@@ -259,15 +284,15 @@ function FillColorTool({ selection, onChange }: ToolProps) {
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Popover modal={true}>
           <PopoverTrigger
             render={
-              <Button size="icon-sm" variant="ghost" title="Fill color" />
+              <Button size="icon-xs" variant="ghost" title="Fill color" />
             }
           >
             <ColorItem
-              className="rounded-sm size-6 border-1 border-neutral-300 dark:border-neutral-600"
+              className="rounded-sm size-5 border-1 border-neutral-300 dark:border-neutral-600"
               value={fillColor ?? "$background"}
               darkMode={darkMode}
             />
@@ -285,7 +310,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           </PopoverPositioner>
         </Popover>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Background"
           pressed={fillColor === "$background"}
           onPressedChange={(pressed) => {
@@ -301,7 +326,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Gray"
           pressed={fillColor === "$gray4"}
           onPressedChange={(pressed) => {
@@ -313,7 +338,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$gray4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Red"
           pressed={fillColor === "$red4"}
           onPressedChange={(pressed) => {
@@ -325,9 +350,9 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$red4" darkMode={darkMode} className="size-4" />
         </Toggle>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Blue"
           pressed={fillColor === "$blue4"}
           onPressedChange={(pressed) => {
@@ -339,7 +364,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$blue4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Green"
           pressed={fillColor === "$green4"}
           onPressedChange={(pressed) => {
@@ -351,7 +376,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$green4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Yellow"
           pressed={fillColor === "$yellow4"}
           onPressedChange={(pressed) => {
@@ -363,7 +388,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$yellow4" darkMode={darkMode} className="size-4" />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Fill color ⎯ Light Purple"
           pressed={fillColor === "$purple4"}
           onPressedChange={(pressed) => {
@@ -383,9 +408,9 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
   const fillStyle = merge(selection.map((s) => s.fillStyle));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="No fill"
         pressed={fillStyle === FillStyle.NONE}
         onPressedChange={(pressed) => {
@@ -397,7 +422,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
         <FillNoneIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Fill style ⎯ Hachure"
         pressed={fillStyle === FillStyle.HACHURE}
         onPressedChange={(pressed) => {
@@ -409,7 +434,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
         <FillHachureIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Fill style ⎯ Cross Hatch"
         pressed={fillStyle === FillStyle.CROSS_HATCH}
         onPressedChange={(pressed) => {
@@ -421,7 +446,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
         <FillCrossHatchIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Fill style ⎯ Solid"
         pressed={fillStyle === FillStyle.SOLID}
         onPressedChange={(pressed) => {
@@ -441,15 +466,15 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   const strokeColor = merge(selection.map((s) => s.strokeColor));
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Popover modal={true}>
           <PopoverTrigger
             render={
-              <Button size="icon-sm" variant="ghost" title="Stroke color" />
+              <Button size="icon-xs" variant="ghost" title="Stroke color" />
             }
           >
             <ColorItem
-              className="size-6 rounded-sm"
+              className="size-5 rounded-sm"
               value={strokeColor ?? "$foreground"}
               darkMode={darkMode}
             />
@@ -467,7 +492,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           </PopoverPositioner>
         </Popover>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Foreground"
           pressed={strokeColor === "$foreground"}
           onPressedChange={(pressed) => {
@@ -487,7 +512,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Gray"
           pressed={strokeColor === "$gray9"}
           onPressedChange={(pressed) => {
@@ -504,7 +529,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Red"
           pressed={strokeColor === "$red9"}
           onPressedChange={(pressed) => {
@@ -521,9 +546,9 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Blue"
           pressed={strokeColor === "$blue9"}
           onPressedChange={(pressed) => {
@@ -540,7 +565,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Green"
           pressed={strokeColor === "$green9"}
           onPressedChange={(pressed) => {
@@ -557,7 +582,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Yellow"
           pressed={strokeColor === "$yellow9"}
           onPressedChange={(pressed) => {
@@ -574,7 +599,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
         <Toggle
-          size="sm"
+          size="xs"
           title="Stroke color ⎯ Purple"
           pressed={strokeColor === "$purple9"}
           onPressedChange={(pressed) => {
@@ -595,14 +620,14 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
+function StrokeWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
-  const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
+  const selectValues = [0, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 28, 36];
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Thin stroke"
         pressed={strokeWidth === 2}
         onPressedChange={() => {
@@ -612,7 +637,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
         <MinusIcon size={16} strokeWidth={2} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Medium stroke"
         pressed={strokeWidth === 4}
         onPressedChange={() => {
@@ -622,7 +647,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
         <MinusIcon size={16} strokeWidth={4} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Thick stroke"
         pressed={strokeWidth === 6}
         onPressedChange={() => {
@@ -631,12 +656,88 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
       >
         <MinusIcon size={16} strokeWidth={6} />
       </Toggle>
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Stroke width">
+              <StrokeWidthIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-xs">Stroke width</div>
+              <div className="flex items-center">
+                <NumberField
+                  title="Stroke width"
+                  className="flex-grow w-14"
+                  placeholder="―"
+                  value={strokeWidth}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    onChange?.({ strokeWidth: value });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
+    </div>
+  );
+}
 
+function StrokePatternAndRoughTool({ selection, onChange }: ToolProps) {
+  const strokePattern = merge(
+    selection.map((s) => s.strokePattern),
+    true,
+  );
+  const stringifiedPattern = Array.isArray(strokePattern)
+    ? strokePattern.length > 0
+      ? strokePattern.join(",")
+      : "0"
+    : undefined;
+  const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <Toggle
+        size="xs"
+        title="Solid stroke"
+        pressed={stringifiedPattern === "0"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [] });
+        }}
+      >
+        <StrokeSolidIcon size={16} />
+      </Toggle>
+      <Toggle
+        size="xs"
+        title="Dotted stroke"
+        pressed={stringifiedPattern === "0.5,2"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [0.5, 2] });
+        }}
+      >
+        <StrokeDottedIcon size={16} />
+      </Toggle>
+      <Toggle
+        size="xs"
+        title="Dashed stroke"
+        pressed={stringifiedPattern === "3,4"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [3, 4] });
+        }}
+      >
+        <StrokeDashedIcon size={16} />
+      </Toggle>
       <Popover modal={true}>
         <PopoverTrigger
           render={
             <Button
-              size="icon-sm"
+              size="icon-xs"
               variant="ghost"
               title={`Roughness ⎯ ${
                 roughness <= 0 ? "None" : roughness <= 1 ? "Low" : "High"
@@ -652,7 +753,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
           <PopoverContent className="w-fit p-0">
             <div className="flex items-center gap-1 p-1">
               <Toggle
-                size="sm"
+                size="xs"
                 title="No roughness"
                 pressed={roughness === 0}
                 onPressedChange={() => {
@@ -662,7 +763,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
                 <RoughnessNoneIcon size={16} />
               </Toggle>
               <Toggle
-                size="sm"
+                size="xs"
                 title="Low roughness"
                 pressed={roughness === 1}
                 onPressedChange={() => {
@@ -672,7 +773,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
                 <RoughnessLowIcon size={16} />
               </Toggle>
               <Toggle
-                size="sm"
+                size="xs"
                 title="High roughness"
                 pressed={roughness === 2}
                 onPressedChange={() => {
@@ -689,142 +790,274 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
-  const [popupOpen, setPopupOpen] = useState(false);
-  const tool = useEditorStore((state) => state.activeHandler);
-  const hasRectangle = hasShapeType(tool, selection, "Rectangle");
-  const hasFrame = hasShapeType(tool, selection, "Frame");
-
-  const strokePattern = merge(
-    selection.map((s) => s.strokePattern),
-    true
-  );
+function StrokeCornerAndBorderTool({ selection, onChange }: ToolProps) {
   const corners = merge(
     selection.map((s) => (s as Box).corners ?? [0, 0, 0, 0]),
-    true
+    true,
   ) ?? [0, 0, 0, 0];
-  const stringifiedPattern = Array.isArray(strokePattern)
-    ? strokePattern.length > 0
-      ? strokePattern.join(",")
-      : "0"
-    : undefined;
-  const stringifiedCorners = corners.join(",");
+  const cornersValue = corners ? merge(corners) : undefined;
+  const selectValues = [0, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64];
+  const borders = merge(
+    selection.map((s) => (s as Box).borders ?? [true, true, true, true]),
+    true,
+  ) ?? [true, true, true, true];
+  const borderPosition = merge(
+    selection.map((s) => (s as Box).borderPosition ?? "center"),
+  );
 
   return (
-    <div className="flex items-center gap-1">
-      <Toggle
-        size="sm"
-        title="Solid stroke"
-        pressed={stringifiedPattern === "0"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [] });
-        }}
-      >
-        <StrokeSolidIcon size={16} />
-      </Toggle>
-      <Toggle
-        size="sm"
-        title="Dotted stroke"
-        pressed={stringifiedPattern === "0.5,2"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [0.5, 2] });
-        }}
-      >
-        <StrokeDottedIcon size={16} />
-      </Toggle>
-      <Toggle
-        size="sm"
-        title="Dashed stroke"
-        pressed={stringifiedPattern === "3,4"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [3, 4] });
-        }}
-      >
-        <StrokeDashedIcon size={16} />
-      </Toggle>
-      {(hasRectangle || hasFrame) && (
-        <Popover open={popupOpen} onOpenChange={setPopupOpen}>
-          <PopoverTrigger
-            render={
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                title={`Rounded ⎯ ${
-                  stringifiedCorners === "0,0,0,0"
-                    ? "None"
-                    : stringifiedCorners === "8,8,8,8"
-                    ? "Small"
-                    : stringifiedCorners === "16,16,16,16"
-                    ? "Large"
-                    : stringifiedCorners === "-50,-50,-50,-50"
-                    ? "Full"
-                    : "Custom"
-                }`}
-              />
-            }
-          >
-            {stringifiedCorners === "0,0,0,0" ? (
-              <RoundedNoneIcon size={16} />
-            ) : stringifiedCorners === "8,8,8,8" ? (
-              <RoundedSmallIcon size={16} />
-            ) : stringifiedCorners === "-50,-50,-50,-50" ? (
-              <RoundedLargeIcon size={16} />
-            ) : (
-              <RoundedIcon size={16} />
-            )}
-          </PopoverTrigger>
-          <PopoverPositioner align="end">
-            <PopoverContent className="w-fit p-0">
-              <div className="flex items-center gap-1 p-1">
-                <Toggle
-                  size="sm"
-                  title="No rounded corners"
-                  pressed={stringifiedCorners === "0,0,0,0"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [0, 0, 0, 0] });
-                    setPopupOpen(false);
+    <div className="flex items-center gap-1.5">
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Corners">
+              <MaximizeIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-1">
+              <div className="text-xs">Corner radius</div>
+              <div className="flex items-center">
+                <NumberField
+                  title="Corner radius"
+                  className="flex-grow w-20"
+                  placeholder="―"
+                  value={cornersValue}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [value, value, value, value],
+                    });
                   }}
-                >
-                  <RoundedNoneIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="sm"
-                  title="Small rounded corners"
-                  pressed={stringifiedCorners === "8,8,8,8"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [8, 8, 8, 8] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedSmallIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="sm"
-                  title="Large rounded corners"
-                  pressed={stringifiedCorners === "16,16,16,16"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [16, 16, 16, 16] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="sm"
-                  title="Fully rounded corners"
-                  pressed={stringifiedCorners === "-50,-50,-50,-50"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [-50, -50, -50, -50] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedLargeIcon size={16} />
-                </Toggle>
+                />
               </div>
-            </PopoverContent>
-          </PopoverPositioner>
-        </Popover>
-      )}
+            </div>
+            <Separator className="my-2 opacity-50" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-90"
+                  />
+                </Label>
+                <NumberField
+                  title="Left top corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[0] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [value, c[1], c[2], c[3]],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon size={16} strokeWidth={1.5} className="" />
+                </Label>
+                <NumberField
+                  title="Right top corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[1] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], value, c[2], c[3]],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-180"
+                  />
+                </Label>
+                <NumberField
+                  title="Left bottom corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[3] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], c[1], c[2], value],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-90"
+                  />
+                </Label>
+                <NumberField
+                  title="Right bottom corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[2] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], c[1], value, c[3]],
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Borders">
+              <PaddingIndependentIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-xs">Border position</div>
+              <div className="flex items-center">
+                <Select
+                  value={borderPosition}
+                  onValueChange={(value) => {
+                    onChange?.({
+                      borderPosition: value as BorderPositionEnum,
+                    });
+                  }}
+                >
+                  <SelectTrigger
+                    className="inline-flex w-24 max-h-7 rounded-sm"
+                    title="Border position"
+                  >
+                    <SelectValue className="text-xs" />
+                  </SelectTrigger>
+                  <SelectContent className="min-w-24">
+                    {Object.values(BorderPosition).map((key) => (
+                      <SelectItem key={key} value={key} className="text-xs h-7">
+                        {key}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Separator className="my-2 opacity-50" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon size={16} strokeWidth={1.5} />
+                </Label>
+                <Checkbox
+                  title="Top border"
+                  checked={borders ? borders[0] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        value === true,
+                        borders[1] ?? false,
+                        borders[2] ?? false,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-90"
+                  />
+                </Label>
+                <Checkbox
+                  title="Right border"
+                  checked={borders ? borders[1] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        value === true,
+                        borders[2] ?? false,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-180"
+                  />
+                </Label>
+                <Checkbox
+                  title="Bottom border"
+                  checked={borders ? borders[2] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        borders[1] ?? false,
+                        value === true,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-90"
+                  />
+                </Label>
+                <Checkbox
+                  title="Left border"
+                  checked={borders ? borders[3] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        borders[1] ?? false,
+                        borders[2] ?? false,
+                        value === true,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
     </div>
   );
 }
@@ -833,9 +1066,9 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Thin pen"
         pressed={strokeWidth === 4}
         onPressedChange={() => {
@@ -845,7 +1078,7 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
         <MinusIcon size={16} strokeWidth={2} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Medium pen"
         pressed={strokeWidth === 8}
         onPressedChange={() => {
@@ -855,7 +1088,7 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
         <MinusIcon size={16} strokeWidth={4} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Thick pen"
         pressed={strokeWidth === 16}
         onPressedChange={() => {
@@ -865,7 +1098,7 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
         <MinusIcon size={16} strokeWidth={8} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Extra thick pen"
         pressed={strokeWidth === 28}
         onPressedChange={() => {
@@ -888,9 +1121,9 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Handwriting"
         className="font-medium font-hand"
         pressed={fontFamily === defaultFonts.hand}
@@ -901,7 +1134,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
         Aa
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Sans Serif"
         className="font-medium font-sans"
         pressed={fontFamily === defaultFonts.sans}
@@ -912,7 +1145,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
         Aa
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Serif"
         className="font-medium font-serif"
         pressed={fontFamily === defaultFonts.serif}
@@ -923,7 +1156,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
         Aa
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Monospace"
         className="font-medium font-mono"
         pressed={fontFamily === defaultFonts.mono}
@@ -940,9 +1173,9 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
 function FontSizeTool({ selection, onChange }: ToolProps) {
   const fontSize = merge(selection.map((s) => (s as Text).fontSize));
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Small"
         className="font-medium"
         pressed={fontSize === 16}
@@ -953,7 +1186,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
         S
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Medium"
         className="font-medium"
         pressed={fontSize === 20}
@@ -964,7 +1197,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
         M
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Large"
         className="font-medium"
         pressed={fontSize === 28}
@@ -975,7 +1208,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
         L
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Extra Large"
         className="font-medium"
         pressed={fontSize === 40}
@@ -995,9 +1228,9 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
   const vertAlign = merge(selection.map((s) => (s as Box).vertAlign));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Align text left"
         pressed={horzAlign === HorzAlign.LEFT}
         onPressedChange={() => {
@@ -1007,7 +1240,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
         <AlignLeftIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Align text center"
         pressed={horzAlign === HorzAlign.CENTER}
         onPressedChange={() => {
@@ -1017,7 +1250,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
         <AlignCenterIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Align text right"
         pressed={horzAlign === HorzAlign.RIGHT}
         onPressedChange={() => {
@@ -1030,7 +1263,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
         <PopoverTrigger
           render={
             <Button
-              size={"icon-sm"}
+              size={"icon-xs"}
               variant={"ghost"}
               title="Align text vertically"
             />
@@ -1045,7 +1278,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
           <PopoverContent className="w-fit p-0">
             <div className="flex items-center gap-1 p-1">
               <Toggle
-                size="sm"
+                size="xs"
                 title="Align text top"
                 pressed={vertAlign === VertAlign.TOP}
                 onPressedChange={() => {
@@ -1056,7 +1289,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
                 <VerticalTopIcon size={16} />
               </Toggle>
               <Toggle
-                size="sm"
+                size="xs"
                 title="Align text middle"
                 pressed={vertAlign === VertAlign.MIDDLE}
                 onPressedChange={() => {
@@ -1067,7 +1300,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
                 <VerticalMiddleIcon size={16} />
               </Toggle>
               <Toggle
-                size="sm"
+                size="xs"
                 title="Align text bottom"
                 pressed={vertAlign === VertAlign.BOTTOM}
                 onPressedChange={() => {
@@ -1114,9 +1347,9 @@ function LineTool({ selection, onChange }: ToolProps) {
   const headEndType = merge(selection.map((s) => (s as Line).headEndType));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
-        size="sm"
+        size="xs"
         title="Straight line"
         pressed={lineType === LineType.STRAIGHT}
         onPressedChange={() => {
@@ -1126,7 +1359,7 @@ function LineTool({ selection, onChange }: ToolProps) {
         <LineStraightIcon size={16} />
       </Toggle>
       <Toggle
-        size="sm"
+        size="xs"
         title="Curved line"
         pressed={lineType === LineType.CURVE}
         onPressedChange={() => {
@@ -1157,9 +1390,9 @@ function LineTool({ selection, onChange }: ToolProps) {
 function LayerTool({}: ToolProps) {
   const formattedKeys = useKeymapStore((state) => state.formattedKeys);
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Button
-        size="icon-sm"
+        size="icon-xs"
         variant="ghost"
         title={`Bring to front ⎯ ${formattedKeys["align:bring-to-front"]}`}
         onClick={() => {
@@ -1169,7 +1402,7 @@ function LayerTool({}: ToolProps) {
         <AlignBringToFrontIcon size={16} />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon-xs"
         variant="ghost"
         title={`Bring forward ⎯ ${formattedKeys["align:bring-forward"]}`}
         onClick={() => {
@@ -1179,7 +1412,7 @@ function LayerTool({}: ToolProps) {
         <AlignBringForwardIcon size={16} />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon-xs"
         variant="ghost"
         title={`Send backward ⎯ ${formattedKeys["align:send-backward"]}`}
         onClick={() => {
@@ -1189,7 +1422,7 @@ function LayerTool({}: ToolProps) {
         <AlignSendBackwardIcon size={16} />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon-xs"
         variant="ghost"
         title={`Send to back ⎯ ${formattedKeys["align:send-to-back"]}`}
         onClick={() => {
@@ -1206,9 +1439,9 @@ function AlignmentTool({}: ToolProps) {
   const formattedKeys = useKeymapStore((state) => state.formattedKeys);
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align left ⎯ ${formattedKeys["align:align-left"]}`}
           onClick={() => {
@@ -1218,7 +1451,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignStartVerticalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align center ⎯ ${formattedKeys["align:align-center"]}`}
           onClick={() => {
@@ -1228,7 +1461,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignCenterVerticalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align right ⎯ ${formattedKeys["align:align-right"]}`}
           onClick={() => {
@@ -1238,7 +1471,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignEndVerticalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Distribute horizontally ⎯ ${formattedKeys["align:distribute-horizontally"]}`}
           onClick={() => {
@@ -1248,9 +1481,9 @@ function AlignmentTool({}: ToolProps) {
           <AlignHorizontalSpaceAroundIcon size={16} />
         </Button>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align top ⎯ ${formattedKeys["align:align-top"]}`}
           onClick={() => {
@@ -1260,7 +1493,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignStartHorizontalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align middle ⎯ ${formattedKeys["align:align-middle"]}`}
           onClick={() => {
@@ -1270,7 +1503,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignCenterHorizontalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Align bottom ⎯ ${formattedKeys["align:align-bottom"]}`}
           onClick={() => {
@@ -1280,7 +1513,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignEndHorizontalIcon size={16} />
         </Button>
         <Button
-          size="icon-sm"
+          size="icon-xs"
           variant="ghost"
           title={`Distribute vertically ⎯ ${formattedKeys["align:distribute-vertically"]}`}
           onClick={() => {
@@ -1294,11 +1527,61 @@ function AlignmentTool({}: ToolProps) {
   );
 }
 
+function PositionAndSizeTool({ selection, onChange }: ToolProps) {
+  const left = merge(selection.map((s) => s.left));
+  const top = merge(selection.map((s) => s.top));
+  const width = merge(selection.map((s) => s.width));
+  const height = merge(selection.map((s) => s.height));
+
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="X"
+          label="X"
+          placeholder="―"
+          value={left ? Math.round(left) : undefined}
+          onChange={(value) => onChange?.({ left: value })}
+        />
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Y"
+          label="Y"
+          placeholder="―"
+          value={top ? Math.round(top) : undefined}
+          onChange={(value) => onChange?.({ top: value })}
+        />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Width"
+          label="W"
+          placeholder="―"
+          value={width ? Math.round(width) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ width: value })}
+        />
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Height"
+          label="H"
+          placeholder="―"
+          value={height ? Math.round(height) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ height: value })}
+        />
+      </div>
+    </>
+  );
+}
+
 function AdditionalTools({}: ToolProps) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <PenLineIcon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1314,7 +1597,7 @@ function AdditionalTools({}: ToolProps) {
       </Popover>
 
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <TypeIcon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1331,7 +1614,7 @@ function AdditionalTools({}: ToolProps) {
       </Popover>
 
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <Settings2Icon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1344,9 +1627,29 @@ function AdditionalTools({}: ToolProps) {
         </PopoverPositioner>
       </Popover>
 
-      <Button size="icon-sm" variant="ghost">
-        <SettingsIcon size={16} />
-      </Button>
+      <Popover>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
+          <Settings2Icon size={16} />
+        </PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0 text-xs">
+            <div className="flex flex-col gap-1 p-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>Alignment</div>
+                <div>
+                  <Switch />
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div>Position & Size</div>
+                <div>
+                  <Switch />
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
     </div>
   );
 }

@@ -217,7 +217,7 @@ export const SelectArrowhead: React.FC<SelectArrowheadProps> = ({
         render={
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon-xs"
             title={title}
             className={cn(className)}
           />
