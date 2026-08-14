@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dialog as SheetPrimitive } from "@base-ui-components/react/dialog";
+import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -35,7 +35,7 @@ function SheetOverlay({
       data-slot="sheet-overlay"
       className={cn(
         "data-[open]:animate-in data-[closed]:animate-out data-[closed]:fade-out-0 data-[closed]:animation-duration-[300ms] data-[open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
-        className
+        className,
       )}
       {...props}
     />
@@ -65,7 +65,7 @@ function SheetContent({
             "data-[closed]:slide-out-to-top data-[open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
           side === "bottom" &&
             "data-[closed]:slide-out-to-bottom data-[open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
-          className
+          className,
         )}
         {...props}
       >

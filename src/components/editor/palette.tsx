@@ -14,15 +14,14 @@ import {
   AlignBringToFrontIcon,
   AlignSendBackwardIcon,
   AlignSendToBackIcon,
-  RoundedLargeIcon,
   LineStraightIcon,
   LineCurveIcon,
   RoundedIcon,
-  RoundedNoneIcon,
-  RoundedSmallIcon,
   RoughnessLowIcon,
   RoughnessNoneIcon,
   RoughnessHighIcon,
+  PaddingIndependentIcon,
+  StrokeWidthIcon,
 } from "@/components/icons";
 import {
   PenLineIcon,
@@ -40,7 +39,8 @@ import {
   AlignEndHorizontalIcon,
   AlignVerticalSpaceAroundIcon,
   Settings2Icon,
-  SettingsIcon,
+  MaximizeIcon,
+  SquareDashedTopSolidIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -54,10 +54,19 @@ import {
   LineEndTypeEnum,
   LineType,
   Path,
+  BorderPosition,
+  BorderPositionEnum,
 } from "@dgmjs/core";
-import { cn, merge } from "@/lib/utils";
+import { cn, merge, toPascalCaseWithSpace } from "@/lib/utils";
 import { useSettingStore } from "@/store/setting-store";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -80,6 +89,8 @@ import { ColorPanel } from "@/components/common/color-panel";
 import { ColorItem } from "@/components/common/color-palette";
 import { NumberField } from "@/components/ui/number-field";
 import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -193,11 +204,16 @@ export function Palette({ selection, onChange }: PaletteProps) {
             hasLine ||
             hasConnector) && (
             <>
-              <StrokeWidthAndRoughTool
+              <StrokeWidthTool selection={selection} onChange={onChange} />
+              <StrokePatternAndRoughTool
                 selection={selection}
                 onChange={onChange}
               />
-              <StrokePatternAndCornerTool
+            </>
+          )}
+          {(hasRectangle || hasFrame) && (
+            <>
+              <StrokeCornerAndBorderTool
                 selection={selection}
                 onChange={onChange}
               />
@@ -259,56 +275,6 @@ export function Palette({ selection, onChange }: PaletteProps) {
         </div>
       </ScrollArea>
     </div>
-  );
-}
-
-function PositionAndSizeTool({ selection, onChange }: ToolProps) {
-  const left = merge(selection.map((s) => s.left));
-  const top = merge(selection.map((s) => s.top));
-  const width = merge(selection.map((s) => s.width));
-  const height = merge(selection.map((s) => s.height));
-
-  return (
-    <>
-      <div className="flex items-center gap-1.5">
-        <NumberField
-          className="flex-grow w-16"
-          title="X"
-          label="X"
-          placeholder="―"
-          value={left ? Math.round(left) : undefined}
-          onChange={(value) => onChange?.({ left: value })}
-        />
-        <NumberField
-          className="flex-grow w-16"
-          title="Y"
-          label="Y"
-          placeholder="―"
-          value={top ? Math.round(top) : undefined}
-          onChange={(value) => onChange?.({ top: value })}
-        />
-      </div>
-      <div className="flex items-center gap-1.5">
-        <NumberField
-          className="flex-grow w-16"
-          title="Width"
-          label="W"
-          placeholder="―"
-          value={width ? Math.round(width) : undefined}
-          minValue={0}
-          onChange={(value) => onChange?.({ width: value })}
-        />
-        <NumberField
-          className="flex-grow w-16"
-          title="Height"
-          label="H"
-          placeholder="―"
-          value={height ? Math.round(height) : undefined}
-          minValue={0}
-          onChange={(value) => onChange?.({ height: value })}
-        />
-      </div>
-    </>
   );
 }
 
@@ -654,9 +620,9 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
+function StrokeWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
-  const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
+  const selectValues = [0, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 28, 36];
 
   return (
     <div className="flex items-center gap-1.5">
@@ -690,7 +656,83 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
       >
         <MinusIcon size={16} strokeWidth={6} />
       </Toggle>
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Stroke width">
+              <StrokeWidthIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-xs">Stroke width</div>
+              <div className="flex items-center">
+                <NumberField
+                  title="Stroke width"
+                  className="flex-grow w-14"
+                  placeholder="―"
+                  value={strokeWidth}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    onChange?.({ strokeWidth: value });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
+    </div>
+  );
+}
 
+function StrokePatternAndRoughTool({ selection, onChange }: ToolProps) {
+  const strokePattern = merge(
+    selection.map((s) => s.strokePattern),
+    true,
+  );
+  const stringifiedPattern = Array.isArray(strokePattern)
+    ? strokePattern.length > 0
+      ? strokePattern.join(",")
+      : "0"
+    : undefined;
+  const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <Toggle
+        size="xs"
+        title="Solid stroke"
+        pressed={stringifiedPattern === "0"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [] });
+        }}
+      >
+        <StrokeSolidIcon size={16} />
+      </Toggle>
+      <Toggle
+        size="xs"
+        title="Dotted stroke"
+        pressed={stringifiedPattern === "0.5,2"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [0.5, 2] });
+        }}
+      >
+        <StrokeDottedIcon size={16} />
+      </Toggle>
+      <Toggle
+        size="xs"
+        title="Dashed stroke"
+        pressed={stringifiedPattern === "3,4"}
+        onPressedChange={() => {
+          onChange?.({ strokePattern: [3, 4] });
+        }}
+      >
+        <StrokeDashedIcon size={16} />
+      </Toggle>
       <Popover modal={true}>
         <PopoverTrigger
           render={
@@ -748,142 +790,274 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
   );
 }
 
-function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
-  const [popupOpen, setPopupOpen] = useState(false);
-  const tool = useEditorStore((state) => state.activeHandler);
-  const hasRectangle = hasShapeType(tool, selection, "Rectangle");
-  const hasFrame = hasShapeType(tool, selection, "Frame");
-
-  const strokePattern = merge(
-    selection.map((s) => s.strokePattern),
-    true,
-  );
+function StrokeCornerAndBorderTool({ selection, onChange }: ToolProps) {
   const corners = merge(
     selection.map((s) => (s as Box).corners ?? [0, 0, 0, 0]),
     true,
   ) ?? [0, 0, 0, 0];
-  const stringifiedPattern = Array.isArray(strokePattern)
-    ? strokePattern.length > 0
-      ? strokePattern.join(",")
-      : "0"
-    : undefined;
-  const stringifiedCorners = corners.join(",");
+  const cornersValue = corners ? merge(corners) : undefined;
+  const selectValues = [0, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64];
+  const borders = merge(
+    selection.map((s) => (s as Box).borders ?? [true, true, true, true]),
+    true,
+  ) ?? [true, true, true, true];
+  const borderPosition = merge(
+    selection.map((s) => (s as Box).borderPosition ?? "center"),
+  );
 
   return (
     <div className="flex items-center gap-1.5">
-      <Toggle
-        size="xs"
-        title="Solid stroke"
-        pressed={stringifiedPattern === "0"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [] });
-        }}
-      >
-        <StrokeSolidIcon size={16} />
-      </Toggle>
-      <Toggle
-        size="xs"
-        title="Dotted stroke"
-        pressed={stringifiedPattern === "0.5,2"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [0.5, 2] });
-        }}
-      >
-        <StrokeDottedIcon size={16} />
-      </Toggle>
-      <Toggle
-        size="xs"
-        title="Dashed stroke"
-        pressed={stringifiedPattern === "3,4"}
-        onPressedChange={() => {
-          onChange?.({ strokePattern: [3, 4] });
-        }}
-      >
-        <StrokeDashedIcon size={16} />
-      </Toggle>
-      {(hasRectangle || hasFrame) && (
-        <Popover open={popupOpen} onOpenChange={setPopupOpen}>
-          <PopoverTrigger
-            render={
-              <Button
-                size="icon-xs"
-                variant="ghost"
-                title={`Rounded ⎯ ${
-                  stringifiedCorners === "0,0,0,0"
-                    ? "None"
-                    : stringifiedCorners === "8,8,8,8"
-                      ? "Small"
-                      : stringifiedCorners === "16,16,16,16"
-                        ? "Large"
-                        : stringifiedCorners === "-50,-50,-50,-50"
-                          ? "Full"
-                          : "Custom"
-                }`}
-              />
-            }
-          >
-            {stringifiedCorners === "0,0,0,0" ? (
-              <RoundedNoneIcon size={16} />
-            ) : stringifiedCorners === "8,8,8,8" ? (
-              <RoundedSmallIcon size={16} />
-            ) : stringifiedCorners === "-50,-50,-50,-50" ? (
-              <RoundedLargeIcon size={16} />
-            ) : (
-              <RoundedIcon size={16} />
-            )}
-          </PopoverTrigger>
-          <PopoverPositioner align="end">
-            <PopoverContent className="w-fit p-0">
-              <div className="flex items-center gap-1 p-1">
-                <Toggle
-                  size="xs"
-                  title="No rounded corners"
-                  pressed={stringifiedCorners === "0,0,0,0"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [0, 0, 0, 0] });
-                    setPopupOpen(false);
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Corners">
+              <MaximizeIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-1">
+              <div className="text-xs">Corner radius</div>
+              <div className="flex items-center">
+                <NumberField
+                  title="Corner radius"
+                  className="flex-grow w-20"
+                  placeholder="―"
+                  value={cornersValue}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [value, value, value, value],
+                    });
                   }}
-                >
-                  <RoundedNoneIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="xs"
-                  title="Small rounded corners"
-                  pressed={stringifiedCorners === "8,8,8,8"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [8, 8, 8, 8] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedSmallIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="xs"
-                  title="Large rounded corners"
-                  pressed={stringifiedCorners === "16,16,16,16"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [16, 16, 16, 16] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedIcon size={16} />
-                </Toggle>
-                <Toggle
-                  size="xs"
-                  title="Fully rounded corners"
-                  pressed={stringifiedCorners === "-50,-50,-50,-50"}
-                  onPressedChange={() => {
-                    onChange?.({ corners: [-50, -50, -50, -50] });
-                    setPopupOpen(false);
-                  }}
-                >
-                  <RoundedLargeIcon size={16} />
-                </Toggle>
+                />
               </div>
-            </PopoverContent>
-          </PopoverPositioner>
-        </Popover>
-      )}
+            </div>
+            <Separator className="my-2 opacity-50" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-90"
+                  />
+                </Label>
+                <NumberField
+                  title="Left top corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[0] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [value, c[1], c[2], c[3]],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon size={16} strokeWidth={1.5} className="" />
+                </Label>
+                <NumberField
+                  title="Right top corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[1] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], value, c[2], c[3]],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-180"
+                  />
+                </Label>
+                <NumberField
+                  title="Left bottom corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[3] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], c[1], c[2], value],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <RoundedIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-90"
+                  />
+                </Label>
+                <NumberField
+                  title="Right bottom corner"
+                  className="flex-grow w-14"
+                  value={corners ? corners[2] : undefined}
+                  minValue={0}
+                  selectValues={selectValues}
+                  onChange={(value) => {
+                    const c = corners ?? [0, 0, 0, 0];
+                    onChange?.({
+                      corners: [c[0], c[1], value, c[3]],
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button size="icon-xs" variant="ghost" title="Borders">
+              <PaddingIndependentIcon size={16} />
+            </Button>
+          }
+        ></PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-xs">Border position</div>
+              <div className="flex items-center">
+                <Select
+                  value={borderPosition}
+                  onValueChange={(value) => {
+                    onChange?.({
+                      borderPosition: value as BorderPositionEnum,
+                    });
+                  }}
+                >
+                  <SelectTrigger
+                    className="inline-flex w-24 max-h-7 rounded-sm"
+                    title="Border position"
+                  >
+                    <SelectValue className="text-xs" />
+                  </SelectTrigger>
+                  <SelectContent className="min-w-24">
+                    {Object.values(BorderPosition).map((key) => (
+                      <SelectItem key={key} value={key} className="text-xs h-7">
+                        {key}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Separator className="my-2 opacity-50" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon size={16} strokeWidth={1.5} />
+                </Label>
+                <Checkbox
+                  title="Top border"
+                  checked={borders ? borders[0] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        value === true,
+                        borders[1] ?? false,
+                        borders[2] ?? false,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-90"
+                  />
+                </Label>
+                <Checkbox
+                  title="Right border"
+                  checked={borders ? borders[1] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        value === true,
+                        borders[2] ?? false,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="rotate-180"
+                  />
+                </Label>
+                <Checkbox
+                  title="Bottom border"
+                  checked={borders ? borders[2] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        borders[1] ?? false,
+                        value === true,
+                        borders[3] ?? false,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="shape-rotate-field" className="mr-2">
+                  <SquareDashedTopSolidIcon
+                    size={16}
+                    strokeWidth={1.5}
+                    className="-rotate-90"
+                  />
+                </Label>
+                <Checkbox
+                  title="Left border"
+                  checked={borders ? borders[3] : undefined}
+                  onCheckedChange={(value) => {
+                    onChange?.({
+                      borders: [
+                        borders[0] ?? false,
+                        borders[1] ?? false,
+                        borders[2] ?? false,
+                        value === true,
+                      ],
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
     </div>
   );
 }
@@ -1348,6 +1522,56 @@ function AlignmentTool({}: ToolProps) {
         >
           <AlignVerticalSpaceAroundIcon size={16} />
         </Button>
+      </div>
+    </>
+  );
+}
+
+function PositionAndSizeTool({ selection, onChange }: ToolProps) {
+  const left = merge(selection.map((s) => s.left));
+  const top = merge(selection.map((s) => s.top));
+  const width = merge(selection.map((s) => s.width));
+  const height = merge(selection.map((s) => s.height));
+
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="X"
+          label="X"
+          placeholder="―"
+          value={left ? Math.round(left) : undefined}
+          onChange={(value) => onChange?.({ left: value })}
+        />
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Y"
+          label="Y"
+          placeholder="―"
+          value={top ? Math.round(top) : undefined}
+          onChange={(value) => onChange?.({ top: value })}
+        />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Width"
+          label="W"
+          placeholder="―"
+          value={width ? Math.round(width) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ width: value })}
+        />
+        <NumberField
+          className="flex-grow w-16 bg-background"
+          title="Height"
+          label="H"
+          placeholder="―"
+          value={height ? Math.round(height) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ height: value })}
+        />
       </div>
     </>
   );
