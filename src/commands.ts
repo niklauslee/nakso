@@ -13,12 +13,7 @@
 
 import { useSettingStore } from "@/store/setting-store";
 import { Doc, Page, Shape, shapeInstantiator, Store } from "@dgmjs/core";
-import {
-  copyToClipboard,
-  getImageBlob,
-  getSVGImageData,
-  type ExportImageOptions,
-} from "@dgmjs/export";
+import { getImageBlob, getSVGImageData } from "@dgmjs/export";
 import { z } from "zod";
 import { APP_NAME, EXT_NAME, SITE_URL, ZOOMS } from "./const";
 import { useEditorStore } from "@/store/editor-store";
@@ -31,7 +26,7 @@ import { useExplorerStore } from "@/store/explorer-store";
 import { useRecentsStore } from "@/store/recents-store";
 import { useFavoritesStore } from "@/store/favorites-store";
 import { useAppStore } from "@/store/app-store";
-import { BaseDirectory, downloadDir, join } from "@tauri-apps/api/path";
+import { downloadDir, join } from "@tauri-apps/api/path";
 import { useAboutDialog } from "@/components/dialogs/about-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useKeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shorcuts-dialog";
@@ -104,7 +99,7 @@ export function registerCommands() {
         toast.error("Failed to create file: ");
         console.error("Failed to create file: ", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -128,7 +123,7 @@ export function registerCommands() {
         toast.error("Failed to open file: " + filePath);
         console.error("[] Failed to open file: " + filePath, err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -151,7 +146,7 @@ export function registerCommands() {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -188,7 +183,7 @@ export function registerCommands() {
         toast.error("Failed to rename file.");
         console.error("Failed to rename file:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -207,7 +202,7 @@ export function registerCommands() {
         toast.error("Failed to delete files.");
         console.error("Failed to delete files:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -244,7 +239,7 @@ export function registerCommands() {
         toast.error("Failed to rename folder.");
         console.error("Failed to rename folder:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -283,7 +278,7 @@ export function registerCommands() {
         toast.error("Failed to delete folder.");
         console.error("Failed to delete folder:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -299,7 +294,7 @@ export function registerCommands() {
         const currentName = parsed.name;
         const newPath = await workspace.generateUniqueFileName(
           baseDir,
-          `Copy of ${currentName}`
+          `Copy of ${currentName}`,
         );
         const data = await workspace.readFile(filePath);
         await workspace.writeFile(newPath, data);
@@ -308,7 +303,7 @@ export function registerCommands() {
         toast.error("Failed to duplicate file.");
         console.error("Failed to duplicate file:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -324,7 +319,7 @@ export function registerCommands() {
         toast.error("Failed to add file to favorites.");
         console.error("Failed to add file to favorites:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -340,7 +335,7 @@ export function registerCommands() {
         toast.error("Failed to remove file from favorites.");
         console.error("Failed to remove file from favorites:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -359,7 +354,7 @@ export function registerCommands() {
         const newFolderPath = await workspace.generateUniqueFileName(
           dir,
           dirName,
-          ""
+          "",
         );
         await workspace.makeDir(newFolderPath);
         useExplorerStore.getState().fetchFolders(workspaceDir);
@@ -370,7 +365,7 @@ export function registerCommands() {
         toast.error("Failed to create new folder.");
         console.error("Failed to create new folder:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -386,7 +381,7 @@ export function registerCommands() {
           const { base } = await workspace.parsePath(filePath);
           const newFilePath = await workspace.generateUniqueFileName(
             newPath,
-            base.replace(EXT_NAME, "")
+            base.replace(EXT_NAME, ""),
           );
           if (filePath === newFilePath) continue;
           await workspace.renameFile(filePath, newFilePath);
@@ -400,7 +395,7 @@ export function registerCommands() {
         toast.error("Failed to move file.");
         console.error("Failed to move file:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -422,7 +417,7 @@ export function registerCommands() {
         toast.error("Failed to move file to trash.");
         console.error("Failed to move file to trash:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -444,7 +439,7 @@ export function registerCommands() {
         toast.error("Failed to empty trash.");
         console.error("Failed to empty trash:", err);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -492,7 +487,7 @@ export function registerCommands() {
           const filePath = await workspace.generateUniqueFileName(
             downloadFolder,
             fileName,
-            fileExt
+            fileExt,
           );
           await writeFile(filePath, uint8Array);
           return data;
@@ -503,7 +498,7 @@ export function registerCommands() {
             page,
             shapes,
             exportOptions,
-            getFontsInStyle(fonts, SITE_URL)
+            getFontsInStyle(fonts, SITE_URL),
           );
           const workingFile = useEditorStore.getState().workingFile;
           const fileName = workingFile?.name ?? APP_NAME;
@@ -512,13 +507,13 @@ export function registerCommands() {
           const filePath = await workspace.generateUniqueFileName(
             downloadFolder,
             fileName,
-            fileExt
+            fileExt,
           );
           await writeTextFile(filePath, data);
           return data;
         }
       }
-    }
+    },
   );
 
   app.commands.register("file:quit", "Quit the application", {}, async () => {
@@ -532,11 +527,11 @@ export function registerCommands() {
   // edit commands -------------------------------------------------------------
 
   app.commands.register("edit:undo", "Undo", {}, async () =>
-    window.app.editor.actions.undo()
+    window.app.editor.actions.undo(),
   );
 
   app.commands.register("edit:redo", "Redo", {}, async () =>
-    window.app.editor.actions.redo()
+    window.app.editor.actions.redo(),
   );
 
   app.commands.register(
@@ -552,7 +547,7 @@ export function registerCommands() {
         app.editor.actions.remove();
       }
       return shapeIdArray;
-    }
+    },
   );
 
   app.commands.register(
@@ -568,7 +563,7 @@ export function registerCommands() {
         await app.editor.actions.copy();
       }
       return shapeIdArray;
-    }
+    },
   );
 
   app.commands.register(
@@ -586,7 +581,7 @@ export function registerCommands() {
         await app.editor.actions.cut();
       }
       return shapeIdArray;
-    }
+    },
   );
 
   app.commands.register(
@@ -597,7 +592,7 @@ export function registerCommands() {
       const app = window.app;
       const pasted = await app.editor.actions.paste();
       return pasted.map((shape) => shape.id);
-    }
+    },
   );
 
   app.commands.register(
@@ -624,16 +619,16 @@ export function registerCommands() {
         duplicated = app.editor.actions.duplicate(shapes, dx, dy, parent);
       }
       return duplicated.map((shape) => shape.id);
-    }
+    },
   );
 
   app.commands.register("edit:select-all", "Select all shapes", {}, async () =>
-    window.app.editor.selection.selectAll()
+    window.app.editor.selection.selectAll(),
   );
 
   app.commands.register(
     "edit:copy-image-to-clipboard",
-    "Copy the current page image to clipboard",
+    "Copy the specified shapes image to clipboard",
     {
       shapeIdArray: z.array(z.string()).optional().default([]),
       format: z
@@ -679,13 +674,13 @@ export function registerCommands() {
             page,
             shapes,
             exportOptions,
-            getFontsInStyle(fonts, SITE_URL)
+            getFontsInStyle(fonts, SITE_URL),
           );
           // const base64 = btoa(unescape(encodeURIComponent(data)));
           return data;
         }
       }
-    }
+    },
   );
 
   // shape commands ------------------------------------------------------------
@@ -713,7 +708,7 @@ export function registerCommands() {
         const group = window.app.editor.actions.group(shapes, parent);
         return group?.id;
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -730,7 +725,7 @@ export function registerCommands() {
       if (shapes.length > 0) {
         window.app.editor.actions.ungroup(shapes);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -757,7 +752,7 @@ export function registerCommands() {
       if (shapesToMove.length > 0) {
         app.editor.actions.move(dx, dy, shapesToMove);
       }
-    }
+    },
   );
 
   app.commands.register(
@@ -767,7 +762,7 @@ export function registerCommands() {
     async () =>
       await window.app.commands.execute("shape:move", {
         dy: -window.app.editor.getGridSize()[1],
-      })
+      }),
   );
 
   app.commands.register(
@@ -777,7 +772,7 @@ export function registerCommands() {
     async () =>
       await window.app.commands.execute("shape:move", {
         dy: window.app.editor.getGridSize()[1],
-      })
+      }),
   );
 
   app.commands.register(
@@ -787,7 +782,7 @@ export function registerCommands() {
     async () =>
       await window.app.commands.execute("shape:move", {
         dx: -window.app.editor.getGridSize()[0],
-      })
+      }),
   );
 
   app.commands.register(
@@ -797,35 +792,35 @@ export function registerCommands() {
     async () =>
       await window.app.commands.execute("shape:move", {
         dx: window.app.editor.getGridSize()[0],
-      })
+      }),
   );
 
   app.commands.register(
     "shape:move-up-1px",
     "Move selected shapes up as 1px",
     {},
-    async () => window.app.commands.execute("shape:move", { dy: -1 })
+    async () => window.app.commands.execute("shape:move", { dy: -1 }),
   );
 
   app.commands.register(
     "shape:move-down-1px",
     "Move selected shapes down as 1px",
     {},
-    async () => window.app.commands.execute("shape:move", { dy: 1 })
+    async () => window.app.commands.execute("shape:move", { dy: 1 }),
   );
 
   app.commands.register(
     "shape:move-left-1px",
     "Move selected shapes left as 1px",
     {},
-    async () => window.app.commands.execute("shape:move", { dx: -1 })
+    async () => window.app.commands.execute("shape:move", { dx: -1 }),
   );
 
   app.commands.register(
     "shape:move-right-1px",
     "Move selected shapes right as 1px",
     {},
-    async () => window.app.commands.execute("shape:move", { dx: 1 })
+    async () => window.app.commands.execute("shape:move", { dx: 1 }),
   );
 
   app.commands.register(
@@ -838,7 +833,7 @@ export function registerCommands() {
       const selection = editor.selection.getShapes();
       const enable = selection.every((s) => s.enable);
       editor.actions.update({ enable: !enable }, selection);
-    }
+    },
   );
 
   app.commands.register(
@@ -851,7 +846,7 @@ export function registerCommands() {
       const selection = editor.selection.getShapes();
       const containable = selection.every((s) => s.containable);
       editor.actions.update({ containable: !containable }, selection);
-    }
+    },
   );
 
   // align commands ------------------------------------------------------------
@@ -867,7 +862,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.bringToFront(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -881,7 +876,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.sendToBack(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -895,7 +890,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.bringForward(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -909,7 +904,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.sendBackward(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -923,7 +918,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignLeft(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -937,7 +932,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignRight(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -951,7 +946,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignCenter(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -965,7 +960,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignTop(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -979,7 +974,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignBottom(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -993,7 +988,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignMiddle(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -1007,7 +1002,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignHorizontalSpaceAround(shapes);
-    }
+    },
   );
 
   app.commands.register(
@@ -1021,7 +1016,7 @@ export function registerCommands() {
         ? findShapeIdArray(shapeIdArray)
         : app.editor.selection.getShapes();
       window.app.editor.actions.alignVerticalSpaceAround(shapes);
-    }
+    },
   );
 
   // tool commands -------------------------------------------------------------
@@ -1030,65 +1025,65 @@ export function registerCommands() {
     "tool:select",
     "Activate select handler",
     {},
-    async () => window.app.editor.activateDefaultHandler()
+    async () => window.app.editor.activateDefaultHandler(),
   );
 
   app.commands.register("tool:hand", "Activate hand handler", {}, async () =>
-    window.app.editor.activateHandler("Hand")
+    window.app.editor.activateHandler("Hand"),
   );
 
   app.commands.register(
     "tool:eraser",
     "Activate eraser handler",
     {},
-    async () => window.app.editor.activateHandler("Eraser")
+    async () => window.app.editor.activateHandler("Eraser"),
   );
 
   app.commands.register(
     "tool:rectangle",
     "Activate rectangle handler",
     {},
-    async () => window.app.editor.activateHandler("Rectangle")
+    async () => window.app.editor.activateHandler("Rectangle"),
   );
 
   app.commands.register(
     "tool:ellipse",
     "Activate ellipse handler",
     {},
-    async () => window.app.editor.activateHandler("Ellipse")
+    async () => window.app.editor.activateHandler("Ellipse"),
   );
 
   app.commands.register("tool:text", "Activate text handler", {}, async () =>
-    window.app.editor.activateHandler("Text")
+    window.app.editor.activateHandler("Text"),
   );
 
   app.commands.register("tool:image", "Activate image handler", {}, async () =>
-    window.app.editor.activateHandler("Image")
+    window.app.editor.activateHandler("Image"),
   );
 
   app.commands.register(
     "tool:connector",
     "Activate connector handler",
     {},
-    async () => window.app.editor.activateHandler("Connector")
+    async () => window.app.editor.activateHandler("Connector"),
   );
 
   app.commands.register("tool:line", "Activate line handler", {}, async () =>
-    window.app.editor.activateHandler("Line")
+    window.app.editor.activateHandler("Line"),
   );
 
   app.commands.register(
     "tool:freehand",
     "Activate freehand handler",
     {},
-    async () => window.app.editor.activateHandler("Freehand")
+    async () => window.app.editor.activateHandler("Freehand"),
   );
 
   app.commands.register(
     "tool:highlighter",
     "Activate highlighter handler",
     {},
-    async () => window.app.editor.activateHandler("Highlighter")
+    async () => window.app.editor.activateHandler("Highlighter"),
   );
 
   // view commands -------------------------------------------------------------
@@ -1136,7 +1131,7 @@ export function registerCommands() {
       const editor = window.app.editor;
       editor.fitToScreen(scaleAdjust, maxScale);
       useEditorStore.getState().setScale(editor.getScale());
-    }
+    },
   );
 
   app.commands.register("view:scroll-up", "Scroll up", {}, async () => {
@@ -1170,7 +1165,7 @@ export function registerCommands() {
     async () => {
       const editor = window.app.editor;
       editor.scrollToCenter();
-    }
+    },
   );
 
   app.commands.register("view:dark-mode", "Toggle dark mode", {}, async () => {
@@ -1180,14 +1175,14 @@ export function registerCommands() {
   });
 
   app.commands.register("view:snap-to-grid", "Snap to grid", {}, async () =>
-    useSettingStore.getState().toggleSnapToGrid()
+    useSettingStore.getState().toggleSnapToGrid(),
   );
 
   app.commands.register(
     "view:snap-to-objects",
     "Snap to objects",
     {},
-    async () => useSettingStore.getState().toggleSnapToObjects()
+    async () => useSettingStore.getState().toggleSnapToObjects(),
   );
 
   app.commands.register(
@@ -1198,7 +1193,7 @@ export function registerCommands() {
       const show = useSettingStore.getState().showSidebar;
       useSettingStore.getState().setShowSidebar(!show);
       window.app.editor.fit();
-    }
+    },
   );
 
   app.commands.register(
@@ -1208,7 +1203,7 @@ export function registerCommands() {
     async () => {
       const setShowSettings = useAppStore.getState().setShowSettings;
       setShowSettings(true);
-    }
+    },
   );
 
   app.commands.register(
@@ -1222,7 +1217,7 @@ export function registerCommands() {
     },
     async ({ sortBy }) => {
       useExplorerStore.getState().setSortBy(sortBy);
-    }
+    },
   );
 
   app.commands.register(
@@ -1233,11 +1228,11 @@ export function registerCommands() {
     },
     async ({ show }) => {
       useExportImageDialog.getState().show(show);
-    }
+    },
   );
 
   app.commands.register("help:about", "Show about dialog", {}, async () =>
-    useAboutDialog.getState().show(true)
+    useAboutDialog.getState().show(true),
   );
 
   app.commands.register(
@@ -1246,7 +1241,7 @@ export function registerCommands() {
     {},
     async () => {
       useKeyboardShortcutsDialog.getState().show(true);
-    }
+    },
   );
 
   app.commands.register(
@@ -1255,6 +1250,6 @@ export function registerCommands() {
     {},
     async () => {
       await invoke("open_devtools");
-    }
+    },
   );
 }

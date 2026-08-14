@@ -65,6 +65,7 @@
   "mod-left": "view:scroll-left",
   "mod-right": "view:scroll-right",
   "mod-shift-d": "view:dark-mode",
+  "mod-shift-e": "view:show-export-image-dialog",
 
   "shift-/": "help:keyboard-shortcuts",
   "mod-alt-i": "help:open-dev-tools"
