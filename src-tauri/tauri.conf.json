@@ -53,6 +53,14 @@
     ],
     "windows": {
       "signCommand": "signtool sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a %1"
+    },
+    "macOS": {
+      "dmg": {
+        "background": "icons/dmg-background.png",
+        "windowSize": { "width": 660, "height": 400 },
+        "appPosition": { "x": 180, "y": 170 },
+        "applicationFolderPosition": { "x": 480, "y": 170 }
+      }
     }
   }
 }
