@@ -30,6 +30,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const snapToGrid = useSettingStore((state) => state.snapToGrid);
   const snapToObjects = useSettingStore((state) => state.snapToObjects);
 
+  const setScale = useEditorStore((state) => state.setScale);
   const workingFile = useEditorStore((state) => state.workingFile);
   const readonly = workingFile?.readonly ?? true;
   const setModified = useEditorStore((state) => state.setModified);
@@ -38,7 +39,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const activeHandler = useEditorStore((state) => state.activeHandler);
   const setActiveHandler = useEditorStore((state) => state.setActiveHandler);
   const setActiveHandlerLock = useEditorStore(
-    (state) => state.setActiveHandlerLock
+    (state) => state.setActiveHandlerLock,
   );
   const styleStore = useStyleStore();
 
@@ -73,7 +74,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
   const handleShapeInitialize = (shape: Shape) => {
     try {
       const styleProps = structuredClone(
-        useStyleStore.getState().getStyleProps(shape.type)
+        useStyleStore.getState().getStyleProps(shape.type),
       );
       Object.assign(shape, trimObject(styleProps));
       if (shape instanceof Box) applyTextHorzAlign(shape);
@@ -86,6 +87,10 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
     setModified(true);
     window.app.autoSaver.tick();
     setTimeout(() => window.app.updateMenu(), 0);
+  };
+
+  const handleZoom = (zoom: number) => {
+    setScale(zoom);
   };
 
   const handleActiveHandlerChange = (handlerId: string) => {
@@ -240,6 +245,7 @@ export function EditorView({ onMount, className, ...others }: EditorViewProps) {
             onAction={handleAction}
             onUndo={handleAction}
             onRedo={handleAction}
+            onZoom={handleZoom}
             onActiveHandlerChange={handleActiveHandlerChange}
             onActiveHandlerLockChange={handleActiveHandlerLockChange}
             onSelectionChange={handleSelectionChange}

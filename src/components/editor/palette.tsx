@@ -79,6 +79,7 @@ import {
 import { ColorPanel } from "@/components/common/color-panel";
 import { ColorItem } from "@/components/common/color-palette";
 import { NumberField } from "@/components/ui/number-field";
+import { Switch } from "../ui/switch";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -176,12 +177,6 @@ export function Palette({ selection, onChange }: PaletteProps) {
         <div ref={innerRef} className="flex flex-col gap-1.5 w-full h-fit p-2">
           {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
-              <PositionAndSizeTool selection={selection} onChange={onChange} />
-            </>
-          )}
-
-          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
-            <>
               <FillColorTool selection={selection} onChange={onChange} />
               <FillStyleTool selection={selection} onChange={onChange} />
               <Separator className="opacity-50" />
@@ -248,10 +243,17 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {hasSelection && (
+          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
               <Separator className="opacity-50" />
-              <AdditionalTools selection={selection} onChange={onChange} />
+              <PositionAndSizeTool selection={selection} onChange={onChange} />
+            </>
+          )}
+
+          {hasSelection && (
+            <>
+              {/* <Separator className="opacity-50" />
+              <AdditionalTools selection={selection} onChange={onChange} /> */}
             </>
           )}
         </div>
@@ -273,7 +275,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           className="flex-grow w-16"
           title="X"
           label="X"
-          placeholder="Mixed"
+          placeholder="―"
           value={left ? Math.round(left) : undefined}
           onChange={(value) => onChange?.({ left: value })}
         />
@@ -281,7 +283,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           className="flex-grow w-16"
           title="Y"
           label="Y"
-          placeholder="Mixed"
+          placeholder="―"
           value={top ? Math.round(top) : undefined}
           onChange={(value) => onChange?.({ top: value })}
         />
@@ -291,7 +293,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           className="flex-grow w-16"
           title="Width"
           label="W"
-          placeholder="Mixed"
+          placeholder="―"
           value={width ? Math.round(width) : undefined}
           minValue={0}
           onChange={(value) => onChange?.({ width: value })}
@@ -300,7 +302,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           className="flex-grow w-16"
           title="Height"
           label="H"
-          placeholder="Mixed"
+          placeholder="―"
           value={height ? Math.round(height) : undefined}
           minValue={0}
           onChange={(value) => onChange?.({ height: value })}
@@ -1406,11 +1408,21 @@ function AdditionalTools({}: ToolProps) {
           <Settings2Icon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
-          <PopoverContent className="w-fit p-0 text-sm">
-            <div>shadow</div>
-            <div>container</div>
-            <div>lock</div>
-            <div>hide</div>
+          <PopoverContent className="w-fit p-0 text-xs">
+            <div className="flex flex-col gap-1 p-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>Alignment</div>
+                <div>
+                  <Switch />
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div>Position & Size</div>
+                <div>
+                  <Switch />
+                </div>
+              </div>
+            </div>
           </PopoverContent>
         </PopoverPositioner>
       </Popover>
