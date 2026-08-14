@@ -78,6 +78,7 @@ import {
 } from "@/const";
 import { ColorPanel } from "@/components/common/color-panel";
 import { ColorItem } from "@/components/common/color-palette";
+import { NumberField } from "@/components/ui/number-field";
 
 interface ToolProps {
   selection: ShapeProps[];
@@ -172,7 +173,13 @@ export function Palette({ selection, onChange }: PaletteProps) {
         ref={scrollRef}
         className="w-full max-h-full bg-background dark:bg-sidebar border shadow-lg/5 rounded-lg pointer-events-auto"
       >
-        <div ref={innerRef} className="flex flex-col gap-1 w-full h-fit p-2">
+        <div ref={innerRef} className="flex flex-col gap-1.5 w-full h-fit p-2">
+          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
+            <>
+              <PositionAndSizeTool selection={selection} onChange={onChange} />
+            </>
+          )}
+
           {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
             <>
               <FillColorTool selection={selection} onChange={onChange} />
@@ -243,13 +250,63 @@ export function Palette({ selection, onChange }: PaletteProps) {
 
           {hasSelection && (
             <>
-              {/* <Separator className="opacity-50" />
-              <AdditionalTools selection={selection} onChange={onChange} /> */}
+              <Separator className="opacity-50" />
+              <AdditionalTools selection={selection} onChange={onChange} />
             </>
           )}
         </div>
       </ScrollArea>
     </div>
+  );
+}
+
+function PositionAndSizeTool({ selection, onChange }: ToolProps) {
+  const left = merge(selection.map((s) => s.left));
+  const top = merge(selection.map((s) => s.top));
+  const width = merge(selection.map((s) => s.width));
+  const height = merge(selection.map((s) => s.height));
+
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16"
+          title="X"
+          label="X"
+          placeholder="Mixed"
+          value={left ? Math.round(left) : undefined}
+          onChange={(value) => onChange?.({ left: value })}
+        />
+        <NumberField
+          className="flex-grow w-16"
+          title="Y"
+          label="Y"
+          placeholder="Mixed"
+          value={top ? Math.round(top) : undefined}
+          onChange={(value) => onChange?.({ top: value })}
+        />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <NumberField
+          className="flex-grow w-16"
+          title="Width"
+          label="W"
+          placeholder="Mixed"
+          value={width ? Math.round(width) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ width: value })}
+        />
+        <NumberField
+          className="flex-grow w-16"
+          title="Height"
+          label="H"
+          placeholder="Mixed"
+          value={height ? Math.round(height) : undefined}
+          minValue={0}
+          onChange={(value) => onChange?.({ height: value })}
+        />
+      </div>
+    </>
   );
 }
 
@@ -259,7 +316,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Popover modal={true}>
           <PopoverTrigger
             render={
@@ -325,7 +382,7 @@ function FillColorTool({ selection, onChange }: ToolProps) {
           <ColorItem value="$red4" darkMode={darkMode} className="size-4" />
         </Toggle>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Toggle
           size="xs"
           title="Fill color ⎯ Light Blue"
@@ -383,7 +440,7 @@ function FillStyleTool({ selection, onChange }: ToolProps) {
   const fillStyle = merge(selection.map((s) => s.fillStyle));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="No fill"
@@ -441,7 +498,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
   const strokeColor = merge(selection.map((s) => s.strokeColor));
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Popover modal={true}>
           <PopoverTrigger
             render={
@@ -521,7 +578,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
           />
         </Toggle>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Toggle
           size="xs"
           title="Stroke color ⎯ Blue"
@@ -600,7 +657,7 @@ function StrokeWidthAndRoughTool({ selection, onChange }: ToolProps) {
   const roughness = merge(selection.map((s) => s.roughness)) ?? 0;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Thin stroke"
@@ -711,7 +768,7 @@ function StrokePatternAndCornerTool({ selection, onChange }: ToolProps) {
   const stringifiedCorners = corners.join(",");
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Solid stroke"
@@ -833,7 +890,7 @@ function FreehandWidthTool({ selection, onChange }: ToolProps) {
   const strokeWidth = merge(selection.map((s) => s.strokeWidth)) ?? 2;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Thin pen"
@@ -888,7 +945,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Handwriting"
@@ -940,7 +997,7 @@ function FontFamilyTool({ selection, onChange }: ToolProps) {
 function FontSizeTool({ selection, onChange }: ToolProps) {
   const fontSize = merge(selection.map((s) => (s as Text).fontSize));
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Small"
@@ -995,7 +1052,7 @@ function TextAlignTool({ selection, onChange }: ToolProps) {
   const vertAlign = merge(selection.map((s) => (s as Box).vertAlign));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Align text left"
@@ -1114,7 +1171,7 @@ function LineTool({ selection, onChange }: ToolProps) {
   const headEndType = merge(selection.map((s) => (s as Line).headEndType));
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Toggle
         size="xs"
         title="Straight line"
@@ -1157,7 +1214,7 @@ function LineTool({ selection, onChange }: ToolProps) {
 function LayerTool({}: ToolProps) {
   const formattedKeys = useKeymapStore((state) => state.formattedKeys);
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Button
         size="icon-xs"
         variant="ghost"
@@ -1206,7 +1263,7 @@ function AlignmentTool({}: ToolProps) {
   const formattedKeys = useKeymapStore((state) => state.formattedKeys);
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Button
           size="icon-xs"
           variant="ghost"
@@ -1248,7 +1305,7 @@ function AlignmentTool({}: ToolProps) {
           <AlignHorizontalSpaceAroundIcon size={16} />
         </Button>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Button
           size="icon-xs"
           variant="ghost"
@@ -1296,9 +1353,9 @@ function AlignmentTool({}: ToolProps) {
 
 function AdditionalTools({}: ToolProps) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <PenLineIcon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1314,7 +1371,7 @@ function AdditionalTools({}: ToolProps) {
       </Popover>
 
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <TypeIcon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1331,7 +1388,7 @@ function AdditionalTools({}: ToolProps) {
       </Popover>
 
       <Popover>
-        <PopoverTrigger render={<Button size="icon-sm" variant="ghost" />}>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
           <Settings2Icon size={16} />
         </PopoverTrigger>
         <PopoverPositioner align="end">
@@ -1344,9 +1401,19 @@ function AdditionalTools({}: ToolProps) {
         </PopoverPositioner>
       </Popover>
 
-      <Button size="icon-sm" variant="ghost">
-        <SettingsIcon size={16} />
-      </Button>
+      <Popover>
+        <PopoverTrigger render={<Button size="icon-xs" variant="ghost" />}>
+          <Settings2Icon size={16} />
+        </PopoverTrigger>
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-fit p-0 text-sm">
+            <div>shadow</div>
+            <div>container</div>
+            <div>lock</div>
+            <div>hide</div>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Popover>
     </div>
   );
 }
