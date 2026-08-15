@@ -13,9 +13,7 @@
   <a href="https://nakso.app">https://nakso.app</a>
 </p>
 
-<p align="center">
-  <img src="https://nakso.app/images/hero.png" alt="Nakso screenshot" width="720" />
-</p>
+![Nakso screenshot](https://github.com/niklauslee/nakso/blob/main/docs/screenshot.png?raw=true)
 
 ## Features
 
