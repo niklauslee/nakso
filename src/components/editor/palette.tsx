@@ -1177,7 +1177,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="xs"
         title="Small"
-        className="font-medium"
+        className="text-sm"
         pressed={fontSize === 16}
         onPressedChange={() => {
           onChange?.({ fontSize: 16 });
@@ -1188,7 +1188,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="xs"
         title="Medium"
-        className="font-medium"
+        className="text-sm"
         pressed={fontSize === 20}
         onPressedChange={() => {
           onChange?.({ fontSize: 20 });
@@ -1199,7 +1199,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="xs"
         title="Large"
-        className="font-medium"
+        className="text-sm"
         pressed={fontSize === 28}
         onPressedChange={() => {
           onChange?.({ fontSize: 28 });
@@ -1210,7 +1210,7 @@ function FontSizeTool({ selection, onChange }: ToolProps) {
       <Toggle
         size="xs"
         title="Extra Large"
-        className="font-medium"
+        className="text-sm"
         pressed={fontSize === 40}
         onPressedChange={() => {
           onChange?.({ fontSize: 40 });
@@ -1537,7 +1537,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
     <>
       <div className="flex items-center gap-1.5">
         <NumberField
-          className="flex-grow w-16 bg-background"
+          className="flex-grow w-15.5 bg-background"
           title="X"
           label="X"
           placeholder="―"
@@ -1545,7 +1545,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           onChange={(value) => onChange?.({ left: value })}
         />
         <NumberField
-          className="flex-grow w-16 bg-background"
+          className="flex-grow w-15.5 bg-background"
           title="Y"
           label="Y"
           placeholder="―"
@@ -1555,7 +1555,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
       </div>
       <div className="flex items-center gap-1.5">
         <NumberField
-          className="flex-grow w-16 bg-background"
+          className="flex-grow w-15.5 bg-background"
           title="Width"
           label="W"
           placeholder="―"
@@ -1564,7 +1564,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           onChange={(value) => onChange?.({ width: value })}
         />
         <NumberField
-          className="flex-grow w-16 bg-background"
+          className="flex-grow w-15.5 bg-background"
           title="Height"
           label="H"
           placeholder="―"
