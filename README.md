@@ -5,7 +5,7 @@
 <h1 align="center">Nakso</h1>
 
 <p align="center">
-  Your desktop whiteboard — visualize your ideas instantly.<br/>
+  Your desktop sketchpad — visualize your ideas instantly.<br/>
   No subscription, works offline, small and fast.
 </p>
 

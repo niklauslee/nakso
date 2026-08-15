@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Nakso is a lightweight, offline-first desktop whiteboard for instant idea visualization.
+Nakso is a lightweight, offline-first desktop sketchpad for instant idea visualization.
 Frontend: React 19 + TypeScript + Vite, using `@dgmjs` for the drawing engine, Zustand for state, Tailwind CSS v4 for styling.
 Shell: Tauri 2 (Rust, `src-tauri/`) for the native desktop app.
 
