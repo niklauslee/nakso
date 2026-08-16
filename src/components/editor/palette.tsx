@@ -485,7 +485,7 @@ function StrokeColorTool({ selection, onChange }: ToolProps) {
                 darkMode={darkMode}
                 value={strokeColor ?? "$foreground"}
                 onChange={(color) => {
-                  onChange?.({ strokeColor: color });
+                  onChange?.({ strokeColor: color, fontColor: color });
                 }}
               />
             </PopoverContent>
