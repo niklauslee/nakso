@@ -78,6 +78,7 @@ export class AppContext {
     this.editor = editor;
     this.editor.newDoc();
     this.editor.fitToScreen();
+    this.editor.setGridSize([10, 10]);
     this.updateMenu();
     await this.loadWorkingState();
     useAppStore.getState().setAppReady(true);
@@ -204,7 +205,7 @@ export class AppContext {
         .getState()
         .setMenus(
           menuJson as any,
-          window.app.keymaps.getAllFormattedKeyByCommand()
+          window.app.keymaps.getAllFormattedKeyByCommand(),
         );
     } catch (err) {
       console.error("Failed to load menus", err);
@@ -291,7 +292,7 @@ export class AppContext {
   getRecentsPath() {
     const sep = workspace.getSeparator();
     return [this.getWorkspaceDir(), CONFIG_FOLDER_NAME, RECENTS_FILE_NAME].join(
-      sep
+      sep,
     );
   }
 
@@ -307,7 +308,7 @@ export class AppContext {
   getFavoritesPath() {
     const sep = workspace.getSeparator();
     return [this.getWorkspaceDir(), CONFIG_FOLDER_NAME, "favorites.json"].join(
-      sep
+      sep,
     );
   }
 
