@@ -12,7 +12,7 @@
  */
 
 const AUTO_SAVE_CHECK_INTERVAL = 1000; // 1s
-const AUTO_SAVE_MAX_IDLE = 3000; // 3s
+const AUTO_SAVE_MAX_IDLE = 10000; // 10s
 
 /**
  * Auto Saver
