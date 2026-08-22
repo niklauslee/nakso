@@ -259,7 +259,7 @@ export function Palette({ selection, onChange }: PaletteProps) {
             </>
           )}
 
-          {(hasRectangle || hasEllipse || hasFrame || hasClosedPath) && (
+          {(hasRectangle || hasEllipse || hasText || hasFrame || hasImage) && (
             <>
               <Separator className="opacity-50" />
               <PositionAndSizeTool selection={selection} onChange={onChange} />
