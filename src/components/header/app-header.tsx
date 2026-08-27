@@ -35,7 +35,7 @@ export function AppHeader({
         className={cn(
           "w-full h-full flex items-center gap-2 px-4",
           !showSidebar && platform === "darwin" && "pl-22",
-          platform !== "darwin" && "pr-0"
+          platform !== "darwin" && "pr-0",
         )}
       >
         {!showSidebar && (
@@ -96,7 +96,7 @@ export function AppHeader({
               getCurrentWindow().minimize();
             }}
           >
-            <MinusIcon size={16} strokeWidth={1.5} />
+            <MinusIcon size={16} />
           </Button>
           <Button
             size="icon-sm"
@@ -110,7 +110,7 @@ export function AppHeader({
               getCurrentWindow().toggleMaximize();
             }}
           >
-            <MaximizeWindowIcon size={16} strokeWidth={1.5} />
+            <MaximizeWindowIcon size={16} />
           </Button>
           <Button
             size="icon-sm"
@@ -124,7 +124,7 @@ export function AppHeader({
               window.app?.commands.execute("file:quit");
             }}
           >
-            <XIcon size={16} strokeWidth={1.5} />
+            <XIcon size={16} />
           </Button>
         </div>
       )}
