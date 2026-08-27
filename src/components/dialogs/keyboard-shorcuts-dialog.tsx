@@ -47,7 +47,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
 export function ShortcutGroup({ title, children }: ShortcutGroupProps) {
   return (
     <div className="text-xs">
-      <div className="font-semibold mb-2">{title}</div>
+      <div className="font-medium mb-2">{title}</div>
       <div className="flex flex-col gap-1">{children}</div>
     </div>
   );
@@ -87,8 +87,8 @@ export const useKeyboardShortcutsDialog =
           set((state) => ({ open }));
         },
       }),
-      { name: "KeyboardShortcutsDialogStore" }
-    )
+      { name: "KeyboardShortcutsDialogStore" },
+    ),
   );
 
 export function KeyboardShortcutsDialog({}) {

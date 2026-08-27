@@ -147,10 +147,12 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
       <div
         className={cn(
           "file-entry-tree-node-item group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
-          selected && !editing && "font-medium bg-sidebar-accent",
+          selected &&
+            !editing &&
+            "font-normal bg-sidebar-accent text-sidebar-accent-foreground",
           (focused || editing || isDragOver) &&
             "ring-2 ring-accent-foreground/25",
-          className
+          className,
         )}
         style={{ paddingLeft: defaultIndent + level * levelIndent }}
         onClick={handleClick}
@@ -178,7 +180,7 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
                 title={fileEntry.name}
                 className={cn(
                   "absolute left-0 top-0 bottom-0 w-full truncate flex items-center",
-                  editing && "hidden"
+                  editing && "hidden",
                 )}
               >
                 <span className="text-sm truncate">{fileEntry.name}</span>
@@ -186,7 +188,7 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
               <div
                 className={cn(
                   "absolute left-0 top-0 bottom-0 w-full",
-                  !editing && "hidden"
+                  !editing && "hidden",
                 )}
               >
                 <input
@@ -208,14 +210,14 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
             "flex text-sidebar-foreground/40 h-4 cursor-pointer justify-end items-center gap-2 -mr-0.5",
             !(
               Array.isArray(fileEntry.children) && fileEntry.children.length > 0
-            ) && "hidden"
+            ) && "hidden",
           )}
         >
           <div onClick={handleToggleCollapse}>
             <ChevronDownIcon
               className={cn(
                 "transition-transform duration-200 hover:text-sidebar-accent-foreground",
-                collapsed && "rotate-90"
+                collapsed && "rotate-90",
               )}
               size={16}
             />
@@ -224,8 +226,8 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
       </div>
       <ul
         className={cn(
-          "file-entry-tree-node-children m-0 list-none p-0 flex flex-col gap-1",
-          collapsed && "hidden"
+          "file-entry-tree-node-children m-0 list-none p-0 flex flex-col gap-0",
+          collapsed && "hidden",
         )}
       >
         {fileEntry.children?.toReversed().map((child) => (
@@ -258,8 +260,8 @@ export const FileEntryTree: React.FC<FileEntryTreeProps> = ({
   return (
     <ul
       className={cn(
-        "m-0 list-none text-sm w-full max-w-full relative flex flex-col gap-1",
-        className
+        "m-0 list-none text-sm w-full max-w-full relative flex flex-col gap-0",
+        className,
       )}
       {...others}
     >

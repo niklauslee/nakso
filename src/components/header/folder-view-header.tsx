@@ -68,7 +68,7 @@ export function FolderViewHeader({ folder, ...others }: FolderViewHeaderProps) {
     <AppHeader
       propagateEvents={true}
       rightArea={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-0">
           {folderTag === TRASH_TAG && (
             <Button
               size="sm"

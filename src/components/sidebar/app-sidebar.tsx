@@ -206,9 +206,7 @@ export function AppSidebar() {
         </SidebarGroup> */}
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/40">
-            Folders
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Folders</SidebarGroupLabel>
           <SidebarGroupAction
             className="text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-transparent cursor-pointer"
             title="New Folder"

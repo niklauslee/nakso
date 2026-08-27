@@ -63,7 +63,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
   return (
     <AppHeader
       rightArea={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-0">
           <Button
             size="icon-sm"
             variant="ghost"
@@ -107,7 +107,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
       <div
         className={cn(
           "flex items-center gap-2 text-sm -ml-2",
-          readonly && "opacity-50"
+          readonly && "opacity-50",
         )}
       >
         <Button
@@ -122,7 +122,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
                 setView("folder");
               } else {
                 const dirEntry = await workspace.getFileEntry(
-                  workingFile?.dirname
+                  workingFile?.dirname,
                 );
                 setCurrentFolder(dirEntry);
                 setView("folder");
@@ -135,7 +135,7 @@ export function EditorViewHeader({ ...others }: EditorViewHeaderProps) {
         <div
           className={cn(
             "flex items-center gap-2 text-sm",
-            readonly && "opacity-50"
+            readonly && "opacity-50",
           )}
         >
           {readonly && <LockIcon size={16} />}

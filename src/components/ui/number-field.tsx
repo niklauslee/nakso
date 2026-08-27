@@ -111,7 +111,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           id={label ? internalId : id}
           title={title}
           className={cn(
-            "flex h-7 w-full rounded-sm border-input bg-accent px-1 py-1 text-xs transition-colors file:border-0 file:bg-transparent file:text-xs file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+            "flex h-7 w-full rounded-sm border-input bg-accent px-1 py-1 text-xs transition-colors file:border-0 file:bg-transparent file:text-xs file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
             label && "pl-6",
             className,
           )}
@@ -128,7 +128,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           <label
             htmlFor={internalId}
             className={cn(
-              "absolute left-0 top-0 w-6 h-full font-normal flex justify-center items-center text-xs bg-transparent text-muted-foreground/50",
+              "absolute left-0 top-0 w-6 h-full font-normal flex justify-center items-center text-xs bg-transparent text-muted-foreground/70",
               disabled && "cursor-not-allowed opacity-50",
             )}
             title={title}

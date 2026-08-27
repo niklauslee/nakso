@@ -13,8 +13,10 @@ import { Button } from "../ui/button";
 import { FolderOpenIcon } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 
-interface SettingsSectionProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "label"> {
+interface SettingsSectionProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "label"
+> {
   label: React.ReactNode;
 }
 
@@ -27,15 +29,17 @@ function SettingsSection({
   return (
     <section className={cn("flex flex-col", className)} {...others}>
       <div className="py-2 border-b">
-        <Label>{label}</Label>
+        <Label className="font-normal">{label}</Label>
       </div>
       <div className="flex flex-col">{children}</div>
     </section>
   );
 }
 
-interface SettingItemProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "label"> {
+interface SettingItemProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "label"
+> {
   label?: React.ReactNode;
   description?: React.ReactNode;
 }
@@ -87,11 +91,11 @@ export function SettingsDialog() {
         </DialogHeader>
         <div className="relative h-full w-full">
           <div className="absolute inset-y-0 left-0 w-48 bg-sidebar">
-            <div className="flex flex-col gap-1 px-2 py-4">
-              <div className="text-sm font-medium rounded-lg bg-sidebar-accent hover:bg-sidebar-accent text-sidebar-accent-foreground px-4 py-1.5">
+            <div className="flex flex-col gap-0 px-2 py-4">
+              <div className="text-sm font-normal rounded-lg bg-sidebar-accent hover:bg-sidebar-accent text-sidebar-accent-foreground px-4 py-1.5">
                 General
               </div>
-              {/* <div className="text-sm font-medium rounded-lg bg-sidebar hover:bg-sidebar-accent text-sidebar-accent-foreground px-4 py-1.5">
+              {/* <div className="text-sm font-normal rounded-lg bg-sidebar hover:bg-sidebar-accent text-sidebar-accent-foreground px-4 py-1.5">
                 Styles
               </div> */}
             </div>
