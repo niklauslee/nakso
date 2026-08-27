@@ -41,6 +41,7 @@ import {
   Settings2Icon,
   MaximizeIcon,
   SquareDashedTopSolidIcon,
+  ArrowRightLeftIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -1553,7 +1554,7 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           onChange={(value) => onChange?.({ top: value })}
         />
       </div>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 relative">
         <NumberField
           className="flex-grow w-15.5 bg-background"
           title="Width"
@@ -1572,6 +1573,19 @@ function PositionAndSizeTool({ selection, onChange }: ToolProps) {
           minValue={0}
           onChange={(value) => onChange?.({ height: value })}
         />
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          className="absolute left-12.5 text-muted-foreground/70 hover:bg-transparent hover:cursor-pointer"
+          onClick={() => {
+            const newWidth = height ?? 0;
+            const newHeight = width ?? 0;
+            onChange?.({ width: newWidth, height: newHeight });
+          }}
+          title="Swap width and height"
+        >
+          <ArrowRightLeftIcon size={12} className="size-3" />
+        </Button>
       </div>
     </>
   );
