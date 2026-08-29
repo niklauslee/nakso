@@ -149,7 +149,7 @@ export const FileEntryTreeNode: React.FC<FileEntryTreeNodeProps> = ({
           "file-entry-tree-node-item group/item flex flex-row items-center hover:bg-sidebar-accent w-full rounded-md p-2",
           selected &&
             !editing &&
-            "font-normal bg-sidebar-accent text-sidebar-accent-foreground",
+            "font-medium bg-sidebar-accent text-sidebar-accent-foreground",
           (focused || editing || isDragOver) &&
             "ring-2 ring-accent-foreground/25",
           className,

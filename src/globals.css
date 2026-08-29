@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: "Archivo", sans-serif; /* "Archivo", "Inter"; */
+  --font-sans: "Inter", sans-serif; /* "Archivo", "Inter"; */
   --font-mono: "JetBrains Mono";
   --font-serif: "Newsreader";
   --font-hand: "Loranthus";
@@ -454,7 +454,7 @@
       "rlig" 1,
       "calt" 1;
     overscroll-behavior: none;
-    @apply bg-background text-foreground select-none font-light;
+    @apply bg-background text-foreground select-none;
   }
 
   #root {
