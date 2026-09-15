@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://nakso.app">https://nakso.app</a>
+  <a href="https://nakso.mklaabs.com">https://nakso.mklaabs.com</a>
 </p>
 
 ![Nakso screenshot](https://github.com/niklauslee/nakso/blob/main/docs/screenshot.png?raw=true)
@@ -26,7 +26,7 @@
 
 ## Download
 
-Grab the latest build for your platform from [nakso.app/#download](https://nakso.app/#download).
+Grab the latest build for your platform from [nakso.mklaabs.com/#download](https://nakso.mklaabs.com/#download).
 
 | Platform                      | Requirement   |
 | ----------------------------- | ------------- |

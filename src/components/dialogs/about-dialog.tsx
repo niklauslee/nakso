@@ -36,8 +36,8 @@ export const useAboutDialog = create<AboutDialogState>()(
         set((state) => ({ open }));
       },
     }),
-    { name: "AboutDialogStore" }
-  )
+    { name: "AboutDialogStore" },
+  ),
 );
 
 export function AboutDialog({}) {
@@ -59,14 +59,14 @@ export function AboutDialog({}) {
           </div>
           <div className="text-xs flex items-center justify-center">
             <a
-              href="https://nakso.app"
+              href="https://nakso.mklaabs.com"
               className="text-blue-500 focus:outline-none"
               onClick={(e) => {
                 e.preventDefault();
-                window.app.openExternalLink("https://nakso.app");
+                window.app.openExternalLink("https://nakso.mklaabs.com");
               }}
             >
-              https://nakso.app
+              https://nakso.mklaabs.com
             </a>
           </div>
           <div className="text-xs text-center text-muted-foreground mt-2">
